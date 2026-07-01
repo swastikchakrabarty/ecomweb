@@ -1,0 +1,733 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Dashboard - KaaNuRO Group{% endblock %}
+
+{% block content %}
+<style>
+    /* ── Suppress Django ClearableFileInput boilerplate text ── */
+    #profile-form-container .django-file-wrapper > label,
+    #profile-form-container .django-file-wrapper ul,
+    #profile-form-container .django-file-wrapper br,
+    #profile-form-container .django-file-wrapper a { display: none !important; }
+    #profile-form-container .django-file-wrapper input[type="checkbox"] { display: none !important; }
+    /* Kill raw text nodes rendered outside elements (e.g. "Currently:") */
+    .django-file-wrapper { font-size: 0; color: transparent; }
+    .django-file-wrapper input[type="file"] { font-size: 0.75rem; color: inherit; }
+</style>
+<section class="bg-lightBeige/30 py-12 min-h-[85vh]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Welcome Header -->
+        <div class="bg-darkGreen text-cream rounded-2xl p-8 mb-10 shadow-md relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="space-y-2">
+                    <span class="px-2.5 py-1 rounded bg-herbalGreen text-softGold font-outfit text-xs font-semibold uppercase tracking-wider">
+                        {{ user.get_role_display }} Workspace
+                    </span>
+                    <h1 class="text-2xl font-bold text-[#E8D8B8]">Hello, {{ request.user.first_name|default:"Customer" }}!</h1>
+                    <p class="text-xs text-cream/70 font-light">Welcome back to your workspace. Here is a summary of activities.</p>
+                </div>
+                {% if user.role in 'admin,employee' or user.is_superuser %}
+                <div class="flex flex-wrap gap-3">
+                    <a href="{% url 'product_create' %}" class="px-5 py-3 bg-softGold text-darkGreen dark:text-cream font-outfit font-bold rounded-xl hover:bg-cream hover:text-darkGreen transition-all text-sm shadow-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Add New Product</span>
+                    </a>
+                    <a href="{% url 'clothing_create' %}" class="px-5 py-3 bg-herbalGreen text-cream font-outfit font-bold rounded-xl hover:bg-cream hover:text-darkGreen transition-all text-sm shadow-sm flex items-center space-x-2 border border-transparent">
+                        <i class="fa-solid fa-shirt"></i>
+                        <span>Add Clothing Item</span>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if user.role in 'admin,employee' or user.is_superuser %}
+        <!-- METRICS WIDGETS -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-10">
+            <!-- Products metric -->
+            <div class="bg-cream border border-organicBrown/10 rounded-2xl p-6 flex items-center justify-between shadow-sm">
+                <div class="space-y-1">
+                    <p class="text-xs text-organicBrown/55 uppercase font-semibold font-outfit">Total Products</p>
+                    <p class="text-3xl font-outfit font-extrabold text-darkGreen">{{ total_products }}</p>
+                </div>
+                <div class="w-12 h-12 bg-herbalGreen/10 rounded-xl flex items-center justify-center text-herbalGreen">
+                    <i class="fa-solid fa-boxes-stacked text-xl"></i>
+                </div>
+            </div>
+
+            <!-- Clothing metric -->
+            <div class="bg-cream border border-organicBrown/10 rounded-2xl p-6 flex items-center justify-between shadow-sm">
+                <div class="space-y-1">
+                    <p class="text-xs text-organicBrown/55 uppercase font-semibold font-outfit">Total Apparel</p>
+                    <p class="text-3xl font-outfit font-extrabold text-darkGreen">{{ total_clothing_items }}</p>
+                </div>
+                <div class="w-12 h-12 bg-herbalGreen/10 rounded-xl flex items-center justify-center text-herbalGreen">
+                    <i class="fa-solid fa-shirt text-xl"></i>
+                </div>
+            </div>
+
+            <!-- Messages metric -->
+            <div class="bg-cream border border-organicBrown/10 rounded-2xl p-6 flex items-center justify-between shadow-sm">
+                <div class="space-y-1">
+                    <p class="text-xs text-organicBrown/55 uppercase font-semibold font-outfit">Contact Inquiries</p>
+                    <p class="text-3xl font-outfit font-extrabold text-darkGreen">{{ total_messages }}</p>
+                </div>
+                <div class="w-12 h-12 bg-softGold/10 rounded-xl flex items-center justify-center text-softGold">
+                    <i class="fa-solid fa-envelope-open-text text-xl"></i>
+                </div>
+            </div>
+
+            <!-- Accounts metric -->
+            <div class="bg-cream border border-organicBrown/10 rounded-2xl p-6 flex items-center justify-between shadow-sm">
+                <div class="space-y-1">
+                    <p class="text-xs text-organicBrown/55 uppercase font-semibold font-outfit">Total Accounts</p>
+                    <p class="text-3xl font-outfit font-extrabold text-darkGreen">{{ total_users }}</p>
+                </div>
+                <div class="w-12 h-12 bg-darkGreen/10 rounded-xl flex items-center justify-center text-darkGreen">
+                    <i class="fa-solid fa-users text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS CONTROLLER -->
+        <div class="bg-cream border border-organicBrown/10 rounded-2xl shadow-sm overflow-hidden">
+            <!-- Tabs Headers -->
+            <div class="bg-lightBeige border-b border-lightBeige flex flex-wrap">
+                <button onclick="switchTab('products-tab')" id="products-tab-btn" class="px-6 py-4 font-outfit font-bold text-sm text-darkGreen border-b-2 border-herbalGreen bg-cream focus:outline-none transition-all">
+                    Product Inventory ({{ total_products }})
+                </button>
+                <button onclick="switchTab('clothing-tab')" id="clothing-tab-btn" class="px-6 py-4 font-outfit font-semibold text-sm text-organicBrown/60 border-b-2 border-transparent hover:text-darkGreen focus:outline-none transition-all">
+                    Clothing Inventory ({{ total_clothing_items }})
+                </button>
+                <button onclick="switchTab('orders-tab')" id="orders-tab-btn" class="px-6 py-4 font-outfit font-semibold text-sm text-organicBrown/60 border-b-2 border-transparent hover:text-darkGreen focus:outline-none transition-all">
+                    Customer Orders ({{ total_orders }})
+                </button>
+                <button onclick="switchTab('inquiries-tab')" id="inquiries-tab-btn" class="px-6 py-4 font-outfit font-semibold text-sm text-organicBrown/60 border-b-2 border-transparent hover:text-darkGreen focus:outline-none transition-all">
+                    Customer Inquiries ({{ total_messages }})
+                </button>
+                {% if user.role == 'admin' or user.is_superuser %}
+                <button onclick="switchTab('staff-tab')" id="staff-tab-btn" class="px-6 py-4 font-outfit font-semibold text-sm text-organicBrown/60 border-b-2 border-transparent hover:text-darkGreen focus:outline-none transition-all">
+                    Staff Management ({{ employees|length }})
+                </button>
+                <button onclick="switchTab('customer-profiles-tab')" id="customer-profiles-tab-btn" class="px-6 py-4 font-outfit font-semibold text-sm text-organicBrown/60 border-b-2 border-transparent hover:text-darkGreen focus:outline-none transition-all">
+                    Customer Profiles ({{ total_customers|default:0 }})
+                </button>
+                {% endif %}
+            </div>
+
+            <!-- TAB 1: PRODUCT INVENTORY -->
+            <div id="products-tab" class="p-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-lightBeige text-xs font-semibold text-organicBrown/60 uppercase tracking-wider">
+                                <th class="py-3 px-4">Image</th>
+                                <th class="py-3 px-4">Product Details</th>
+                                <th class="py-3 px-4">Sub-tagline</th>
+                                <th class="py-3 px-4">Price</th>
+                                <th class="py-3 px-4">Size/Weight</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-lightBeige text-sm">
+                            {% for product in products %}
+                            <tr class="hover:bg-lightBeige/25 transition-colors">
+                                <td class="py-4 px-4">
+                                    <div class="w-12 h-8 rounded bg-lightBeige overflow-hidden border border-lightBeige flex items-center justify-center">
+                                        {% if product.image %}
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-cover w-full h-full">
+                                        {% else %}
+                                        <i class="fa-solid fa-leaf text-xs text-herbalGreen/40"></i>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4 font-medium text-darkGreen">
+                                    <div>{{ product.name }}</div>
+                                    <div class="text-[10px] text-organicBrown/50 truncate max-w-xs font-light">{{ product.description }}</div>
+                                </td>
+                                <td class="py-4 px-4 text-xs font-outfit font-semibold text-softGold">{{ product.subtitle_tagline|default:"-" }}</td>
+                                <td class="py-4 px-4 text-xs font-mono text-organicBrown/70">₹{{ product.price }}</td>
+                                <td class="py-4 px-4 text-xs text-organicBrown/70">{{ product.total_quantity_info|default:"-" }}</td>
+                                <td class="py-4 px-4">
+                                    {% if product.is_active %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
+                                    {% else %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-50 text-slate-600 border border-slate-200">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-4 px-4 text-right space-x-2">
+                                    <a href="{% url 'product_edit' product.pk %}" class="inline-flex items-center justify-center w-8 h-8 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-600 hover:text-white transition-colors" title="Edit"><i class="fa-solid fa-pen-to-square text-xs"></i></a>
+                                    <a href="{% url 'product_delete' product.pk %}" class="inline-flex items-center justify-center w-8 h-8 bg-rose-50 text-rose-600 border border-rose-200 rounded-lg hover:bg-rose-600 hover:text-white transition-colors" title="Delete"><i class="fa-solid fa-trash-can text-xs"></i></a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="py-8 text-center text-organicBrown/50 font-light">
+                                    No products found in database. Create one to display on the landing page!
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: CLOTHING INVENTORY -->
+            <div id="clothing-tab" class="p-6 hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-lightBeige text-xs font-semibold text-organicBrown/60 uppercase tracking-wider">
+                                <th class="py-3 px-4">Image</th>
+                                <th class="py-3 px-4">Item Details</th>
+                                <th class="py-3 px-4">Category</th>
+                                <th class="py-3 px-4">Price</th>
+                                <th class="py-3 px-4">Fabric</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-lightBeige text-sm">
+                            {% for item in clothing_items %}
+                            <tr class="hover:bg-lightBeige/25 transition-colors">
+                                <td class="py-4 px-4">
+                                    <div class="w-12 h-8 rounded bg-lightBeige overflow-hidden border border-lightBeige flex items-center justify-center">
+                                        {% if item.image %}
+                                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="object-cover w-full h-full">
+                                        {% else %}
+                                        <i class="fa-solid fa-shirt text-xs text-herbalGreen/40"></i>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4 font-medium text-darkGreen">
+                                    <div>{{ item.name }}</div>
+                                    <div class="text-[10px] text-organicBrown/50 font-light">Sizes: {{ item.sizes }} | Colors: {{ item.colors }}</div>
+                                </td>
+                                <td class="py-4 px-4 text-xs font-outfit font-semibold text-softGold uppercase">{{ item.get_category_display }}</td>
+                                <td class="py-4 px-4 text-xs font-mono text-organicBrown/70">₹{{ item.price }}</td>
+                                <td class="py-4 px-4 text-xs text-organicBrown/70">{{ item.fabric }}</td>
+                                <td class="py-4 px-4">
+                                    {% if item.is_active %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
+                                    {% else %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-50 text-slate-600 border border-slate-200">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-4 px-4 text-right space-x-2">
+                                    <a href="{% url 'clothing_edit' item.pk %}" class="inline-flex items-center justify-center w-8 h-8 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-600 hover:text-white transition-colors" title="Edit"><i class="fa-solid fa-pen-to-square text-xs"></i></a>
+                                    <a href="{% url 'clothing_delete' item.pk %}" class="inline-flex items-center justify-center w-8 h-8 bg-rose-50 text-rose-600 border border-rose-200 rounded-lg hover:bg-rose-600 hover:text-white transition-colors" title="Delete"><i class="fa-solid fa-trash-can text-xs"></i></a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="py-8 text-center text-organicBrown/50 font-light">
+                                    No clothing items found in database. Create one to display on the landing page!
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: CUSTOMER INQUIRIES -->
+            <div id="inquiries-tab" class="p-6 hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-lightBeige text-xs font-semibold text-organicBrown/60 uppercase tracking-wider">
+                                <th class="py-3 px-4">Sender Details</th>
+                                <th class="py-3 px-4">Phone Number</th>
+                                <th class="py-3 px-4">Inquiry Message</th>
+                                <th class="py-3 px-4">Received Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-lightBeige text-sm">
+                            {% for msg in contact_messages %}
+                            <tr class="hover:bg-lightBeige/25 transition-colors">
+                                <td class="py-4 px-4">
+                                    <div class="font-semibold text-darkGreen font-outfit">{{ msg.name }}</div>
+                                    <div class="text-xs text-herbalGreen">{{ msg.email }}</div>
+                                </td>
+                                <td class="py-4 px-4 font-mono text-xs text-organicBrown/80">{{ msg.phone }}</td>
+                                <td class="py-4 px-4 text-xs text-organicBrown/85 leading-relaxed max-w-sm">{{ msg.message }}</td>
+                                <td class="py-4 px-4 text-xs text-organicBrown/50">{{ msg.created_at|date:"M d, Y - H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="py-8 text-center text-organicBrown/50 font-light">
+                                    No customer inquiries received yet.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: CUSTOMER ORDERS -->
+            <div id="orders-tab" class="p-6 hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-lightBeige text-xs font-semibold text-organicBrown/60 uppercase tracking-wider">
+                                <th class="py-3 px-4">Order ID / Date</th>
+                                <th class="py-3 px-4">Customer Details</th>
+                                <th class="py-3 px-4">Shipping Address</th>
+                                <th class="py-3 px-4">Items Purchase Details</th>
+                                <th class="py-3 px-4">Payment Verification</th>
+                                <th class="py-3 px-4 text-right">Fulfillment Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-lightBeige text-sm">
+                            {% for order in orders %}
+                            <tr class="hover:bg-lightBeige/25 transition-colors">
+                                <td class="py-4 px-4">
+                                    <div class="font-semibold text-darkGreen font-mono text-xs" title="{{ order.order_id }}">
+                                        #{{ order.order_id|stringformat:"s"|slice:":8" }}
+                                    </div>
+                                    <div class="text-[10px] text-organicBrown/50">{{ order.created_at|date:"M d, Y - H:i" }}</div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="font-semibold text-darkGreen font-outfit">{{ order.customer_name }}</div>
+                                    <div class="text-xs text-herbalGreen font-mono">{{ order.phone_number }}</div>
+                                </td>
+                                <td class="py-4 px-4 text-xs text-organicBrown/70 max-w-xs leading-relaxed">
+                                    {{ order.shipping_address }}
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="space-y-1">
+                                        {% for item in order.items.all %}
+                                        <div class="text-xs text-organicBrown/80 flex items-center justify-between space-x-4">
+                                            <span>{{ item.product_name }}</span>
+                                            <span class="text-darkGreen font-mono font-medium">x{{ item.quantity }}</span>
+                                        </div>
+                                        {% endfor %}
+                                        <div class="pt-1 border-t border-lightBeige/80 flex justify-between font-mono font-bold text-xs text-darkGreen">
+                                            <span>Total:</span>
+                                            <span>₹{{ order.total_amount }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="text-xs font-semibold text-organicBrown/80">UTR Number:</div>
+                                    <div class="font-mono text-xs font-bold text-herbalGreen tracking-wider bg-herbalGreen/5 px-2 py-1 rounded border border-herbalGreen/10 inline-block mt-0.5">{{ order.utr_number }}</div>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <form action="{% url 'order_update_status' order.pk %}" method="POST" class="inline-block">
+                                        {% csrf_token %}
+                                        <select name="status" onchange="this.form.submit()" class="bg-cream border border-organicBrown/20 text-xs rounded-xl px-3 py-2 text-darkGreen font-bold focus:outline-none focus:border-herbalGreen cursor-pointer shadow-sm">
+                                            <option value="pending" {% if order.status == 'pending' %}selected{% endif %} class="text-rose-600 font-semibold">Awaiting Verification</option>
+                                            <option value="confirmed" {% if order.status == 'confirmed' %}selected{% endif %} class="text-indigo-600 font-semibold">Confirmed</option>
+                                            <option value="processing" {% if order.status == 'processing' %}selected{% endif %} class="text-amber-600 font-semibold">Processing & Packing</option>
+                                            <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %} class="text-emerald-600 font-semibold">Dispatched</option>
+                                        </select>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="py-8 text-center text-organicBrown/50 font-light">
+                                    No customer orders placed yet.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {% if user.role == 'admin' or user.is_superuser %}
+            <!-- TAB: STAFF MANAGEMENT -->
+            <div id="staff-tab" class="p-6 hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Left: Inline Staff Creation Form -->
+                    <div class="lg:col-span-1 bg-lightBeige/30 border border-organicBrown/10 rounded-2xl p-6 space-y-4">
+                        <h3 class="text-lg font-outfit font-bold text-darkGreen">
+                            <i class="fa-solid fa-user-plus text-herbalGreen mr-2"></i>Register New Staff
+                        </h3>
+                        <form action="{% url 'employee_create' %}" method="POST" class="space-y-4">
+                            {% csrf_token %}
+                            <div>
+                                <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Username *</label>
+                                {{ employee_form.username }}
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">First Name</label>
+                                    {{ employee_form.first_name }}
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Last Name</label>
+                                    {{ employee_form.last_name }}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Email Address *</label>
+                                {{ employee_form.email }}
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Temporary Password *</label>
+                                {{ employee_form.password }}
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Employee ID *</label>
+                                    {{ employee_form.employee_id }}
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Designation</label>
+                                    {{ employee_form.designation }}
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md shadow-herbalGreen/15 flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Create Profile</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Right: Employee List -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <h3 class="text-lg font-outfit font-bold text-darkGreen">
+                            <i class="fa-solid fa-users text-herbalGreen mr-2"></i>Active Team Members
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-lightBeige text-xs font-semibold text-organicBrown/60 uppercase tracking-wider">
+                                        <th class="py-3 px-4">Employee ID</th>
+                                        <th class="py-3 px-4">Name</th>
+                                        <th class="py-3 px-4">Username</th>
+                                        <th class="py-3 px-4">Designation</th>
+                                        <th class="py-3 px-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-lightBeige text-sm">
+                                    {% for emp in employees %}
+                                    <tr class="hover:bg-lightBeige/25 transition-colors">
+                                        <td class="py-4 px-4 font-mono font-semibold text-xs text-softGold">
+                                            {{ emp.employee_id }}
+                                        </td>
+                                        <td class="py-4 px-4 font-medium text-darkGreen font-outfit">
+                                            {% if emp.user.first_name or emp.user.last_name %}
+                                                {{ emp.user.first_name }} {{ emp.user.last_name }}
+                                            {% else %}
+                                                {{ emp.user.username }}
+                                            {% endif %}
+                                        </td>
+                                        <td class="py-4 px-4 text-xs text-organicBrown/70">
+                                            {{ emp.user.username }}
+                                        </td>
+                                        <td class="py-4 px-4 text-xs text-organicBrown/70">
+                                            {{ emp.designation|default:"Wellness Associate" }}
+                                        </td>
+                                        <td class="py-4 px-4 text-right">
+                                            <a href="{% url 'employee_delete' emp.pk %}" class="inline-flex items-center justify-center w-8 h-8 bg-rose-50 text-rose-600 border border-rose-200 rounded-lg hover:bg-rose-600 hover:text-white transition-colors" title="Revoke Profile">
+                                                <i class="fa-solid fa-user-minus text-xs"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="py-8 text-center text-organicBrown/50 font-light">
+                                            No active staff members found.
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: CUSTOMER PROFILES -->
+            <div id="customer-profiles-tab" class="p-6 hidden">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-outfit font-bold text-darkGreen">
+                            <i class="fa-solid fa-users text-herbalGreen mr-2"></i>Verified Customer Profiles
+                        </h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-lightBeige text-xs font-semibold text-organicBrown/60 uppercase tracking-wider">
+                                    <th class="py-3 px-4">Customer Username</th>
+                                    <th class="py-3 px-4">Verified Phone</th>
+                                    <th class="py-3 px-4">Default Shipping Address</th>
+                                    <th class="py-3 px-4">Profile Created At</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-lightBeige text-sm">
+                                {% for cp in customer_profiles %}
+                                <tr class="hover:bg-lightBeige/25 transition-colors">
+                                    <td class="py-4 px-4 font-medium text-darkGreen">
+                                        {{ cp.user.username }}
+                                    </td>
+                                    <td class="py-4 px-4 font-mono text-organicBrown/70">
+                                        {{ cp.phone_number }}
+                                    </td>
+                                    <td class="py-4 px-4 text-organicBrown/70">
+                                        {{ cp.shipping_address|default:"Not provided yet" }}
+                                    </td>
+                                    <td class="py-4 px-4 text-xs text-organicBrown/50">
+                                        {{ cp.created_at|date:"M d, Y, H:i" }}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="py-8 text-center text-organicBrown/50 font-light">
+                                        No customer profiles registered yet.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        {% else %}
+        <!-- REGULAR USER DASHBOARD -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+            <!-- Left Info Panel -->
+            <div class="md:col-span-4 bg-cream border border-organicBrown/10 rounded-2xl p-6 space-y-6 shadow-sm">
+                <!-- Avatar + Identity -->
+                <div class="text-center space-y-3">
+                    <div class="relative w-20 h-20 mx-auto">
+                        {% if profile and profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" alt="Profile Avatar" class="w-20 h-20 rounded-full object-cover border-2 border-softGold/40 shadow-sm">
+                        {% else %}
+                        <div class="w-20 h-20 bg-herbalGreen/10 text-herbalGreen border-2 border-herbalGreen/15 rounded-full flex items-center justify-center text-2xl font-bold font-outfit">
+                            {{ user.username|make_list|first|upper }}
+                        </div>
+                        {% endif %}
+                        <label for="id_profile_image" class="absolute bottom-0 right-0 w-6 h-6 bg-softGold rounded-full flex items-center justify-center cursor-pointer shadow hover:bg-darkGreen transition-colors" title="Change avatar">
+                            <i class="fa-solid fa-camera text-[9px] text-darkGreen"></i>
+                        </label>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-outfit font-bold text-darkGreen">{{ user.get_full_name|default:user.username }}</h3>
+                        <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#F2EBE5] text-[#5C4033] dark:bg-lightBeige/15 dark:text-organicBrown border border-organicBrown/15">Customer Account</span>
+                    </div>
+                </div>
+
+                <!-- Account Details -->
+                <div class="border-t border-lightBeige pt-4 space-y-3 text-xs">
+                    <div class="flex justify-between">
+                        <span class="text-organicBrown/60">Email:</span>
+                        <span class="font-medium text-darkGreen">{{ user.email|default:"Not provided" }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-organicBrown/60">Member Since:</span>
+                        <span class="font-medium text-darkGreen">{{ user.date_joined|date:"M d, Y" }}</span>
+                    </div>
+                    {% if profile %}
+                    <div class="flex justify-between">
+                        <span class="text-organicBrown/60">Phone:</span>
+                        <span class="font-medium text-darkGreen font-mono">{{ profile.phone_number }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Profile Update Form -->
+                {% if profile %}
+                <div class="border-t border-lightBeige pt-4 space-y-4">
+                    <h4 class="text-xs font-bold font-outfit text-darkGreen uppercase tracking-wider flex items-center space-x-1.5">
+                        <i class="fa-solid fa-id-card text-herbalGreen"></i>
+                        <span>Update Profile</span>
+                    </h4>
+                    <form id="profile-form-container" method="POST" action="{% url 'update_profile' %}" enctype="multipart/form-data" class="space-y-4">
+                        {% csrf_token %}
+
+                        <!-- Avatar Upload -->
+                        <div>
+                            <label class="block text-[10px] font-semibold text-organicBrown/70 uppercase tracking-wider mb-1.5 font-outfit">Profile Photo</label>
+                            <div class="django-file-wrapper">
+                                {{ profile_form.profile_image }}
+                            </div>
+                            {% if profile.profile_image %}
+                            <p class="text-[10px] text-herbalGreen mt-1"><i class="fa-solid fa-check-circle mr-1"></i>Avatar set</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- ── Full Name & Email ── -->
+                        <div class="mb-3">
+                            <label class="block text-xs font-bold uppercase text-[#526E56] mb-1 font-outfit">Full Name</label>
+                            <input type="text" name="first_name" value="{{ request.user.first_name }}" placeholder="Your full name"
+                                class="w-full p-2 rounded-lg bg-[#FBF9F6] border border-[#526E56]/30 text-[#111111] text-xs focus:outline-none focus:border-herbalGreen transition-colors">
+                        </div>
+                        <div class="mb-3">
+                            <label class="block text-xs font-bold uppercase text-[#526E56] mb-1 font-outfit">Email Address</label>
+                            <input type="email" name="email" value="{{ request.user.email }}" placeholder="your@email.com"
+                                class="w-full p-2 rounded-lg bg-[#FBF9F6] border border-[#526E56]/30 text-[#111111] text-xs focus:outline-none focus:border-herbalGreen transition-colors">
+                        </div>
+
+                        <!-- Default Shipping Address -->
+                        <div>
+                            <label class="block text-[10px] font-semibold text-organicBrown/70 uppercase tracking-wider mb-1.5 font-outfit">Default Shipping Address</label>
+                            {{ profile_form.default_address }}
+                            <p class="text-[10px] text-organicBrown/50 mt-1">Saved here for 1-click checkout autofill.</p>
+                        </div>
+
+                        <button type="submit" class="w-full py-2.5 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold text-xs rounded-xl transition-all shadow-sm flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
+                            <span>Save Profile</span>
+                        </button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="border-t border-lightBeige pt-4">
+                    <p class="text-[10px] text-organicBrown/55 text-center font-light">Verify your phone number via Customer Login to unlock profile management.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Right Order Tracking Workspace -->
+            <div class="md:col-span-8 space-y-6">
+                <div class="bg-cream border border-organicBrown/10 rounded-2xl p-6 shadow-sm space-y-6">
+                    <div class="border-b border-lightBeige pb-4 flex justify-between items-center">
+                        <h2 class="text-xl font-outfit font-extrabold text-darkGreen">
+                            <i class="fa-solid fa-truck-fast text-herbalGreen mr-2"></i>Order Tracking Log
+                        </h2>
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-herbalGreen/10 text-herbalGreen border border-herbalGreen/20 font-mono">
+                            {{ orders|length }} Registered Order(s)
+                        </span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-lightBeige text-xs font-semibold text-organicBrown/60 uppercase tracking-wider">
+                                    <th class="py-3 px-4">Order ID</th>
+                                    <th class="py-3 px-4">Date</th>
+                                    <th class="py-3 px-4">Items</th>
+                                    <th class="py-3 px-4">Total Amount</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4 text-right">Invoice</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-lightBeige text-sm">
+                                {% for order in orders %}
+                                <tr class="hover:bg-lightBeige/25 transition-colors">
+                                    <td class="py-4 px-4 font-mono font-bold text-darkGreen text-xs">
+                                        {{ order.order_id|stringformat:"s"|slice:":8"|upper }}...
+                                    </td>
+                                    <td class="py-4 px-4 text-xs text-organicBrown/70">
+                                        {{ order.created_at|date:"d M Y" }}
+                                    </td>
+                                    <td class="py-4 px-4 text-xs text-organicBrown/80">
+                                        <div class="space-y-0.5">
+                                            {% for item in order.items.all %}
+                                            <div>{{ item.product_name }} <span class="text-organicBrown/50">(x{{ item.quantity }})</span></div>
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4 font-mono text-xs text-darkGreen font-semibold">
+                                        ₹{{ order.total_amount }}
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        {% if order.status == 'pending' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                            Awaiting Verification
+                                        </span>
+                                        {% elif order.status == 'confirmed' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                            Confirmed
+                                        </span>
+                                        {% elif order.status == 'processing' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                            Processing
+                                        </span>
+                                        {% elif order.status == 'shipped' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            Dispatched
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-4 px-4 text-right">
+                                        {% if order.invoice %}
+                                        <a href="{% url 'download_invoice' order.pk %}" class="inline-flex items-center justify-center px-2.5 py-1.5 bg-herbalGreen text-cream rounded-lg hover:bg-darkGreen transition-colors text-xs font-semibold space-x-1">
+                                            <i class="fa-solid fa-file-arrow-down text-[10px]"></i>
+                                            <span>Invoice</span>
+                                        </a>
+                                        {% else %}
+                                        <span class="text-xs text-organicBrown/40 font-light">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="py-8 text-center text-organicBrown/50 font-light">
+                                        No order logs found for your verified mobile number.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{% if user.role in 'admin,employee' or user.is_superuser %}
+<script>
+    function switchTab(tabId) {
+        // Toggle tabs visibility
+        const tabs = ['products-tab', 'clothing-tab', 'orders-tab', 'inquiries-tab', 'staff-tab', 'customer-profiles-tab'];
+        tabs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
+        });
+        const targetTab = document.getElementById(tabId);
+        if (targetTab) targetTab.classList.remove('hidden');
+        
+        // Reset tabs style
+        const buttons = {
+            'products-tab': document.getElementById('products-tab-btn'),
+            'clothing-tab': document.getElementById('clothing-tab-btn'),
+            'orders-tab': document.getElementById('orders-tab-btn'),
+            'inquiries-tab': document.getElementById('inquiries-tab-btn'),
+            'staff-tab': document.getElementById('staff-tab-btn'),
+            'customer-profiles-tab': document.getElementById('customer-profiles-tab-btn')
+        };
+        
+        for (const [id, btn] of Object.entries(buttons)) {
+            if (btn) {
+                if (id === tabId) {
+                    btn.className = "px-6 py-4 font-outfit font-bold text-sm text-darkGreen border-b-2 border-herbalGreen bg-cream focus:outline-none transition-all";
+                } else {
+                    btn.className = "px-6 py-4 font-outfit font-semibold text-sm text-organicBrown/60 border-b-2 border-transparent hover:text-darkGreen focus:outline-none transition-all";
+                }
+            }
+        }
+        
+        // Store in localStorage
+        localStorage.setItem('active-dashboard-tab', tabId);
+    }
+
+    // On load, switch to persisted tab or default
+    document.addEventListener('DOMContentLoaded', () => {
+        const persistedTab = localStorage.getItem('active-dashboard-tab');
+        if (persistedTab && document.getElementById(persistedTab + '-btn')) {
+            switchTab(persistedTab);
+        } else {
+            switchTab('products-tab');
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

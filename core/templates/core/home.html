@@ -1,0 +1,939 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}KaaNuRO Group - Natural Wellness & Heart Care{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section id="home" class="relative bg-darkGreen text-cream py-24 md:py-32 overflow-hidden flex items-center">
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:16px_16px]"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <!-- Hero Text -->
+            <div class="lg:col-span-7 space-y-8 text-left">
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-herbalGreen/50 text-softGold border border-softGold/30 uppercase tracking-widest font-outfit">
+                    <i class="fa-solid fa-leaf mr-1.5"></i> 100% Organic & Pure
+                </span>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-outfit font-extrabold text-cream leading-tight">
+                    Empower Your <span class="text-softGold">Heart First</span>, and Let the Natural Glow Follow Gracefully
+                </h1>
+                <p class="text-cream/80 text-lg sm:text-xl font-light leading-relaxed max-w-2xl">
+                    Discover hand-selected herbal blends and wellness formulas crafted in Udaipurwati, Jhunjhunu, Rajasthan. Pure health, simplified.
+                </p>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#products" class="px-8 py-4 bg-softGold text-darkGreen dark:text-cream font-outfit font-bold rounded-xl hover:bg-cream hover:text-darkGreen transition-all text-center shadow-lg shadow-softGold/20 transform hover:-translate-y-0.5">
+                        Shop Products <i class="fa-solid fa-chevron-right ml-2 text-sm"></i>
+                    </a>
+                    <a href="#about" class="px-8 py-4 border border-cream/35 text-cream font-outfit font-semibold rounded-xl hover:bg-cream/10 transition-all text-center">
+                        Our Philosophy
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Hero Decorative Card -->
+            <div class="lg:col-span-5 relative">
+                <div class="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-softGold to-herbalGreen opacity-30 blur-lg"></div>
+                <div class="relative bg-herbalGreen/20 border border-cream/15 rounded-2xl p-8 backdrop-blur-md space-y-6">
+                    <div class="flex justify-between items-start">
+                        <div class="w-12 h-12 bg-softGold/10 rounded-lg flex items-center justify-center border border-softGold/35">
+                            <i class="fa-solid fa-heart-pulse text-softGold text-xl"></i>
+                        </div>
+                        <span class="text-xs text-cream/55 font-light">Trusted Rajasthan Quality</span>
+                    </div>
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-outfit font-bold text-cream">The KaaNuRO Promise</h3>
+                        <p class="text-sm text-cream/75 leading-relaxed font-light">
+                            Traditional Rajasthani herbal remedies backed by modern organic validation. We refine local wellness secrets to optimize your cardiovascular health and elevate your skin's vitality.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-cream/10 flex items-center justify-between">
+                        <div class="flex -space-x-2">
+                            <div class="w-8 h-8 rounded-full bg-cream/25 border-2 border-darkGreen flex items-center justify-center text-[10px] font-bold">U</div>
+                            <div class="w-8 h-8 rounded-full bg-cream/35 border-2 border-darkGreen flex items-center justify-center text-[10px] font-bold">R</div>
+                            <div class="w-8 h-8 rounded-full bg-cream/45 border-2 border-darkGreen flex items-center justify-center text-[10px] font-bold">J</div>
+                        </div>
+                        <span class="text-xs text-softGold font-medium"><i class="fa-solid fa-users mr-1"></i> 5,000+ Happy Customers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ANIMATED STATISTICS MATRIX — Scroll-Triggered Counter Grid
+     ═══════════════════════════════════════════════════════════ -->
+<section id="stats-matrix" class="py-20 relative overflow-hidden" style="background: linear-gradient(135deg, #FBF9F6 0%, #F2EBE5 60%, #EDE4DC 100%);">
+    <!-- Subtle botanical pattern overlay -->
+    <div class="absolute inset-0 opacity-[0.035] pointer-events-none" style="background-image: radial-gradient(circle at 1px 1px, #526E56 1px, transparent 0); background-size: 28px 28px;"></div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <!-- Section Header -->
+        <div class="text-center mb-14 space-y-3">
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-[10px] font-bold bg-[#526E56]/10 text-[#526E56] border border-[#526E56]/20 uppercase tracking-widest font-outfit">
+                <span class="mr-1.5">🌿</span> Our Impact in Numbers
+            </span>
+            <h2 class="text-3xl sm:text-4xl font-outfit font-extrabold" style="color: #2A442E;">
+                Trusted by Thousands, <span style="color: #2A442E;">Proven by Nature</span>
+            </h2>
+            <p class="text-sm font-light max-w-xl mx-auto" style="color: #111111;">
+                Over a decade of dedication to purity, wellness, and Ayurvedic excellence — measured in the milestones that matter.
+            </p>
+        </div>
+
+        <!-- 4-Column Stats Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <!-- Card 1: Happy Customers -->
+            <div class="animate-stat-card group relative bg-white/60 backdrop-blur-md border rounded-2xl p-8 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#526E56]/10 cursor-default"
+                 style="border-color: #526E56; border-width: 1px;"
+                 data-target="5000"
+                 data-suffix="+">
+                <!-- Glow ring on hover -->
+                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style="background: radial-gradient(ellipse at 50% 0%, rgba(82,110,86,0.08) 0%, transparent 70%);"></div>
+                
+                <div class="relative z-10 space-y-4">
+                    <!-- Icon Badge -->
+                    <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-sm" style="background: linear-gradient(135deg, rgba(82,110,86,0.12) 0%, rgba(82,110,86,0.06) 100%); border: 1px solid rgba(82,110,86,0.2);">
+                        👥
+                    </div>
+                    <!-- Animated Counter Value -->
+                    <div class="space-y-1">
+                        <div class="text-4xl sm:text-5xl font-outfit font-extrabold" style="color: #2A442E;">
+                            <span class="counter-value">0+</span>
+                        </div>
+                        <p class="text-sm font-outfit font-semibold leading-snug" style="color: #111111;">Happy Customers</p>
+                        <p class="text-[10px] font-light" style="color: #111111;">Across India & growing</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Product Range -->
+            <div class="animate-stat-card group relative bg-white/60 backdrop-blur-md border rounded-2xl p-8 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#526E56]/10 cursor-default"
+                 style="border-color: #526E56; border-width: 1px;"
+                 data-target="15"
+                 data-suffix="+">
+                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style="background: radial-gradient(ellipse at 50% 0%, rgba(82,110,86,0.08) 0%, transparent 70%);"></div>
+                
+                <div class="relative z-10 space-y-4">
+                    <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-sm" style="background: linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.06) 100%); border: 1px solid rgba(212,175,55,0.25);">
+                        🍃
+                    </div>
+                    <div class="space-y-1">
+                        <div class="text-4xl sm:text-5xl font-outfit font-extrabold" style="color: #2A442E;">
+                            <span class="counter-value">0+</span>
+                        </div>
+                        <p class="text-sm font-outfit font-semibold leading-snug" style="color: #111111;">Product Range</p>
+                        <p class="text-[10px] font-light" style="color: #111111;">Herbal blends & wellness</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Certifications -->
+            <div class="animate-stat-card group relative bg-white/60 backdrop-blur-md border rounded-2xl p-8 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#526E56]/10 cursor-default"
+                 style="border-color: #526E56; border-width: 1px;"
+                 data-target="3"
+                 data-suffix="">
+                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style="background: radial-gradient(ellipse at 50% 0%, rgba(82,110,86,0.08) 0%, transparent 70%);"></div>
+                
+                <div class="relative z-10 space-y-4">
+                    <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-sm" style="background: linear-gradient(135deg, rgba(82,110,86,0.12) 0%, rgba(82,110,86,0.06) 100%); border: 1px solid rgba(82,110,86,0.2);">
+                        🏅
+                    </div>
+                    <div class="space-y-1">
+                        <div class="text-4xl sm:text-5xl font-outfit font-extrabold" style="color: #2A442E;">
+                            <span class="counter-value">0</span>
+                        </div>
+                        <p class="text-sm font-outfit font-semibold leading-snug" style="color: #111111;">Certifications</p>
+                        <p class="text-[10px] font-light" style="color: #111111;">ISO, AYUSH & more</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Natural Ingredients -->
+            <div class="animate-stat-card group relative bg-white/60 backdrop-blur-md border rounded-2xl p-8 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#526E56]/10 cursor-default"
+                 style="border-color: #526E56; border-width: 1px;"
+                 data-target="100"
+                 data-suffix="%">
+                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style="background: radial-gradient(ellipse at 50% 0%, rgba(82,110,86,0.08) 0%, transparent 70%);"></div>
+                
+                <div class="relative z-10 space-y-4">
+                    <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-sm" style="background: linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.06) 100%); border: 1px solid rgba(212,175,55,0.25);">
+                        🌱
+                    </div>
+                    <div class="space-y-1">
+                        <div class="text-4xl sm:text-5xl font-outfit font-extrabold" style="color: #2A442E;">
+                            <span class="counter-value">0%</span>
+                        </div>
+                        <p class="text-sm font-outfit font-semibold leading-snug" style="color: #111111;">Natural Ingredients</p>
+                        <p class="text-[10px] font-light" style="color: #111111;">Zero synthetics, ever</p>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end grid -->
+    </div><!-- end container -->
+
+    <!-- ── Intersection Observer Counter Engine ───────────────────────── -->
+    <script>
+    (function() {
+        const animOptions = { threshold: 0.25 };
+        const triggered = new WeakSet();
+
+        const counterRunner = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !triggered.has(entry.target)) {
+                    triggered.add(entry.target);
+                    const card        = entry.target;
+                    const targetVal   = parseInt(card.getAttribute('data-target'));
+                    const suffixStr   = card.getAttribute('data-suffix') || '';
+                    const counterText = card.querySelector('.counter-value');
+
+                    let currentVal       = 0;
+                    const animationMs    = 1500;
+                    const refreshInterval = 1000 / 60;
+                    const frameSteps     = Math.round(animationMs / refreshInterval);
+                    const incrementalStep = targetVal / frameSteps;
+                    let elapsedFrames    = 0;
+
+                    const updateTick = () => {
+                        elapsedFrames++;
+                        currentVal += incrementalStep;
+                        if (elapsedFrames >= frameSteps) {
+                            counterText.textContent = targetVal.toLocaleString() + suffixStr;
+                        } else {
+                            counterText.textContent = Math.floor(currentVal).toLocaleString() + suffixStr;
+                            requestAnimationFrame(updateTick);
+                        }
+                    };
+                    requestAnimationFrame(updateTick);
+                    observer.unobserve(card);
+                }
+            });
+        }, animOptions);
+
+        document.querySelectorAll('.animate-stat-card').forEach(c => counterRunner.observe(c));
+    })();
+    </script>
+</section>
+<!-- ═══════════════════════════════════════════════════════════
+     END ANIMATED STATISTICS MATRIX
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- Metric Highlights Section -->
+<section class="bg-lightBeige py-12 border-y border-[#5C4033]/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <!-- Metric 1 -->
+            <div class="p-6 space-y-2">
+                <div class="text-4xl md:text-5xl font-outfit font-extrabold text-darkGreen">
+                    <span id="metric-products">{{ total_products }}</span>
+                </div>
+                <div class="text-sm font-semibold text-herbalGreen uppercase tracking-wider font-outfit">Active Herbal Products</div>
+                <p class="text-xs text-organicBrown/60 font-light">100% natural, freshly packed</p>
+            </div>
+            
+            <!-- Metric 2 -->
+            <div class="p-6 space-y-2 border-y md:border-y-0 md:border-x border-[#5C4033]/10">
+                <div class="text-4xl md:text-5xl font-outfit font-extrabold text-darkGreen">
+                    <span>{{ certificates_count }}+</span>
+                </div>
+                <div class="text-sm font-semibold text-herbalGreen uppercase tracking-wider font-outfit">Quality Certifications</div>
+                <p class="text-xs text-organicBrown/60 font-light">ISO, AYUSH compliant guidelines</p>
+            </div>
+            
+            <!-- Metric 3 -->
+            <div class="p-6 space-y-2">
+                <div class="text-4xl md:text-5xl font-outfit font-extrabold text-darkGreen">
+                    <span>{{ years_experience }}+</span>
+                </div>
+                <div class="text-sm font-semibold text-herbalGreen uppercase tracking-wider font-outfit">Years of Practice</div>
+                <p class="text-xs text-organicBrown/60 font-light">Guiding wellness from Udaipurwati</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About / Philosophy Section -->
+<section id="about" class="py-24 bg-cream">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+        <!-- Header -->
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+            <span class="text-xs font-bold uppercase tracking-wider text-herbalGreen font-outfit">Who We Are</span>
+            <h2 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen">
+                Deeply Rooted in Purity, Sourced Directly from Nature
+            </h2>
+            <p class="text-organicBrown/80 text-lg leading-relaxed font-light">
+                KaaNuRO Group is a premier herbal wellness enterprise based in Udaipurwati, Rajasthan. We operate with a singular mission: to provide high-efficacy organic formulations that protect your cardiovascular health and naturally nurture your skin.
+            </p>
+        </div>
+        
+        <!-- Horizontal Square Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <!-- Card 1: Our Origin -->
+            <div class="bg-cream border border-softGold/25 rounded-2xl p-8 flex flex-col justify-between aspect-square hover:-translate-y-2 hover:shadow-xl hover:border-herbalGreen/30 transition-all duration-300 group">
+                <div class="flex justify-between items-start">
+                    <span class="text-[10px] font-bold bg-herbalGreen/10 text-herbalGreen px-2.5 py-1 rounded-full uppercase tracking-wider font-outfit">EST. 2011</span>
+                    <div class="w-10 h-10 rounded-xl bg-herbalGreen/5 flex items-center justify-center text-herbalGreen group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-xl font-outfit font-bold text-darkGreen leading-tight">Udaipurwati, Rajasthan</h3>
+                    <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
+                        Our roots run deep in the organic farmlands of Jhunjhunu, where soil richness and clean air naturally yield standard therapeutic ingredients.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-[#5C4033]/10 text-xs font-semibold text-darkGreen/90 flex items-center space-x-2">
+                    <i class="fa-solid fa-wheat-awn text-softGold"></i>
+                    <span>Pure Agricultural Origin</span>
+                </div>
+            </div>
+
+            <!-- Card 2: Heart First Philosophy -->
+            <div class="bg-cream border border-softGold/25 rounded-2xl p-8 flex flex-col justify-between aspect-square hover:-translate-y-2 hover:shadow-xl hover:border-herbalGreen/30 transition-all duration-300 group">
+                <div class="flex justify-between items-start">
+                    <span class="text-[10px] font-bold bg-[#D4AF37]/10 text-[#D4AF37] px-2.5 py-1 rounded-full uppercase tracking-wider font-outfit">PHILOSOPHY</span>
+                    <div class="w-10 h-10 rounded-xl bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-xl font-outfit font-bold text-darkGreen leading-tight">Heart-First Care</h3>
+                    <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
+                        We target cardiac vitality as the baseline of overall life energy and natural skin glow. Purity that heals you from within.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-[#5C4033]/10 text-xs font-semibold text-darkGreen/90 flex items-center space-x-2">
+                    <i class="fa-solid fa-leaf text-softGold"></i>
+                    <span>Internal to External Radiance</span>
+                </div>
+            </div>
+
+            <!-- Card 3: Sourcing -->
+            <div class="bg-cream border border-softGold/25 rounded-2xl p-8 flex flex-col justify-between aspect-square hover:-translate-y-2 hover:shadow-xl hover:border-herbalGreen/30 transition-all duration-300 group">
+                <div class="flex justify-between items-start">
+                    <span class="text-[10px] font-bold bg-darkGreen/10 text-darkGreen px-2.5 py-1 rounded-full uppercase tracking-wider font-outfit">SOURCING</span>
+                    <div class="w-10 h-10 rounded-xl bg-darkGreen/10 flex items-center justify-center text-darkGreen group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-hand-holding-hand"></i>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-xl font-outfit font-bold text-darkGreen leading-tight">Ethical Sourcing</h3>
+                    <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
+                        We source fresh leaves and roots at the peak of their therapeutic potency, working directly with organic local farmers.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-[#5C4033]/10 text-xs font-semibold text-darkGreen/90 flex items-center space-x-2">
+                    <i class="fa-solid fa-shield-halved text-softGold"></i>
+                    <span>Quality Standard Sourced</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blockquote Quote -->
+        <div class="max-w-2xl mx-auto text-center pt-4">
+            <blockquote class="italic text-sm text-[#5C4033]/85 bg-[#F2EBE5]/50 border-l-4 border-softGold py-4 px-6 rounded-r-2xl">
+                "Natural glow is not painted; it is cultivated from within by feeding the heart pure, life-affirming elements."
+            </blockquote>
+        </div>
+    </div>
+</section>
+
+<!-- Our Products Section -->
+<section id="products" class="py-24 bg-lightBeige">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+            <span class="text-xs font-bold uppercase tracking-wider text-herbalGreen font-outfit">Dynamic Catalog</span>
+            <h2 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen">
+                Discover Our Natural Remedies
+            </h2>
+            <p class="text-organicBrown/70 text-sm font-light">
+                Carefully prepared blends designed to support heart health, nourish skin, and bring balance to your busy life.
+            </p>
+        </div>
+
+        <!-- Products Grid (Unified Layout - aspect-square) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for product in products %}
+            <!-- Product Card -->
+            <div class="bg-cream border border-lightBeige rounded-2xl overflow-hidden aspect-square flex flex-col justify-between p-6 hover:shadow-lg hover:border-softGold/50 transition-all duration-300 cursor-pointer product-card-trigger"
+                 data-id="prod_{{ product.id }}"
+                 data-name="{{ product.name }}"
+                 data-price="{{ product.price }}"
+                 data-image="{% if product.image %}{{ product.image.url }}{% endif %}"
+                 data-media="{{ product.media_list_json }}"
+                 data-description="{{ product.description|escapejs }}"
+                 data-stock="{% if product.id|divisibleby:3 %}Low Stock{% else %}In Stock{% endif %}"
+                 data-type="ayurveda"
+                 data-subtitle="{{ product.subtitle_tagline|escapejs }}"
+                 data-quantity="{{ product.total_quantity_info|default:'100g'|escapejs }}">
+                <!-- Top Section: Category/Tagline & Quantity -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-start">
+                        {% if product.subtitle_tagline %}
+                        <span class="text-[9px] font-bold bg-softGold/10 text-softGold border border-softGold/20 px-2 py-0.5 rounded-md uppercase tracking-wider font-outfit">
+                            {{ product.subtitle_tagline }}
+                        </span>
+                        {% endif %}
+                        <span class="text-[9px] text-organicBrown/50 font-medium font-mono">
+                            {{ product.total_quantity_info|default:"100g" }}
+                        </span>
+                    </div>
+
+                    <div class="w-full h-24 flex items-center justify-center overflow-hidden bg-lightBeige/30 rounded-xl border border-lightBeige">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-cover h-full w-full rounded-lg">
+                        {% else %}
+                        <svg class="w-16 h-16 text-herbalGreen" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M100 85 C140 55, 150 25, 100 15 C50 25, 60 55, 100 85 Z" fill="currentColor" fill-opacity="0.12" stroke="#D4AF37" stroke-width="1"/>
+                        </svg>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Middle Section: Product Name and Description Snippet -->
+                <div class="space-y-2 flex-grow flex flex-col justify-center">
+                    <h3 class="text-base font-outfit font-bold text-darkGreen leading-tight truncate">
+                        {{ product.name }}
+                    </h3>
+                    <p class="text-[11px] text-organicBrown/70 font-light line-clamp-2 leading-relaxed">
+                        {{ product.description }}
+                    </p>
+                </div>
+
+                <!-- Bottom Section: Pricing / CTA -->
+                <div class="pt-4 border-t border-lightBeige flex justify-between items-center">
+                    <span class="text-xs font-mono font-bold text-herbalGreen">₹{{ product.price }}</span>
+                    <span class="px-3.5 py-1.5 bg-darkGreen text-cream text-[10px] font-outfit font-bold rounded-lg hover:bg-herbalGreen transition-all uppercase tracking-wider select-none">
+                        View Details
+                    </span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full bg-cream border border-lightBeige rounded-2xl p-12 text-center space-y-4">
+                <i class="fa-solid fa-leaf text-5xl text-herbalGreen/30"></i>
+                <h3 class="text-xl font-outfit font-bold text-darkGreen">No products added yet</h3>
+                <p class="text-sm text-organicBrown/60 font-light max-w-md mx-auto">
+                    We are currently setting up our inventory. Contact our wellness associates to learn more about our upcoming releases.
+                </p>
+                <a href="#contact" class="inline-block px-6 py-2.5 bg-darkGreen text-cream font-outfit font-bold rounded-lg text-xs">Send Inquiry</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Breakdown Grid (Value Props) -->
+<section class="py-24 bg-cream border-t border-[#5C4033]/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <!-- Feature 1 -->
+            <div class="bg-lightBeige border border-organicBrown/5 p-8 rounded-2xl space-y-4 transition-transform hover:-translate-y-1">
+                <div class="w-12 h-12 bg-softGold/10 rounded-xl flex items-center justify-center border border-softGold/25">
+                    <i class="fa-solid fa-heart-pulse text-softGold text-xl"></i>
+                </div>
+                <h3 class="text-xl font-outfit font-bold text-darkGreen">Heart Health</h3>
+                <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
+                    Our cardiotonic blends focus on standard circulation support, arterial health, and cardiovascular longevity using time-tested organic properties.
+                </p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="bg-lightBeige border border-organicBrown/5 p-8 rounded-2xl space-y-4 transition-transform hover:-translate-y-1">
+                <div class="w-12 h-12 bg-softGold/10 rounded-xl flex items-center justify-center border border-softGold/25">
+                    <i class="fa-solid fa-wand-magic-sparkles text-softGold text-xl"></i>
+                </div>
+                <h3 class="text-xl font-outfit font-bold text-darkGreen">Skin Beauty</h3>
+                <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
+                    Purify internal systems to promote external radiance. High antioxidant concentrations defend against premature aging and bring out your natural glow.
+                </p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="bg-lightBeige border border-organicBrown/5 p-8 rounded-2xl space-y-4 transition-transform hover:-translate-y-1">
+                <div class="w-12 h-12 bg-softGold/10 rounded-xl flex items-center justify-center border border-softGold/25">
+                    <i class="fa-solid fa-spa text-softGold text-xl"></i>
+                </div>
+                <h3 class="text-xl font-outfit font-bold text-darkGreen">Peace of Mind</h3>
+                <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
+                    A holistic approach that promotes neural calming, stress resilience, and deep, restful sleep. True health begins with a quiet, balanced mind.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Organic Apparel Collection Section -->
+<section id="clothing" class="py-24 bg-cream border-t border-[#5C4033]/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <!-- Header -->
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+            <span class="text-xs font-bold uppercase tracking-wider text-herbalGreen font-outfit">Pure & Conscious</span>
+            <h2 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen">
+                Organic Apparel Collection
+            </h2>
+            <p class="text-organicBrown/70 text-sm font-light">
+                Naturally dyed, sustainably harvested fabrics designed for comfort and everyday wellness. Handcrafted with traditional Rajasthan methods.
+            </p>
+        </div>
+
+        <!-- Filtration Bar (Flat Layout) -->
+        <div class="border-b border-lightBeige pb-6 max-w-5xl mx-auto">
+            <form method="GET" action="#clothing" id="clothing-filter-form" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 items-end">
+                <!-- Category -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-semibold text-organicBrown uppercase tracking-wider font-outfit">Category</label>
+                    <select name="category" onchange="document.getElementById('clothing-filter-form').submit();" class="w-full px-3 py-2 bg-cream border border-lightBeige rounded-lg text-xs font-medium text-darkGreen focus:outline-none focus:ring-1 focus:ring-herbalGreen">
+                        <option value="">All Categories</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat|title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Size -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-semibold text-organicBrown uppercase tracking-wider font-outfit">Size</label>
+                    <select name="size" onchange="document.getElementById('clothing-filter-form').submit();" class="w-full px-3 py-2 bg-cream border border-lightBeige rounded-lg text-xs font-medium text-darkGreen focus:outline-none focus:ring-1 focus:ring-herbalGreen">
+                        <option value="">All Sizes</option>
+                        {% for sz in sizes %}
+                        <option value="{{ sz }}" {% if selected_size == sz %}selected{% endif %}>{{ sz }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Color -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-semibold text-organicBrown uppercase tracking-wider font-outfit">Colour</label>
+                    <select name="color" onchange="document.getElementById('clothing-filter-form').submit();" class="w-full px-3 py-2 bg-cream border border-lightBeige rounded-lg text-xs font-medium text-darkGreen focus:outline-none focus:ring-1 focus:ring-herbalGreen">
+                        <option value="">All Colours</option>
+                        {% for col in colors %}
+                        <option value="{{ col }}" {% if selected_color == col %}selected{% endif %}>{{ col }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Fabric -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-semibold text-organicBrown uppercase tracking-wider font-outfit">Fabric</label>
+                    <select name="fabric" onchange="document.getElementById('clothing-filter-form').submit();" class="w-full px-3 py-2 bg-cream border border-lightBeige rounded-lg text-xs font-medium text-darkGreen focus:outline-none focus:ring-1 focus:ring-herbalGreen">
+                        <option value="">All Fabrics</option>
+                        {% for fb in fabrics %}
+                        <option value="{{ fb }}" {% if selected_fabric == fb %}selected{% endif %}>{{ fb }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Price -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-semibold text-organicBrown uppercase tracking-wider font-outfit">Max Price</label>
+                    <select name="price" onchange="document.getElementById('clothing-filter-form').submit();" class="w-full px-3 py-2 bg-cream border border-lightBeige rounded-lg text-xs font-medium text-darkGreen focus:outline-none focus:ring-1 focus:ring-herbalGreen">
+                        <option value="">Any Price</option>
+                        <option value="1000" {% if selected_price == "1000" %}selected{% endif %}>Under ₹1000</option>
+                        <option value="1500" {% if selected_price == "1500" %}selected{% endif %}>Under ₹1500</option>
+                        <option value="2000" {% if selected_price == "2000" %}selected{% endif %}>Under ₹2000</option>
+                    </select>
+                </div>
+
+                <!-- Reset / Submit -->
+                <div class="flex space-x-2">
+                    <a href="{% url 'home' %}#clothing" class="w-full py-2 bg-cream text-organicBrown border border-lightBeige rounded-lg hover:bg-lightBeige transition-colors text-xs font-bold font-outfit text-center flex items-center justify-center">
+                        Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Apparel Items Grid (Aspect Square) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {% for item in clothing_items %}
+            <!-- Clothing Card (Aspect Square) -->
+            <div class="bg-cream border border-lightBeige rounded-2xl overflow-hidden aspect-square flex flex-col justify-between p-6 hover:shadow-lg hover:border-softGold/50 transition-all duration-300 cursor-pointer product-card-trigger"
+                 data-id="cloth_{{ item.id }}"
+                 data-name="{{ item.name }}"
+                 data-price="{{ item.price }}"
+                 data-image="{% if item.image %}{{ item.image.url }}{% endif %}"
+                 data-media="{{ item.media_list_json }}"
+                 data-description="Premium organic apparel item handcrafted in Rajasthan. Category: {{ item.get_category_display }}. Fabric: {{ item.fabric }}. Sizes: {{ item.sizes }}. Colors: {{ item.colors }}."
+                 data-stock="{% if item.id|divisibleby:2 %}Low Stock{% else %}In Stock{% endif %}"
+                 data-type="clothing"
+                 data-subtitle="{{ item.fabric|escapejs }}"
+                 data-quantity="1 Unit">
+                <!-- Top Section: Category/Fabric & Image -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-start">
+                        <span class="text-[9px] font-bold bg-herbalGreen/10 text-herbalGreen border border-herbalGreen/20 px-2 py-0.5 rounded-md uppercase tracking-wider font-outfit">
+                            {{ item.get_category_display }}
+                        </span>
+                        <span class="text-[9px] font-medium text-organicBrown/50 font-outfit uppercase">
+                            {{ item.fabric }}
+                        </span>
+                    </div>
+
+                    <div class="w-full h-24 flex items-center justify-center overflow-hidden bg-lightBeige/30 rounded-xl border border-lightBeige">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="object-cover h-full w-full rounded-lg">
+                        {% else %}
+                        <i class="fa-solid fa-shirt text-3xl text-herbalGreen/30"></i>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Middle Section: Clothing Name & Info -->
+                <div class="space-y-1 flex-grow flex flex-col justify-center">
+                    <h3 class="text-base font-outfit font-bold text-darkGreen truncate">
+                        {{ item.name }}
+                    </h3>
+                    <div class="flex flex-wrap gap-1 text-[9px] text-organicBrown/60">
+                        <span>Sizes: {{ item.sizes }}</span>
+                        <span class="text-organicBrown/30">•</span>
+                        <span>Colors: {{ item.colors }}</span>
+                    </div>
+                </div>
+
+                <!-- Bottom Section: Pricing / CTA -->
+                <div class="pt-4 border-t border-lightBeige flex justify-between items-center">
+                    <span class="text-xs font-mono font-bold text-herbalGreen">₹{{ item.price }}</span>
+                    <span class="px-3.5 py-1.5 bg-darkGreen text-cream text-[10px] font-outfit font-bold rounded-lg hover:bg-herbalGreen transition-all uppercase tracking-wider select-none">
+                        Order
+                    </span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full bg-lightBeige border border-lightBeige rounded-2xl p-12 text-center space-y-4">
+                <i class="fa-solid fa-shirt text-5xl text-herbalGreen/30"></i>
+                <h3 class="text-xl font-outfit font-bold text-darkGreen">No apparel matching search filters</h3>
+                <p class="text-sm text-organicBrown/60 font-light max-w-md mx-auto">
+                    Try adjusting your category, sizes, colours, or fabric filters above to find matching items.
+                </p>
+                <a href="{% url 'home' %}#clothing" class="inline-block px-6 py-2.5 bg-darkGreen text-cream font-outfit font-bold rounded-lg text-xs">Reset All Filters</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Blogs / Resources Section -->
+<section id="blog" class="py-24 bg-lightBeige border-t border-[#5C4033]/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <!-- Header -->
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+            <span class="text-xs font-bold uppercase tracking-wider text-herbalGreen font-outfit">Health Editorial</span>
+            <h2 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen">
+                Wellness Wisdom & Insights
+            </h2>
+            <p class="text-organicBrown/70 text-sm font-light">
+                Discover the science and traditions behind herbal formulas, heart longevity, and natural skin health from our wellness experts.
+            </p>
+        </div>
+
+        <!-- Blogs Grid (Uniform Horizontal Aspect Square cards) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {% for post in blogs %}
+            <!-- Blog Card (Aspect Square) -->
+            <div class="bg-cream border border-lightBeige rounded-2xl overflow-hidden aspect-square flex flex-col justify-between p-6 hover:shadow-lg hover:border-softGold/50 transition-all duration-300">
+                <div class="w-full h-full flex flex-col justify-between">
+                    <!-- Top Section: Date & Author & Title -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-[10px] text-organicBrown/50 font-bold tracking-wider font-outfit uppercase">
+                            <span>{{ post.created_at|date:"M d, Y" }}</span>
+                            <span class="text-herbalGreen">By {{ post.author|truncatechars:18 }}</span>
+                        </div>
+                        <h3 class="text-lg font-outfit font-bold text-darkGreen line-clamp-3 leading-snug hover:text-herbalGreen transition-colors">
+                            {{ post.title }}
+                        </h3>
+                    </div>
+
+                    <!-- Middle Section: Summary / Preview -->
+                    <div class="flex-grow flex flex-col justify-center py-2">
+                        <p class="text-xs text-organicBrown/70 font-light line-clamp-3 leading-relaxed">
+                            {{ post.summary|default:post.content }}
+                        </p>
+                    </div>
+
+                    <!-- Bottom Section: Read CTA / Action -->
+                    <div class="pt-4 border-t border-lightBeige flex justify-between items-center">
+                        <span class="text-[9px] text-organicBrown/40 uppercase tracking-widest font-semibold font-outfit">KaaNuRO Editorial</span>
+                        <a href="#contact" class="px-3.5 py-1.5 bg-darkGreen text-cream text-[10px] font-outfit font-bold rounded-lg hover:bg-herbalGreen transition-all uppercase tracking-wider">
+                            Read Wisdom
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full bg-cream border border-lightBeige rounded-2xl p-12 text-center space-y-4">
+                <i class="fa-solid fa-feather text-5xl text-herbalGreen/30"></i>
+                <h3 class="text-xl font-outfit font-bold text-darkGreen">No articles published yet</h3>
+                <p class="text-sm text-organicBrown/60 font-light max-w-md mx-auto">
+                    Our wellness advisors are currently preparing educational articles. Subscribe to our newsletter to receive them.
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Accordion Section -->
+<section id="faq" class="py-24 bg-lightBeige border-y border-[#5C4033]/10">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center space-y-4 mb-16">
+            <span class="text-xs font-bold uppercase tracking-wider text-herbalGreen font-outfit">Common Questions</span>
+            <h2 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen">
+                Frequently Asked Questions
+            </h2>
+        </div>
+        
+        <div class="space-y-4">
+            <!-- FAQ Item 1 -->
+            <div class="faq-accordion-item bg-cream border border-[#5C4033]/15 rounded-xl p-5 cursor-pointer transition-all duration-300">
+                <div class="flex justify-between items-center text-darkGreen">
+                    <h3 class="font-outfit font-bold text-base sm:text-lg">What makes KaaNuRO Group products unique?</h3>
+                    <i class="fa-solid fa-plus text-xs text-softGold transition-transform duration-300"></i>
+                </div>
+                <div class="faq-answer max-h-0 overflow-hidden text-xs sm:text-sm text-organicBrown/85 leading-relaxed font-light transition-all duration-300">
+                    Our formulations are designed by certified wellness associates and sourced directly from agricultural communities in Rajasthan. We combine verified scientific research with deep herbal insights, ensuring every leaf and root is selected at the peak of its biological value.
+                </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="faq-accordion-item bg-cream border border-[#5C4033]/15 rounded-xl p-5 cursor-pointer transition-all duration-300">
+                <div class="flex justify-between items-center text-darkGreen">
+                    <h3 class="font-outfit font-bold text-base sm:text-lg">Are there any artificial preservatives in your teas or blends?</h3>
+                    <i class="fa-solid fa-plus text-xs text-softGold transition-transform duration-300"></i>
+                </div>
+                <div class="faq-answer max-h-0 overflow-hidden text-xs sm:text-sm text-organicBrown/85 leading-relaxed font-light transition-all duration-300">
+                    No, absolutely not. All KaaNuRO products are 100% natural, vegetarian, and free from chemical fillers, heavy metal impurities, and artificial colorants. We preserve our products naturally using vacuum-sealing protocols.
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="faq-accordion-item bg-cream border border-[#5C4033]/15 rounded-xl p-5 cursor-pointer transition-all duration-300">
+                <div class="flex justify-between items-center text-darkGreen">
+                    <h3 class="font-outfit font-bold text-base sm:text-lg">How quickly do you ship products to locations outside Rajasthan?</h3>
+                    <i class="fa-solid fa-plus text-xs text-softGold transition-transform duration-300"></i>
+                </div>
+                <div class="faq-answer max-h-0 overflow-hidden text-xs sm:text-sm text-organicBrown/85 leading-relaxed font-light transition-all duration-300">
+                    We deliver across India. Shipments inside Rajasthan are typically delivered in 2-3 business days. Deliveries to Delhi-NCR, Mumbai, Bengaluru, and other metropolitan centers take 4-6 business days depending on carrier services.
+                </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="faq-accordion-item bg-cream border border-[#5C4033]/15 rounded-xl p-5 cursor-pointer transition-all duration-300">
+                <div class="flex justify-between items-center text-darkGreen">
+                    <h3 class="font-outfit font-bold text-base sm:text-lg">Where is KaaNuRO Group located?</h3>
+                    <i class="fa-solid fa-plus text-xs text-softGold transition-transform duration-300"></i>
+                </div>
+                <div class="faq-answer max-h-0 overflow-hidden text-xs sm:text-sm text-organicBrown/85 leading-relaxed font-light transition-all duration-300">
+                    Our administrative headquarters and core packing units are located in Udaipurwati, Jhunjhunu district, Rajasthan, India (Pin Code: 333307). You are welcome to visit our local farms.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Lead Capture / Contact Form Section -->
+<section id="contact" class="py-24 bg-cream">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            <!-- Left Info Panel -->
+            <div class="lg:col-span-5 space-y-8">
+                <div class="space-y-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-herbalGreen font-outfit">Contact Us</span>
+                    <h2 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen">
+                        Connect with Our Wellness Team
+                    </h2>
+                </div>
+                <p class="text-organicBrown/80 text-sm leading-relaxed font-light">
+                    Have questions about dosages, custom tea mixtures, or looking to retail our line in your pharmacy or website? Send us a message, and our wellness associate will contact you.
+                </p>
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Phone Card -->
+                    <div class="bg-cream border border-lightBeige rounded-xl p-5 flex flex-col justify-between aspect-square hover:border-softGold/50 hover:shadow-sm transition-all duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-herbalGreen/10 flex items-center justify-center text-herbalGreen">
+                            <i class="fa-solid fa-phone text-sm"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-[10px] text-organicBrown/65 uppercase tracking-wider font-semibold font-outfit">Direct Phone</p>
+                            <p class="text-xs font-bold text-darkGreen font-mono leading-tight">+91 7727914281</p>
+                        </div>
+                    </div>
+
+                    <!-- Email Card -->
+                    <div class="bg-cream border border-lightBeige rounded-xl p-5 flex flex-col justify-between aspect-square hover:border-softGold/50 hover:shadow-sm transition-all duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-herbalGreen/10 flex items-center justify-center text-herbalGreen">
+                            <i class="fa-solid fa-envelope text-sm"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-[10px] text-organicBrown/65 uppercase tracking-wider font-semibold font-outfit">Email Address</p>
+                            <p class="text-xs font-bold text-darkGreen truncate leading-tight" title="kaanurogroup@gmail.com">kaanurogroup@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="lg:col-span-7">
+                <div class="bg-cream border border-lightBeige rounded-2xl p-8 sm:p-10 shadow-lg">
+                    <form method="POST" id="contact-form" class="space-y-5">
+                        {% csrf_token %}
+                        <div>
+                            <label class="block text-xs font-semibold text-[#5C4033] uppercase tracking-wider font-outfit mb-2">Name</label>
+                            {{ contact_form.name }}
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-semibold text-[#5C4033] uppercase tracking-wider font-outfit mb-2">Email</label>
+                                {{ contact_form.email }}
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-[#5C4033] uppercase tracking-wider font-outfit mb-2">Phone</label>
+                                {{ contact_form.phone }}
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-[#5C4033] uppercase tracking-wider font-outfit mb-2">Message</label>
+                            {{ contact_form.message }}
+                        </div>
+                        <button type="submit" id="submit-btn" class="w-full py-4 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md shadow-herbalGreen/15 flex items-center justify-center space-x-2">
+                            <span>Send Message</span>
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </form>
+                    <div id="form-feedback" class="hidden mt-4 p-4 rounded-lg text-sm text-center"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Udaipurwati Google Map Integration -->
+        <div class="bg-cream border border-lightBeige rounded-2xl p-3 shadow-md">
+            <div class="relative overflow-hidden rounded-xl h-80 w-full">
+                <iframe 
+                    class="absolute inset-0 w-full h-full border-0" 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14138.868779633633!2d75.46271929999999!3d27.633465199999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396ccee2574e89e3%3A0xe5a3c61303de67a0!2sUdaipurwati%2C%20Rajasthan%20333307!5e0!3m2!1sen!2sin!4v1719750000000!5m2!1sen!2sin" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+            <div class="mt-2 text-center text-[10px] text-organicBrown/50 font-light">
+                <i class="fa-solid fa-location-dot text-softGold mr-1"></i> Sourced & Packed at Udaipurwati, Jhunjhunu, Rajasthan 333307
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<!-- QRCode.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    // UPI configurations bound from views.py settings context
+    const upiId = "{{ upi_id }}";
+    const merchantName = "{{ merchant_name }}";
+
+    // Dynamic UPI URI string builder function
+    window.generateUpiString = function(totalAmount, orderId) {
+        const upiString = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${totalAmount}&cu=INR&tn=Order_${orderId}`;
+        return upiString;
+    };
+
+    // Targets the empty placeholder div container with id "payment-qr-container" to instantiate QR code
+    window.renderPaymentQR = function(upiString) {
+        const container = document.getElementById("payment-qr-container");
+        if (container) {
+            container.innerHTML = '';
+            new QRCode(container, {
+                text: upiString,
+                width: 256,
+                height: 256,
+                colorDark: "#19261C",
+                colorLight: "#FBF9F6",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+    };
+</script>
+<script>
+    // FAQ Accordion Interactivity
+    const accordionItems = document.querySelectorAll('.faq-accordion-item');
+    accordionItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const isActive = item.classList.contains('active');
+            
+            // Close all
+            accordionItems.forEach(otherItem => {
+                otherItem.classList.remove('active');
+                const otherAnswer = otherItem.querySelector('.faq-answer');
+                otherAnswer.style.maxHeight = null;
+                otherAnswer.style.marginTop = '0';
+                otherItem.querySelector('i').classList.replace('fa-minus', 'fa-plus');
+                otherItem.querySelector('i').classList.remove('text-softGold');
+            });
+            
+            if (!isActive) {
+                item.classList.add('active');
+                const answer = item.querySelector('.faq-answer');
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                answer.style.marginTop = '1rem';
+                item.querySelector('i').classList.replace('fa-plus', 'fa-minus');
+                item.querySelector('i').classList.add('text-softGold');
+            }
+        });
+    });
+
+    // AJAX Form Submission
+    const contactForm = document.getElementById('contact-form');
+    const feedback = document.getElementById('form-feedback');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>Sending...</span><i class="fa-solid fa-spinner animate-spin text-xs"></i>';
+            
+            const formData = new FormData(this);
+            
+            fetch("{% url 'home' %}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+                
+                feedback.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
+                
+                if (data.success) {
+                    feedback.classList.add('bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-200');
+                    feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5"></i> ${data.message}`;
+                    contactForm.reset();
+                } else {
+                    feedback.classList.add('bg-rose-50', 'text-rose-800', 'border', 'border-rose-200');
+                    // Format errors
+                    let errorMsg = 'Error: ';
+                    for (const field in data.errors) {
+                        errorMsg += `${field}: ${data.errors[field].join(', ')} `;
+                    }
+                    feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1.5"></i> ${errorMsg}`;
+                }
+            })
+            .catch(error => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+                feedback.classList.remove('hidden');
+                feedback.classList.add('bg-rose-50', 'text-rose-800', 'border', 'border-rose-200');
+                feedback.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1.5"></i> Something went wrong. Please try again later.';
+                console.error("AJAX error: ", error);
+            });
+        });
+    }
+</script>
+{% endblock %}

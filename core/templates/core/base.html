@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KaaNuRO Group - Natural Wellness & Heart Care{% endblock %}</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="{% block meta_description %}KaaNuRO Group offers premium herbal products for heart health, skin beauty, and complete peace of mind. Experience nature's touch from Udaipurwati, Rajasthan.{% endblock %}">
+    <meta name="keywords" content="KaaNuRO, KaaNuRO Group, Herbal Tea, Heart Health, Skin Beauty, Natural Wellness, Udaipurwati, Rajasthan, Jhunjhunu">
+    <meta name="author" content="KaaNuRO Group">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- QRCode.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        herbalGreen: 'rgb(var(--herbal-green) / <alpha-value>)',
+                        darkGreen: 'rgb(var(--heading-accent) / <alpha-value>)',
+                        cream: 'rgb(var(--canvas-bg) / <alpha-value>)',
+                        lightBeige: 'rgb(var(--card-bg) / <alpha-value>)',
+                        organicBrown: 'rgb(var(--text-primary) / <alpha-value>)',
+                        softGold: '#D4AF37',
+                    },
+                    borderColor: theme => ({
+                        ...theme('colors'),
+                        lightBeige: 'rgb(var(--border-color) / <alpha-value>)',
+                    }),
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --canvas-bg: 251 249 246;       /* #FBF9F6 */
+            --card-bg: 244 239 234;         /* #F4EFEA */
+            --text-primary: 107 86 76;       /* #6B564C */
+            --heading-accent: 82 110 86;     /* #526E56 */
+            --border-color: 244 239 234;     /* #F4EFEA */
+            --herbal-green: 82 110 86;       /* #526E56 */
+        }
+        
+        html.dark {
+            --canvas-bg: 18 26 19;          /* #121A13 */
+            --card-bg: 26 36 27;            /* #1A241B */
+            --text-primary: 232 216 184;    /* #E8D8B8 */
+            --heading-accent: 232 216 184;  /* #E8D8B8 */
+            --border-color: 38 54 39;       /* #263627 */
+            --herbal-green: 212 175 55;     /* #D4AF37 */
+        }
+        
+        .faq-accordion-item.active .faq-answer {
+            max-height: 200px;
+            margin-top: 1rem;
+        }
+    </style>
+    <!-- Dark Mode Initializer -->
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-cream font-sans text-organicBrown flex flex-col min-h-screen selection:bg-herbalGreen/20 selection:text-darkGreen">
+
+    {% if not SMS_GATEWAY_API_KEY_DEFINED %}
+    <!-- SMS/WhatsApp Gateway Configuration Fallback Banner -->
+    <div class="bg-amber-50 dark:bg-amber-950/20 border-b border-amber-200 dark:border-amber-900/30 text-amber-800 dark:text-amber-300 px-4 py-2 text-center text-xs font-medium font-sans flex items-center justify-center space-x-2">
+        <i class="fa-solid fa-triangle-exclamation text-amber-500 animate-pulse"></i>
+        <span>Live OTP SMS gateway credentials are not configured. Outbound validation codes will be simulated on-screen.</span>
+    </div>
+    {% endif %}
+
+    <!-- Sticky Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-cream/95 dark:bg-[#121A13]/95 backdrop-blur-md border-b border-lightBeige shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{% url 'home' %}" class="flex items-center bg-[#FBF9F6]/15 backdrop-blur-md px-4 py-2 rounded-xl transition hover:bg-[#FBF9F6]/25 duration-300">
+                        <img src="/static/images/logo.png" alt="KaaNuRO Group Logo" class="h-12 md:h-14 w-auto object-contain select-none">
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{% if request.resolver_match.url_name == 'home' %}#home{% else %}{% url 'home' %}#home{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Home</a>
+                    <a href="{% if request.resolver_match.url_name == 'home' %}#about{% else %}{% url 'home' %}#about{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">About Us</a>
+                    <a href="{% if request.resolver_match.url_name == 'home' %}#products{% else %}{% url 'home' %}#products{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Our Products</a>
+                    <a href="{% if request.resolver_match.url_name == 'home' %}#faq{% else %}{% url 'home' %}#faq{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">FAQ</a>
+                    <a href="{% if request.resolver_match.url_name == 'home' %}#contact{% else %}{% url 'home' %}#contact{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Contact Us</a>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <!-- Cart Trigger Desktop -->
+                    <button id="cart-toggle" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 focus:outline-none" aria-label="Toggle Cart">
+                        <i class="fa-solid fa-shopping-cart text-lg"></i>
+                        <span id="cart-badge" class="absolute -top-1 -right-1 bg-softGold text-darkGreen text-[9px] font-bold px-1.5 py-0.5 rounded-full scale-0 transition-transform duration-300">0</span>
+                    </button>
+
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle" class="p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 focus:outline-none" aria-label="Toggle Theme">
+                        <i id="theme-toggle-dark-icon" class="fa-solid fa-moon text-lg"></i>
+                        <i id="theme-toggle-light-icon" class="fa-solid fa-sun text-lg text-softGold hidden"></i>
+                    </button>
+                    
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="px-5 py-2.5 bg-herbalGreen text-cream font-outfit font-semibold rounded-lg hover:bg-darkGreen hover:text-cream transition-all text-sm shadow-md shadow-herbalGreen/10">Dashboard</a>
+                        <a href="{% url 'logout' %}" class="px-4 py-2.5 border border-darkGreen/20 text-darkGreen hover:bg-lightBeige font-outfit font-semibold rounded-lg transition-all text-sm">Logout</a>
+                    {% else %}
+                        <button id="desktop-customer-login-btn" class="px-5 py-2.5 text-cream font-outfit font-semibold rounded-lg hover:opacity-90 transition-all text-sm shadow-md border border-transparent" style="background-color: #526E56;">Customer Login / Track Order</button>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile Menu Button with Theme Toggle -->
+                <div class="md:hidden flex items-center space-x-2">
+                    <!-- Cart Trigger Mobile -->
+                    <button id="cart-toggle-mobile" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 focus:outline-none" aria-label="Toggle Cart">
+                        <i class="fa-solid fa-shopping-cart text-lg"></i>
+                        <span id="cart-badge-mobile" class="absolute -top-1 -right-1 bg-softGold text-darkGreen text-[9px] font-bold px-1.5 py-0.5 rounded-full scale-0 transition-transform duration-300">0</span>
+                    </button>
+
+                    <button id="theme-toggle-mobile" class="p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 focus:outline-none" aria-label="Toggle Theme">
+                        <i id="theme-toggle-dark-icon-mobile" class="fa-solid fa-moon text-lg"></i>
+                        <i id="theme-toggle-light-icon-mobile" class="fa-solid fa-sun text-lg text-softGold hidden"></i>
+                    </button>
+                    <button id="mobile-menu-button" class="text-darkGreen hover:text-herbalGreen focus:outline-none" aria-label="Toggle menu">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-cream dark:bg-[#121A13] border-t border-lightBeige">
+            <div class="px-4 pt-2 pb-6 space-y-3">
+                <a href="{% if request.resolver_match.url_name == 'home' %}#home{% else %}{% url 'home' %}#home{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Home</a>
+                <a href="{% if request.resolver_match.url_name == 'home' %}#about{% else %}{% url 'home' %}#about{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">About Us</a>
+                <a href="{% if request.resolver_match.url_name == 'home' %}#products{% else %}{% url 'home' %}#products{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Our Products</a>
+                <a href="{% if request.resolver_match.url_name == 'home' %}#faq{% else %}{% url 'home' %}#faq{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">FAQ</a>
+                <a href="{% if request.resolver_match.url_name == 'home' %}#contact{% else %}{% url 'home' %}#contact{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Contact Us</a>
+                <div class="pt-4 border-t border-lightBeige flex flex-col space-y-2">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="text-center px-4 py-2.5 bg-herbalGreen text-cream font-medium rounded-md shadow-sm">Dashboard</a>
+                        <a href="{% url 'logout' %}" class="text-center px-4 py-2.5 border border-darkGreen/20 text-darkGreen font-medium rounded-md">Logout</a>
+                    {% else %}
+                        <button id="mobile-customer-login-btn" class="text-center px-4 py-2.5 text-cream font-medium rounded-md shadow-sm animate-pulse-subtle" style="background-color: #526E56;">Customer Login / Track Order</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages Container -->
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg flex items-center justify-between shadow-sm {% if message.tags == 'success' %}bg-emerald-50 border border-emerald-200 text-emerald-800{% elif message.tags == 'error' %}bg-rose-50 border border-rose-200 text-rose-800{% else %}bg-blue-50 border border-blue-200 text-blue-800{% endif %}" role="alert">
+            <div class="flex items-center space-x-2">
+                {% if message.tags == 'success' %}
+                    <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                {% elif message.tags == 'error' %}
+                    <i class="fa-solid fa-circle-xmark text-rose-600"></i>
+                {% else %}
+                    <i class="fa-solid fa-circle-info text-blue-600"></i>
+                {% endif %}
+                <span class="text-sm font-medium">{{ message }}</span>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-darkGreen text-cream pt-16 pb-8 border-t-2 border-softGold">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <!-- Branding/Philosophy -->
+                <div class="space-y-4">
+                    <a href="{% url 'home' %}" class="flex items-center gap-2">
+                        <img src="/static/images/logo.png" alt="KaaNuRO Group Logo" class="h-14 md:h-16 w-auto object-contain select-none transition duration-300 transform hover:scale-105 brightness-0 invert drop-shadow-sm">
+                    </a>
+                    <p class="text-cream/70 text-sm leading-relaxed font-light">
+                        Dedicated to purity and science-backed herbal formulas. Empower your heart first and watch the natural glow follow.
+                    </p>
+                    <div class="flex space-x-4 pt-2">
+                        <a href="#" class="w-8 h-8 rounded-full bg-cream/10 flex items-center justify-center hover:bg-softGold hover:text-darkGreen transition-all text-cream"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-cream/10 flex items-center justify-center hover:bg-softGold hover:text-darkGreen transition-all text-cream"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-cream/10 flex items-center justify-center hover:bg-softGold hover:text-darkGreen transition-all text-cream"><i class="fa-brands fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="font-outfit font-bold text-lg text-softGold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-sm text-cream/70 font-light">
+                        <li><a href="{% if request.resolver_match.url_name == 'home' %}#home{% else %}{% url 'home' %}#home{% endif %}" class="hover:text-softGold transition-colors">Home</a></li>
+                        <li><a href="{% if request.resolver_match.url_name == 'home' %}#about{% else %}{% url 'home' %}#about{% endif %}" class="hover:text-softGold transition-colors">About Us</a></li>
+                        <li><a href="{% if request.resolver_match.url_name == 'home' %}#products{% else %}{% url 'home' %}#products{% endif %}" class="hover:text-softGold transition-colors">Our Products</a></li>
+                        <li><a href="{% if request.resolver_match.url_name == 'home' %}#faq{% else %}{% url 'home' %}#faq{% endif %}" class="hover:text-softGold transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="space-y-3">
+                    <h3 class="font-outfit font-bold text-lg text-softGold mb-4">Get In Touch</h3>
+                    <div class="flex items-start space-x-3 text-cream/70 text-sm">
+                        <i class="fa-solid fa-phone mt-1 text-softGold"></i>
+                        <span>+91 7727914281</span>
+                    </div>
+                    <div class="flex items-start space-x-3 text-cream/70 text-sm">
+                        <i class="fa-solid fa-envelope mt-1 text-softGold"></i>
+                        <span>kaanurogroup@gmail.com</span>
+                    </div>
+                    <div class="flex items-start space-x-3 text-cream/70 text-sm">
+                        <i class="fa-solid fa-location-dot mt-1 text-softGold"></i>
+                        <span>Udaipurwati, Jhunjhunu,<br>Rajasthan, India - 333307</span>
+                    </div>
+                </div>
+
+                <!-- Quick Tagline Card -->
+                <div class="bg-herbalGreen/20 border border-cream/10 rounded-xl p-5 space-y-3">
+                    <h4 class="font-outfit font-bold text-cream">Purity & Trust</h4>
+                    <p class="text-xs text-cream/70 leading-relaxed font-light">
+                        All our products are crafted with handpicked organic materials from the rich soils of Rajasthan, following strict wellness benchmarks.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Bottom Footer Bar -->
+            <div class="pt-8 border-t border-cream/10 text-center flex flex-col md:flex-row items-center justify-between text-xs text-cream/50 font-light">
+                <p>&copy; {% now "Y" %} KaaNuRO Group. All rights reserved.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-softGold">Privacy Policy</a>
+                    <a href="#" class="hover:text-softGold">Terms of Service</a>
+                </div>
+            </div>
+
+            <!-- Secondary Structural Footer Menu Row -->
+            <div class="mt-4 pt-4 border-t border-cream/5 text-center flex justify-center text-xs text-cream/40 font-light">
+                <a href="{% url 'login' %}" class="hover:text-softGold transition-colors flex items-center space-x-1.5 py-1 px-3 border border-cream/5 rounded-md hover:border-softGold/20">
+                    <i class="fa-solid fa-lock text-[9px]"></i>
+                    <span>Staff Portal / Dashboard Login</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Drawer Shopping Cart Overlay -->
+    <div id="cart-overlay" class="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <!-- Floating Drawer Shopping Cart -->
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full sm:w-[450px] bg-cream dark:bg-[#1A241B] shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out border-l border-lightBeige flex flex-col">
+        <!-- Cart Header -->
+        <div class="p-6 border-b border-lightBeige flex items-center justify-between">
+            <h2 id="cart-drawer-title" class="text-xl font-outfit font-extrabold text-darkGreen flex items-center">
+                <i class="fa-solid fa-shopping-cart mr-2 text-softGold"></i>Your Cart
+            </h2>
+            <button id="cart-close" class="p-2 rounded-lg text-organicBrown hover:bg-lightBeige transition-colors" aria-label="Close Cart">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- VIEW 1: CART ITEMS -->
+        <div id="cart-main-view" class="flex-grow flex flex-col min-h-0">
+            <!-- Cart Items List (Scrollable) -->
+            <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-4">
+                <!-- Empty state default -->
+                <div id="cart-empty-state" class="h-full flex flex-col items-center justify-center text-center space-y-4">
+                    <div class="w-16 h-16 rounded-full bg-lightBeige/30 border border-lightBeige flex items-center justify-center text-herbalGreen">
+                        <i class="fa-solid fa-cart-shopping text-2xl"></i>
+                    </div>
+                    <h3 class="text-base font-outfit font-bold text-darkGreen">Your cart is empty</h3>
+                    <p class="text-xs text-organicBrown/60 max-w-[200px] mx-auto">Add organic remedies or apparel to begin your wellness journey.</p>
+                </div>
+                
+                <div id="cart-items-list" class="space-y-4 hidden">
+                    <!-- Dynamically populated rows -->
+                </div>
+            </div>
+
+            <!-- Checkout Summary Footer -->
+            <div id="cart-footer" class="p-6 border-t border-lightBeige bg-lightBeige/20 space-y-4">
+                <div class="bg-lightBeige border border-lightBeige/50 rounded-xl p-4 flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-organicBrown/65 uppercase tracking-wider font-semibold font-outfit">Total Value</p>
+                        <p id="cart-total-price" class="text-lg font-mono font-bold text-darkGreen">₹0.00</p>
+                    </div>
+                    <span class="text-[10px] bg-herbalGreen/10 text-herbalGreen px-2.5 py-1 rounded-full uppercase tracking-wider font-outfit font-bold">Estimated GST Included</span>
+                </div>
+                <button id="cart-checkout" class="w-full py-4 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md shadow-herbalGreen/15 flex items-center justify-center space-x-2 transform active:scale-95 duration-100">
+                    <span>Buy Now</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW 2: DELIVERY DETAILS -->
+        <div id="cart-checkout-view" class="flex-grow flex flex-col min-h-0 hidden">
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <!-- Back Button -->
+                <div class="flex items-center space-x-2 text-organicBrown/60 cursor-pointer hover:text-darkGreen transition-colors text-xs font-semibold font-outfit" id="checkout-back-btn">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Back to Cart</span>
+                </div>
+                
+                <div class="space-y-1">
+                    <h3 class="text-lg font-outfit font-bold text-darkGreen">Delivery & Contact Details</h3>
+                    <p class="text-xs text-organicBrown/65">Please provide your details for delivery tracking and updates.</p>
+                </div>
+                
+
+                {% if request.user.is_authenticated %}
+                <!-- 1-Click Autofill Utility -->
+                <div class="bg-[#D4AF37]/5 border border-[#D4AF37]/20 rounded-xl px-4 py-2.5 flex items-center justify-between gap-3">
+                    <span class="text-[10px] text-organicBrown/60 font-light leading-tight">Returning customer?</span>
+                    <button type="button" id="btn-autofill-profile" class="text-xs text-[#D4AF37] hover:underline flex items-center space-x-1.5 font-semibold font-outfit transition-all whitespace-nowrap">
+                        <span>&#9889;</span>
+                        <span>Use Saved Profile Details</span>
+                    </button>
+                </div>
+                <!-- Profile data JSON for JS autofill -->
+                <script id="profile-data-json" type="application/json">
+                {
+                    "full_name": "{{ request.user.get_full_name|escapejs }}",
+                    "phone": "{% if request.user.is_authenticated %}{% with profile=request.user.customer_profile %}{{ profile.phone_number|default:''|escapejs }}{% endwith %}{% endif %}",
+                    "default_address": "{% if request.user.is_authenticated %}{% with profile=request.user.customer_profile %}{{ profile.default_address|default:''|escapejs }}{% endwith %}{% endif %}"
+                }
+                </script>
+                {% endif %}
+                <!-- Checkout Form -->
+                <form id="checkout-delivery-form" class="space-y-4" onsubmit="return false;">
+                    {% csrf_token %}
+                    <div>
+                        <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Full Name *</label>
+                        <input type="text" id="checkout-name" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. Rahul Sharma" value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}">
+                        <span id="err-checkout-name" class="text-[10px] text-rose-500 hidden mt-1">Full name is required.</span>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Phone / WhatsApp Number *</label>
+                        <input type="text" id="checkout-phone" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. +91 9876543210" value="{% if request.user.is_authenticated %}{{ request.user.customer_profile.phone_number }}{% endif %}">
+                        <span id="err-checkout-phone" class="text-[10px] text-rose-500 hidden mt-1">Active phone number is required.</span>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Street Address *</label>
+                        <input type="text" id="checkout-street" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. House No. 45, Ground Floor">
+                        <span id="err-checkout-street" class="text-[10px] text-rose-500 hidden mt-1">Street address is required.</span>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Locality / Landmark *</label>
+                        <input type="text" id="checkout-locality" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. Near Shiv Temple">
+                        <span id="err-checkout-locality" class="text-[10px] text-rose-500 hidden mt-1">Locality is required.</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">City *</label>
+                            <input type="text" id="checkout-city" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. Udaipurwati">
+                            <span id="err-checkout-city" class="text-[10px] text-rose-500 hidden mt-1">City is required.</span>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">State *</label>
+                            <input type="text" id="checkout-state" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. Rajasthan">
+                            <span id="err-checkout-state" class="text-[10px] text-rose-500 hidden mt-1">State is required.</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">PIN Code *</label>
+                        <input type="text" id="checkout-pincode" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. 333307">
+                        <span id="err-checkout-pincode" class="text-[10px] text-rose-500 hidden mt-1">A valid 6-digit PIN code is required.</span>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="p-6 border-t border-lightBeige bg-lightBeige/20">
+                <button type="button" id="checkout-proceed-btn" class="w-full py-4 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md shadow-herbalGreen/15 flex items-center justify-center space-x-2 transform active:scale-95 duration-100">
+                    <span>Proceed to Payment</span>
+                    <i class="fa-solid fa-credit-card text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Static UPI Payment & QR Verification Modal Overlay -->
+    <div id="payment-modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <!-- Payment Modal Box -->
+        <div id="payment-modal" class="bg-cream dark:bg-[#1A241B] rounded-2xl max-w-md w-full p-6 md:p-8 shadow-2xl border border-lightBeige dark:border-cream/10 transform scale-95 opacity-0 transition-all duration-300 relative space-y-6 max-h-[95vh] overflow-y-auto">
+            <button id="payment-modal-close" class="absolute top-4 right-4 p-2 rounded-lg bg-cream/80 backdrop-blur-md text-organicBrown hover:bg-lightBeige transition-colors shadow-sm" aria-label="Close payment modal">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div class="text-center space-y-2">
+                <div class="w-12 h-12 bg-softGold/10 rounded-full flex items-center justify-center text-softGold mx-auto text-xl border border-softGold/20">
+                    <i class="fa-solid fa-qrcode"></i>
+                </div>
+                <h3 class="text-xl font-outfit font-extrabold text-darkGreen">UPI Payment Verification</h3>
+                <p class="text-xs text-organicBrown/60">Scan the QR code or click the deep-link below to pay.</p>
+            </div>
+            
+            <!-- QR Code Display (for desktop) -->
+            <div class="flex flex-col items-center justify-center space-y-3 bg-lightBeige/30 border border-lightBeige rounded-2xl p-6">
+                <div id="payment-qr-container" class="p-3 bg-white border border-lightBeige rounded-xl flex items-center justify-center overflow-hidden">
+                    <!-- QR Code rendered here by qrcode.js -->
+                </div>
+                <p class="text-[10px] text-organicBrown/50 font-medium">Desktop users: Scan with GPay, PhonePe, Paytm, etc.</p>
+            </div>
+            
+            <!-- UPI Deep Link Button (for mobile) -->
+            <div class="w-full">
+                <a id="payment-deep-link" href="#" class="w-full py-3.5 bg-softGold hover:bg-darkGreen hover:text-cream text-darkGreen dark:text-cream font-outfit font-bold rounded-xl transition-all shadow-sm flex items-center justify-center space-x-2 text-sm">
+                    <i class="fa-solid fa-mobile-screen-button text-xs"></i>
+                    <span>Pay via UPI App (Mobile Only)</span>
+                </a>
+            </div>
+            
+            <!-- Instructions & Copy -->
+            <div class="bg-lightBeige border border-lightBeige/50 rounded-xl p-4 text-center">
+                <p id="payment-amount-copy" class="text-xs text-organicBrown/80 font-medium leading-relaxed">
+                    Scan the QR code with any UPI App (GPay, PhonePe, Paytm) to complete payment of <span class="font-bold text-darkGreen font-mono">₹0.00</span>.
+                </p>
+            </div>
+            
+            <!-- UTR Input Form -->
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Transaction UTR / Reference Number *</label>
+                    <input type="text" id="payment-utr" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-mono font-bold tracking-widest text-center transition-colors" placeholder="Enter 12-digit UTR Number">
+                    <span id="err-payment-utr" class="text-[10px] text-rose-500 hidden mt-1">Please enter a valid 12-digit transaction UTR number.</span>
+                </div>
+                
+                <button type="button" id="payment-confirm-btn" class="w-full py-4 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md shadow-herbalGreen/15 flex items-center justify-center space-x-2 transform active:scale-95 duration-100">
+                    <span>Confirm Order</span>
+                    <i class="fa-solid fa-circle-check text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Customer OTP Auth Modal Overlay -->
+    <div id="otp-modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <div id="otp-modal" class="bg-cream dark:bg-[#1A241B] rounded-2xl max-w-md w-full p-6 md:p-8 shadow-2xl border border-lightBeige dark:border-cream/10 transform scale-95 opacity-0 transition-all duration-300 relative space-y-6 max-h-[95vh] overflow-y-auto">
+            <button id="otp-modal-close" class="absolute top-4 right-4 p-2 rounded-lg bg-cream/80 backdrop-blur-md text-organicBrown hover:bg-lightBeige transition-colors shadow-sm" aria-label="Close modal">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            <div class="text-center space-y-2">
+                <h3 class="text-2xl font-outfit font-extrabold text-darkGreen">Customer Login</h3>
+                <p class="text-xs text-organicBrown/60 font-light font-sans">Verify your mobile number to view and track your orders.</p>
+            </div>
+            
+            <!-- Step 1: Phone input -->
+            <div id="otp-step-phone" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Mobile Number</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-organicBrown/60 font-medium font-mono">+91</span>
+                        <input type="tel" id="otp-phone" maxlength="10" required class="w-full pl-14 pr-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-mono font-bold tracking-wider transition-colors" placeholder="10-digit number">
+                    </div>
+                    <span id="otp-phone-error" class="text-[10px] text-rose-500 hidden mt-1">Please enter a valid 10-digit mobile number.</span>
+                </div>
+                <button type="button" id="otp-send-btn" class="w-full py-3.5 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md shadow-herbalGreen/15 flex items-center justify-center space-x-2">
+                    <span>Send Verification Code</span>
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+            </div>
+
+            <!-- Step 2: OTP input -->
+            <div id="otp-step-code" class="space-y-4 hidden">
+                <div class="bg-lightBeige/50 border border-lightBeige rounded-xl p-3.5 text-center">
+                    <p class="text-xs text-organicBrown/80 font-medium leading-relaxed font-sans">
+                        We've simulated sending a code to <span id="otp-display-phone" class="font-bold text-darkGreen font-mono"></span>.
+                    </p>
+                    <p class="text-[10px] text-herbalGreen font-bold mt-1 font-mono">
+                        For local testing, enter: <span id="otp-simulated-code" class="font-mono text-darkGreen underline bg-cream px-1.5 py-0.5 rounded"></span>
+                    </p>
+                </div>
+                <!-- Full Name input field -->
+                <div id="otp-name-wrapper" class="hidden">
+                    <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Full Name</label>
+                    <input type="text" id="otp-fullname" class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="Enter Full Name">
+                    <span id="otp-fullname-error" class="text-[10px] text-rose-500 hidden mt-1">Please enter your full name.</span>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Verification Code (PIN)</label>
+                    <input type="text" id="otp-code" maxlength="4" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-mono font-bold tracking-widest text-center transition-colors" placeholder="XXXX">
+                    <span id="otp-code-error" class="text-[10px] text-rose-500 hidden mt-1">Please enter the correct 4-digit verification code.</span>
+                </div>
+                <div class="flex space-x-3">
+                    <button type="button" id="otp-back-btn" class="w-1/3 py-3.5 border border-organicBrown/20 text-organicBrown hover:bg-lightBeige font-outfit font-bold rounded-xl transition-all">
+                        Back
+                    </button>
+                    <button type="button" id="otp-verify-btn" class="w-2/3 py-3.5 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md shadow-herbalGreen/15 flex items-center justify-center space-x-2">
+                        <span>Verify & Login</span>
+                        <i class="fa-solid fa-circle-check text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal Overlay -->
+    <div id="product-modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <!-- Product Detail Modal Container -->
+        <div id="product-modal" class="bg-cream dark:bg-[#1A241B] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto sm:overflow-hidden shadow-2xl border border-lightBeige dark:border-cream/10 transform scale-95 opacity-0 transition-all duration-300 flex flex-col md:flex-row relative">
+            <button id="modal-close" class="absolute top-4 right-4 z-10 p-2 rounded-lg bg-cream/80 backdrop-blur-md text-organicBrown hover:bg-lightBeige transition-colors shadow-sm" aria-label="Close details">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Left: Media Showcase Section -->
+            <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between border-b md:border-b-0 md:border-r border-lightBeige bg-lightBeige/15">
+                <div class="flex-grow flex items-center justify-center min-h-[250px] md:min-h-0 relative">
+                    <!-- Image Showcase -->
+                    <div id="modal-image-wrapper" class="w-full h-64 flex items-center justify-center overflow-hidden bg-lightBeige/30 rounded-2xl border border-lightBeige">
+                        <img id="modal-product-image" src="" alt="Product Image" class="object-cover h-full w-full rounded-2xl">
+                        <div id="modal-product-image-fallback" class="hidden text-center p-6">
+                            <i class="fa-solid fa-leaf text-5xl text-herbalGreen/30"></i>
+                        </div>
+                    </div>
+
+                    <!-- Video Showcase -->
+                    <div id="modal-video-wrapper" class="hidden w-full h-64 bg-black rounded-2xl overflow-hidden relative">
+                        <video id="modal-product-video" class="w-full h-full object-cover" loop muted playsinline controls>
+                            <source id="modal-video-source" src="" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+
+                    <!-- Embed Iframe Showcase -->
+                    <div id="modal-embed-wrapper" class="hidden w-full h-64 bg-black rounded-2xl overflow-hidden relative">
+                        <iframe id="modal-product-iframe" class="w-full h-full object-cover" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <!-- Showcase Media Tabs / Thumbnails -->
+                <div id="modal-thumbnails-container" class="mt-6 flex space-x-2 overflow-x-auto py-1 justify-center">
+                    <!-- Dynamic thumbnails will be generated here -->
+                </div>
+            </div>
+
+            <!-- Right: Information Section -->
+            <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between space-y-6">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span id="modal-subtitle" class="text-[10px] font-bold bg-softGold/10 text-softGold border border-softGold/25 px-2.5 py-1 rounded-md uppercase tracking-wider font-outfit">
+                            Ayurveda
+                        </span>
+                        <span id="modal-stock" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            In Stock
+                        </span>
+                    </div>
+
+                    <h3 id="modal-name" class="text-2xl sm:text-3xl font-outfit font-extrabold text-darkGreen leading-tight font-outfit">
+                        Product Title
+                    </h3>
+
+                    <div class="flex items-baseline space-x-2">
+                        <span id="modal-price" class="text-xl font-mono font-bold text-herbalGreen">₹0.00</span>
+                        <span id="modal-quantity" class="text-xs text-organicBrown/50 font-medium">/ 100g</span>
+                    </div>
+
+                    <div class="border-t border-lightBeige pt-4">
+                        <p class="text-[10px] font-semibold text-organicBrown/60 uppercase tracking-wider font-outfit mb-2">Description Overview</p>
+                        <div id="modal-description" class="text-xs sm:text-sm text-organicBrown/80 leading-relaxed overflow-y-auto max-h-40 pr-2">
+                            Product description overview text goes here.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA Add to Cart Button -->
+                <button id="modal-add-to-cart" class="w-full py-4 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md shadow-herbalGreen/15 flex items-center justify-center space-x-2 transform active:scale-95 duration-100">
+                    <i class="fa-solid fa-cart-plus text-sm"></i>
+                    <span>Add to Cart</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Mobile Menu & Smooth Scroll & Cart/Modal Systems -->
+    <script>
+        // --- Navigation Mobile Menu Toggle ---
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+            const links = menu.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', () => {
+                    menu.classList.add('hidden');
+                });
+            });
+        }
+
+        // --- Theme Toggle System ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        const themeToggleBtnMobile = document.getElementById('theme-toggle-mobile');
+        const themeToggleDarkIconMobile = document.getElementById('theme-toggle-dark-icon-mobile');
+        const themeToggleLightIconMobile = document.getElementById('theme-toggle-light-icon-mobile');
+
+        function updateIcons() {
+            const isDark = document.documentElement.classList.contains('dark');
+            if (isDark) {
+                if (themeToggleDarkIcon) themeToggleDarkIcon.classList.add('hidden');
+                if (themeToggleLightIcon) themeToggleLightIcon.classList.remove('hidden');
+                if (themeToggleDarkIconMobile) themeToggleDarkIconMobile.classList.add('hidden');
+                if (themeToggleLightIconMobile) themeToggleLightIconMobile.classList.remove('hidden');
+            } else {
+                if (themeToggleDarkIcon) themeToggleDarkIcon.classList.remove('hidden');
+                if (themeToggleLightIcon) themeToggleLightIcon.classList.add('hidden');
+                if (themeToggleDarkIconMobile) themeToggleDarkIconMobile.classList.remove('hidden');
+                if (themeToggleLightIconMobile) themeToggleLightIconMobile.classList.add('hidden');
+            }
+        }
+
+        updateIcons();
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+            updateIcons();
+        }
+
+        if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
+        if (themeToggleBtnMobile) themeToggleBtnMobile.addEventListener('click', toggleTheme);
+
+        // --- Cart and Modal State Logic ---
+        let cart = JSON.parse(localStorage.getItem('kaanuro_cart')) || [];
+
+        // Elements
+        const cartToggle = document.getElementById('cart-toggle');
+        const cartToggleMobile = document.getElementById('cart-toggle-mobile');
+        const cartClose = document.getElementById('cart-close');
+        const cartDrawer = document.getElementById('cart-drawer');
+        const cartOverlay = document.getElementById('cart-overlay');
+        const cartBadge = document.getElementById('cart-badge');
+        const cartBadgeMobile = document.getElementById('cart-badge-mobile');
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const cartEmptyState = document.getElementById('cart-empty-state');
+        const cartItemsList = document.getElementById('cart-items-list');
+        const cartTotalPrice = document.getElementById('cart-total-price');
+        const cartCheckoutBtn = document.getElementById('cart-checkout');
+
+        // Modal Elements
+        const modalOverlay = document.getElementById('product-modal-overlay');
+        const modalContainer = document.getElementById('product-modal');
+        const modalClose = document.getElementById('modal-close');
+        const modalImage = document.getElementById('modal-product-image');
+        const modalImageFallback = document.getElementById('modal-product-image-fallback');
+        const modalVideo = document.getElementById('modal-product-video');
+        const modalVideoSource = document.getElementById('modal-video-source');
+        const modalImageWrapper = document.getElementById('modal-image-wrapper');
+        const modalVideoWrapper = document.getElementById('modal-video-wrapper');
+        const modalProductIframe = document.getElementById('modal-product-iframe');
+        const modalEmbedWrapper = document.getElementById('modal-embed-wrapper');
+        const modalThumbnailsContainer = document.getElementById('modal-thumbnails-container');
+        const modalSubtitle = document.getElementById('modal-subtitle');
+        const modalStock = document.getElementById('modal-stock');
+        const modalName = document.getElementById('modal-name');
+        const modalPrice = document.getElementById('modal-price');
+        const modalQuantity = document.getElementById('modal-quantity');
+        const modalDescription = document.getElementById('modal-description');
+        const modalAddToCartBtn = document.getElementById('modal-add-to-cart');
+
+        // Checkout & Payment Elements
+        const cartMainView = document.getElementById('cart-main-view');
+        const cartCheckoutView = document.getElementById('cart-checkout-view');
+        const cartDrawerTitle = document.getElementById('cart-drawer-title');
+        const checkoutBackBtn = document.getElementById('checkout-back-btn');
+        const checkoutProceedBtn = document.getElementById('checkout-proceed-btn');
+        const checkoutName = document.getElementById('checkout-name');
+        const checkoutPhone = document.getElementById('checkout-phone');
+        const checkoutStreet = document.getElementById('checkout-street');
+        const checkoutLocality = document.getElementById('checkout-locality');
+        const checkoutCity = document.getElementById('checkout-city');
+        const checkoutState = document.getElementById('checkout-state');
+        const checkoutPincode = document.getElementById('checkout-pincode');
+        
+        const paymentModalOverlay = document.getElementById('payment-modal-overlay');
+        const paymentModal = document.getElementById('payment-modal');
+        const paymentModalClose = document.getElementById('payment-modal-close');
+        const paymentQrcode = document.getElementById('payment-qr-container');
+        const paymentDeepLink = document.getElementById('payment-deep-link');
+        const paymentAmountCopy = document.getElementById('payment-amount-copy');
+        const paymentUtr = document.getElementById('payment-utr');
+        const paymentConfirmBtn = document.getElementById('payment-confirm-btn');
+
+        // OTP Elements
+        const otpModalOverlay = document.getElementById('otp-modal-overlay');
+        const otpModal = document.getElementById('otp-modal');
+        const otpModalClose = document.getElementById('otp-modal-close');
+        const otpStepPhone = document.getElementById('otp-step-phone');
+        const otpStepCode = document.getElementById('otp-step-code');
+        const otpPhoneInput = document.getElementById('otp-phone');
+        const otpCodeInput = document.getElementById('otp-code');
+        const otpPhoneError = document.getElementById('otp-phone-error');
+        const otpCodeError = document.getElementById('otp-code-error');
+        const otpSendBtn = document.getElementById('otp-send-btn');
+        const otpVerifyBtn = document.getElementById('otp-verify-btn');
+        const otpBackBtn = document.getElementById('otp-back-btn');
+        const otpDisplayPhone = document.getElementById('otp-display-phone');
+        const otpSimulatedCode = document.getElementById('otp-simulated-code');
+        const desktopCustomerLoginBtn = document.getElementById('desktop-customer-login-btn');
+        const mobileCustomerLoginBtn = document.getElementById('mobile-customer-login-btn');
+        const otpNameWrapper = document.getElementById('otp-name-wrapper');
+        const otpFullnameInput = document.getElementById('otp-fullname');
+        const otpFullnameError = document.getElementById('otp-fullname-error');
+
+        let currentActiveItem = null;
+
+
+        // Looping video structures
+        const videoSources = {
+            'ayurveda': 'https://assets.mixkit.co/videos/preview/mixkit-organic-herbal-tea-preparation-40284-large.mp4',
+            'clothing': 'https://assets.mixkit.co/videos/preview/mixkit-spinning-yarn-on-a-weaving-machine-42436-large.mp4'
+        };
+
+        // Open/Close Cart
+        function toggleCartDrawer(open) {
+            if (open) {
+                cartDrawer.classList.remove('translate-x-full');
+                cartOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                document.body.classList.add('overflow-hidden');
+            } else {
+                cartDrawer.classList.add('translate-x-full');
+                cartOverlay.classList.add('opacity-0', 'pointer-events-none');
+                document.body.classList.remove('overflow-hidden');
+                setTimeout(() => {
+                    if (cartMainView) cartMainView.classList.remove('hidden');
+                    if (cartCheckoutView) cartCheckoutView.classList.add('hidden');
+                    if (cartDrawerTitle) cartDrawerTitle.innerHTML = `<i class="fa-solid fa-shopping-cart mr-2 text-softGold"></i>Your Cart`;
+                }, 300);
+            }
+        }
+
+
+        if (cartToggle) cartToggle.addEventListener('click', () => toggleCartDrawer(true));
+        if (cartToggleMobile) cartToggleMobile.addEventListener('click', () => toggleCartDrawer(true));
+        if (cartClose) cartClose.addEventListener('click', () => toggleCartDrawer(false));
+        if (cartOverlay) cartOverlay.addEventListener('click', () => toggleCartDrawer(false));
+
+        // Save Cart to LocalStorage
+        function saveCart() {
+            localStorage.setItem('kaanuro_cart', JSON.stringify(cart));
+            updateCartUI();
+        }
+
+        // Update Cart UI
+        function updateCartUI() {
+            // Badges
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            if (totalCount > 0) {
+                if (cartBadge) {
+                    cartBadge.textContent = totalCount;
+                    cartBadge.classList.remove('scale-0');
+                    cartBadge.classList.add('scale-100');
+                }
+                if (cartBadgeMobile) {
+                    cartBadgeMobile.textContent = totalCount;
+                    cartBadgeMobile.classList.remove('scale-0');
+                    cartBadgeMobile.classList.add('scale-100');
+                }
+            } else {
+                if (cartBadge) {
+                    cartBadge.classList.remove('scale-100');
+                    cartBadge.classList.add('scale-0');
+                }
+                if (cartBadgeMobile) {
+                    cartBadgeMobile.classList.remove('scale-100');
+                    cartBadgeMobile.classList.add('scale-0');
+                }
+            }
+
+            // Cart lists
+            if (cart.length === 0) {
+                cartEmptyState.classList.remove('hidden');
+                cartItemsList.classList.add('hidden');
+                cartTotalPrice.textContent = '₹0.00';
+            } else {
+                cartEmptyState.classList.add('hidden');
+                cartItemsList.classList.remove('hidden');
+                cartItemsList.innerHTML = '';
+
+                let total = 0;
+                cart.forEach(item => {
+                    total += parseFloat(item.price) * item.quantity;
+                    const itemRow = document.createElement('div');
+                    itemRow.className = "bg-lightBeige border border-lightBeige rounded-xl p-3.5 flex items-center justify-between space-x-3";
+                    
+                    let mediaHtml = '';
+                    if (item.image) {
+                        mediaHtml = `<img src="${item.image}" alt="${item.name}" class="object-cover w-full h-full rounded-lg">`;
+                    } else {
+                        mediaHtml = `<i class="fa-solid fa-leaf text-xs text-herbalGreen/40"></i>`;
+                    }
+
+                    itemRow.innerHTML = `
+                        <div class="flex items-center space-x-3 min-w-0 flex-1">
+                            <div class="w-12 h-12 flex-shrink-0 bg-cream/50 border border-lightBeige rounded-lg overflow-hidden flex items-center justify-center">
+                                ${mediaHtml}
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <h4 class="font-outfit font-bold text-xs text-darkGreen truncate">${item.name}</h4>
+                                <p class="text-[10px] font-mono text-organicBrown/60">₹${parseFloat(item.price).toFixed(2)}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2.5">
+                            <div class="flex items-center bg-cream border border-lightBeige rounded-lg p-0.5">
+                                <button onclick="changeQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-xs font-bold text-organicBrown hover:bg-lightBeige rounded transition-colors focus:outline-none" aria-label="Decrease quantity">-</button>
+                                <span class="px-2 text-xs font-bold text-darkGreen font-mono">${item.quantity}</span>
+                                <button onclick="changeQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-xs font-bold text-organicBrown hover:bg-lightBeige rounded transition-colors focus:outline-none" aria-label="Increase quantity">+</button>
+                            </div>
+                        </div>
+                    `;
+                    cartItemsList.appendChild(itemRow);
+                });
+                cartTotalPrice.textContent = `₹${total.toFixed(2)}`;
+            }
+        }
+
+        // Adjust Quantity
+        window.changeQty = function(id, delta) {
+            const index = cart.findIndex(item => item.id === id);
+            if (index > -1) {
+                cart[index].quantity += delta;
+                if (cart[index].quantity <= 0) {
+                    cart.splice(index, 1);
+                }
+                saveCart();
+            }
+        };
+
+        // Add to Cart
+        function addToCart(item) {
+            const existing = cart.find(x => x.id === item.id);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({
+                    id: item.id,
+                    name: item.name,
+                    price: parseFloat(item.price),
+                    image: item.image,
+                    quantity: 1
+                });
+            }
+            saveCart();
+            
+            // scale micro-interaction
+            const badges = [cartBadge, cartBadgeMobile];
+            badges.forEach(b => {
+                if (b) {
+                    b.classList.remove('scale-100');
+                    b.classList.add('scale-125');
+                    setTimeout(() => {
+                        b.classList.remove('scale-125');
+                        b.classList.add('scale-100');
+                    }, 200);
+                }
+            });
+        }
+
+        // Buy Now / Checkout Click Transition
+        if (cartCheckoutBtn) {
+            cartCheckoutBtn.addEventListener('click', () => {
+                if (cart.length === 0) return;
+                cartMainView.classList.add('hidden');
+                cartCheckoutView.classList.remove('hidden');
+                cartDrawerTitle.innerHTML = `<i class="fa-solid fa-shopping-cart mr-2 text-softGold"></i>Checkout`;
+            });
+        }
+
+        // Back to Cart click
+        if (checkoutBackBtn) {
+            checkoutBackBtn.addEventListener('click', () => {
+                cartCheckoutView.classList.add('hidden');
+                cartMainView.classList.remove('hidden');
+                cartDrawerTitle.innerHTML = `<i class="fa-solid fa-shopping-cart mr-2 text-softGold"></i>Your Cart`;
+            });
+        }
+
+        // Generate static variables for current checkout
+        let currentOrderId = null;
+        let currentTotalAmount = 0;
+
+        // Customer OTP Modal state toggling
+        function toggleOtpModal(open) {
+            if (open) {
+                otpStepPhone.classList.remove('hidden');
+                otpStepCode.classList.add('hidden');
+                otpPhoneInput.value = '';
+                otpCodeInput.value = '';
+                otpPhoneError.classList.add('hidden');
+                otpCodeError.classList.add('hidden');
+                otpFullnameInput.value = '';
+                otpNameWrapper.classList.add('hidden');
+                otpFullnameError.classList.add('hidden');
+                
+                otpModalOverlay.classList.remove('pointer-events-none', 'opacity-0');
+                otpModal.classList.remove('opacity-0', 'scale-95');
+                otpModal.classList.add('opacity-100', 'scale-100');
+                document.body.classList.add('overflow-hidden');
+            } else {
+                otpModalOverlay.classList.add('pointer-events-none', 'opacity-0');
+                otpModal.classList.remove('opacity-100', 'scale-100');
+                otpModal.classList.add('opacity-0', 'scale-95');
+                document.body.classList.remove('overflow-hidden');
+            }
+        }
+
+        if (desktopCustomerLoginBtn) {
+            desktopCustomerLoginBtn.addEventListener('click', () => toggleOtpModal(true));
+        }
+        if (mobileCustomerLoginBtn) {
+            mobileCustomerLoginBtn.addEventListener('click', () => {
+                if (mobileMenu) mobileMenu.classList.add('hidden');
+                toggleOtpModal(true);
+            });
+        }
+        if (otpModalClose) {
+            otpModalClose.addEventListener('click', () => toggleOtpModal(false));
+        }
+        if (otpModalOverlay) {
+            otpModalOverlay.addEventListener('click', (e) => {
+                if (e.target === otpModalOverlay) toggleOtpModal(false);
+            });
+        }
+        if (otpBackBtn) {
+            otpBackBtn.addEventListener('click', () => {
+                otpStepCode.classList.add('hidden');
+                otpStepPhone.classList.remove('hidden');
+                otpCodeError.classList.add('hidden');
+                otpFullnameError.classList.add('hidden');
+            });
+        }
+
+        if (otpSendBtn) {
+            otpSendBtn.addEventListener('click', async () => {
+                const phone = otpPhoneInput.value.trim();
+                if (!phone || phone.length !== 10 || !/^\d+$/.test(phone)) {
+                    otpPhoneError.classList.remove('hidden');
+                    return;
+                }
+                otpPhoneError.classList.add('hidden');
+                
+                otpSendBtn.disabled = true;
+                const originalHtml = otpSendBtn.innerHTML;
+                otpSendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> Sending...';
+                
+                try {
+                    const response = await fetch('/api/otp/send/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({ phone })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        otpDisplayPhone.textContent = '+91 ' + phone;
+                        otpSimulatedCode.textContent = data.code;
+                        if (data.is_new) {
+                            otpNameWrapper.classList.remove('hidden');
+                        } else {
+                            otpNameWrapper.classList.add('hidden');
+                        }
+                        otpStepPhone.classList.add('hidden');
+                        otpStepCode.classList.remove('hidden');
+                        otpCodeInput.focus();
+                    } else {
+                        alert(data.message || 'Failed to send verification code.');
+                    }
+                } catch (err) {
+                    console.error('OTP Send Error:', err);
+                    alert('Network error. Please try again.');
+                } finally {
+                    otpSendBtn.disabled = false;
+                    otpSendBtn.innerHTML = originalHtml;
+                }
+            });
+        }
+
+        if (otpVerifyBtn) {
+            otpVerifyBtn.addEventListener('click', async () => {
+                const phone = otpPhoneInput.value.trim();
+                const code = otpCodeInput.value.trim();
+                
+                let fullname = '';
+                if (!otpNameWrapper.classList.contains('hidden')) {
+                    fullname = otpFullnameInput.value.trim();
+                    if (!fullname) {
+                        otpFullnameError.classList.remove('hidden');
+                        return;
+                    }
+                    otpFullnameError.classList.add('hidden');
+                }
+                
+                if (!code || code.length !== 4 || !/^\d+$/.test(code)) {
+                    otpCodeError.classList.remove('hidden');
+                    return;
+                }
+                otpCodeError.classList.add('hidden');
+                
+                otpVerifyBtn.disabled = true;
+                const originalHtml = otpVerifyBtn.innerHTML;
+                otpVerifyBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> Verifying...';
+                
+                try {
+                    const response = await fetch('/api/otp/verify/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({ phone, code, fullname })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        window.location.href = data.redirect_url;
+                    } else {
+                        otpCodeError.classList.remove('hidden');
+                    }
+                } catch (err) {
+                    console.error('OTP Verify Error:', err);
+                    alert('Network error. Please try again.');
+                } finally {
+                    otpVerifyBtn.disabled = false;
+                    otpVerifyBtn.innerHTML = originalHtml;
+                }
+            });
+        }
+
+        // Payment modal state toggling
+        function togglePaymentModal(open) {
+            if (open) {
+                paymentModalOverlay.classList.remove('pointer-events-none', 'opacity-0');
+                paymentModal.classList.remove('opacity-0', 'scale-95');
+                paymentModal.classList.add('opacity-100', 'scale-100');
+                document.body.classList.add('overflow-hidden');
+            } else {
+                paymentModalOverlay.classList.add('pointer-events-none', 'opacity-0');
+                paymentModal.classList.remove('opacity-100', 'scale-100');
+                paymentModal.classList.add('opacity-0', 'scale-95');
+                document.body.classList.remove('overflow-hidden');
+            }
+        }
+
+        if (paymentModalClose) {
+            paymentModalClose.addEventListener('click', () => togglePaymentModal(false));
+        }
+        if (paymentModalOverlay) {
+            paymentModalOverlay.addEventListener('click', (e) => {
+                if (e.target === paymentModalOverlay) togglePaymentModal(false);
+            });
+        }
+
+        // Helper to get Cookie for CSRF
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Proceed to Payment button
+        if (checkoutProceedBtn) {
+            checkoutProceedBtn.addEventListener('click', () => {
+                // Instantly validate fields
+                let isValid = true;
+                
+                const name = checkoutName.value.trim();
+                const phone = checkoutPhone.value.trim();
+                const street = checkoutStreet.value.trim();
+                const locality = checkoutLocality.value.trim();
+                const city = checkoutCity.value.trim();
+                const state = checkoutState.value.trim();
+                const pincode = checkoutPincode.value.trim();
+                
+                // Reset errors
+                const errSpans = document.querySelectorAll('[id^="err-checkout-"]');
+                errSpans.forEach(span => span.classList.add('hidden'));
+                
+                const inputs = [checkoutName, checkoutPhone, checkoutStreet, checkoutLocality, checkoutCity, checkoutState, checkoutPincode];
+                inputs.forEach(input => {
+                    input.classList.remove('border-rose-500');
+                    input.classList.add('border-organicBrown/15');
+                });
+                
+                if (!name) {
+                    document.getElementById('err-checkout-name').classList.remove('hidden');
+                    checkoutName.classList.add('border-rose-500');
+                    checkoutName.classList.remove('border-organicBrown/15');
+                    isValid = false;
+                }
+                if (!phone) {
+                    document.getElementById('err-checkout-phone').classList.remove('hidden');
+                    checkoutPhone.classList.add('border-rose-500');
+                    checkoutPhone.classList.remove('border-organicBrown/15');
+                    isValid = false;
+                }
+                if (!street) {
+                    document.getElementById('err-checkout-street').classList.remove('hidden');
+                    checkoutStreet.classList.add('border-rose-500');
+                    checkoutStreet.classList.remove('border-organicBrown/15');
+                    isValid = false;
+                }
+                if (!locality) {
+                    document.getElementById('err-checkout-locality').classList.remove('hidden');
+                    checkoutLocality.classList.add('border-rose-500');
+                    checkoutLocality.classList.remove('border-organicBrown/15');
+                    isValid = false;
+                }
+                if (!city) {
+                    document.getElementById('err-checkout-city').classList.remove('hidden');
+                    checkoutCity.classList.add('border-rose-500');
+                    checkoutCity.classList.remove('border-organicBrown/15');
+                    isValid = false;
+                }
+                if (!state) {
+                    document.getElementById('err-checkout-state').classList.remove('hidden');
+                    checkoutState.classList.add('border-rose-500');
+                    checkoutState.classList.remove('border-organicBrown/15');
+                    isValid = false;
+                }
+                
+                // PIN validation (6-digit numeric)
+                const pinRegex = /^\d{6}$/;
+                if (!pinRegex.test(pincode)) {
+                    document.getElementById('err-checkout-pincode').classList.remove('hidden');
+                    checkoutPincode.classList.add('border-rose-500');
+                    checkoutPincode.classList.remove('border-organicBrown/15');
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    // Scroll to first error
+                    const firstErr = document.querySelector('.border-rose-500');
+                    if (firstErr) {
+                        firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    return;
+                }
+                
+                // Calculate details
+                currentOrderId = crypto.randomUUID();
+                currentTotalAmount = cart.reduce((sum, item) => sum + parseFloat(item.price) * item.quantity, 0);
+                
+                // Set amount copy text
+                paymentAmountCopy.querySelector('span').textContent = '₹' + currentTotalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                
+                // UPI Link
+                const shortId = currentOrderId.substring(0, 8);
+                let upiString;
+                if (typeof window.generateUpiString === 'function') {
+                    upiString = window.generateUpiString(currentTotalAmount.toFixed(2), shortId);
+                } else {
+                    const fallbackUpiId = 'kaanurogroup@okaxis';
+                    const fallbackMerchantName = 'KaaNuRO Group';
+                    upiString = `upi://pay?pa=${fallbackUpiId}&pn=${encodeURIComponent(fallbackMerchantName)}&am=${currentTotalAmount.toFixed(2)}&cu=INR&tn=Order_${shortId}`;
+                }
+                paymentDeepLink.href = upiString;
+                
+                // Render QR code
+                if (typeof window.renderPaymentQR === 'function') {
+                    window.renderPaymentQR(upiString);
+                } else {
+                    const qrContainer = document.getElementById("payment-qr-container") || paymentQrcode;
+                    if (qrContainer) {
+                        qrContainer.innerHTML = '';
+                        new QRCode(qrContainer, {
+                            text: upiString,
+                            width: 256,
+                            height: 256,
+                            colorDark: "#19261C",
+                            colorLight: "#FBF9F6",
+                            correctLevel: QRCode.CorrectLevel.M
+                        });
+                    }
+                }
+                
+                // Reset UTR field
+                paymentUtr.value = '';
+                paymentUtr.classList.remove('border-rose-500');
+                document.getElementById('err-payment-utr').classList.add('hidden');
+                
+                // Open payment modal
+                togglePaymentModal(true);
+            });
+        }
+
+        // Confirm Order (Submit payload to Django)
+        if (paymentConfirmBtn) {
+            paymentConfirmBtn.addEventListener('click', () => {
+                const utrVal = paymentUtr.value.trim();
+                const utrRegex = /^\d{12}$/;
+                
+                if (!utrRegex.test(utrVal)) {
+                    paymentUtr.classList.add('border-rose-500');
+                    document.getElementById('err-payment-utr').classList.remove('hidden');
+                    return;
+                }
+                
+                paymentUtr.classList.remove('border-rose-500');
+                document.getElementById('err-payment-utr').classList.add('hidden');
+                
+                // Disable confirm button and display spinner
+                const originalHtml = paymentConfirmBtn.innerHTML;
+                paymentConfirmBtn.disabled = true;
+                paymentConfirmBtn.innerHTML = '<span>Verifying...</span><i class="fa-solid fa-spinner animate-spin text-xs"></i>';
+                
+                const address = `${checkoutStreet.value.trim()}, ${checkoutLocality.value.trim()}, ${checkoutCity.value.trim()}, ${checkoutState.value.trim()} - ${checkoutPincode.value.trim()}`;
+                
+                const payload = {
+                    order_id: currentOrderId,
+                    customer_name: checkoutName.value.trim(),
+                    phone_number: checkoutPhone.value.trim(),
+                    shipping_address: address,
+                    total_amount: currentTotalAmount,
+                    utr_number: utrVal,
+                    items: cart.map(item => ({
+                        name: item.name,
+                        quantity: item.quantity,
+                        price: parseFloat(item.price)
+                    }))
+                };
+                
+                fetch('/api/orders/create/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') || document.querySelector('[name=csrfmiddlewaretoken]')?.value
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Display beautiful success template in the payment modal box
+                        const originalModalContent = paymentModal.innerHTML;
+                        paymentModal.innerHTML = `
+                            <div class="text-center py-8 space-y-6">
+                                <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mx-auto text-4xl border border-emerald-200 animate-bounce">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                                <div class="space-y-2">
+                                    <h3 class="text-2xl font-outfit font-extrabold text-darkGreen">Order Confirmed!</h3>
+                                    <p class="text-xs text-organicBrown/70 max-w-xs mx-auto">
+                                        Your order (Reference: <span class="font-mono font-bold text-darkGreen">${currentOrderId.substring(0, 8)}</span>) has been registered.
+                                    </p>
+                                </div>
+                                <div class="bg-lightBeige border border-lightBeige/50 rounded-xl p-4 text-xs text-organicBrown/80 leading-relaxed max-w-xs mx-auto">
+                                    We are validating your UTR transaction: <span class="font-bold text-darkGreen font-mono">${utrVal}</span>.<br>
+                                    Delivery and dispatch updates will be sent to <span class="font-bold text-darkGreen">${checkoutPhone.value.trim()}</span> shortly.
+                                </div>
+                                <div class="flex flex-col sm:flex-row gap-3">
+                                    <a href="/media/invoices/INV-${currentOrderId}.pdf" download class="w-full sm:w-1/2 py-4 bg-softGold hover:bg-darkGreen hover:text-cream text-darkGreen dark:text-cream font-outfit font-bold rounded-xl transition-all shadow-md text-center text-sm flex items-center justify-center space-x-2">
+                                        <i class="fa-solid fa-file-arrow-down"></i>
+                                        <span>Download Invoice Receipt</span>
+                                    </a>
+                                    <button type="button" id="payment-success-close-btn" class="w-full sm:w-1/2 py-4 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md">
+                                        Done
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Clear Cart
+                        cart = [];
+                        saveCart();
+                        
+                        // Reset forms
+                        document.getElementById('checkout-delivery-form').reset();
+                        
+                        document.getElementById('payment-success-close-btn').addEventListener('click', () => {
+                            togglePaymentModal(false);
+                            toggleCartDrawer(false);
+                            setTimeout(() => {
+                                // Restore original content so the modal works if they add another product
+                                paymentModal.innerHTML = originalModalContent;
+                                window.location.reload(); // Quick and clean reload to clear state and refresh CSRF
+                            }, 500);
+                        });
+                    } else {
+                        alert('Order creation failed: ' + data.message);
+                        paymentConfirmBtn.disabled = false;
+                        paymentConfirmBtn.innerHTML = originalHtml;
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('An error occurred during verification. Please try again.');
+                    paymentConfirmBtn.disabled = false;
+                    paymentConfirmBtn.innerHTML = originalHtml;
+                });
+            });
+        }
+
+
+        // Modal Functionality
+        function toggleProductModal(open) {
+            if (open) {
+                modalOverlay.classList.remove('pointer-events-none', 'opacity-0');
+                modalContainer.classList.remove('opacity-0', 'scale-95');
+                modalContainer.classList.add('opacity-100', 'scale-100');
+                document.body.classList.add('overflow-hidden');
+            } else {
+                modalOverlay.classList.add('pointer-events-none', 'opacity-0');
+                modalContainer.classList.remove('opacity-100', 'scale-100');
+                modalContainer.classList.add('opacity-0', 'scale-95');
+                document.body.classList.remove('overflow-hidden');
+                if (modalVideo) {
+                    modalVideo.pause();
+                }
+                if (modalProductIframe) {
+                    modalProductIframe.src = '';
+                }
+            }
+        }
+
+        if (modalClose) modalClose.addEventListener('click', () => toggleProductModal(false));
+        if (modalOverlay) modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) toggleProductModal(false);
+        });
+
+        function showcaseMediaItem(mediaItem) {
+            modalImageWrapper.classList.add('hidden');
+            modalVideoWrapper.classList.add('hidden');
+            modalEmbedWrapper.classList.add('hidden');
+            if (modalVideo) modalVideo.pause();
+
+            if (mediaItem.type === 'image') {
+                modalImageWrapper.classList.remove('hidden');
+                if (modalImage) {
+                    modalImage.src = mediaItem.url;
+                    modalImage.classList.remove('hidden');
+                    modalImageFallback.classList.add('hidden');
+                }
+            } else if (mediaItem.type === 'video') {
+                const isEmbed = mediaItem.url.includes('youtube.com') || mediaItem.url.includes('youtu.be') || mediaItem.url.includes('vimeo.com') || mediaItem.url.includes('embed');
+                if (isEmbed) {
+                    modalEmbedWrapper.classList.remove('hidden');
+                    let embedUrl = mediaItem.url;
+                    if (embedUrl.includes('watch?v=')) {
+                        embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                    }
+                    if (modalProductIframe) {
+                        modalProductIframe.src = embedUrl;
+                    }
+                } else {
+                    modalVideoWrapper.classList.remove('hidden');
+                    if (modalVideoSource && modalVideo) {
+                        modalVideoSource.src = mediaItem.url;
+                        modalVideo.load();
+                        modalVideo.play().catch(err => console.log('Video play blocked:', err));
+                    }
+                }
+            }
+        }
+
+        // Setup Card click events
+        document.addEventListener('click', (e) => {
+            const trigger = e.target.closest('.product-card-trigger');
+            if (trigger) {
+                const item = {
+                    id: trigger.getAttribute('data-id'),
+                    name: trigger.getAttribute('data-name'),
+                    price: trigger.getAttribute('data-price'),
+                    image: trigger.getAttribute('data-image'),
+                    media: trigger.getAttribute('data-media'),
+                    description: trigger.getAttribute('data-description'),
+                    stock: trigger.getAttribute('data-stock'),
+                    type: trigger.getAttribute('data-type'),
+                    subtitle: trigger.getAttribute('data-subtitle'),
+                    quantity: trigger.getAttribute('data-quantity')
+                };
+
+                currentActiveItem = item;
+
+                if (modalName) modalName.textContent = item.name;
+                if (modalSubtitle) {
+                    modalSubtitle.textContent = item.subtitle || (item.type === 'ayurveda' ? 'Ayurveda' : 'Apparel');
+                }
+                if (modalPrice) modalPrice.textContent = `₹${parseFloat(item.price).toFixed(2)}`;
+                if (modalQuantity) modalQuantity.textContent = `/ ${item.quantity}`;
+                if (modalDescription) modalDescription.textContent = item.description;
+
+                // stock badge styling
+                if (modalStock) {
+                    modalStock.textContent = item.stock;
+                    modalStock.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border " + 
+                        (item.stock === 'Low Stock' 
+                            ? "bg-amber-50 text-amber-700 border-amber-200" 
+                            : "bg-emerald-50 text-emerald-700 border-emerald-200");
+                }
+
+                // Construct media list
+                let mediaList = [];
+                if (item.media && item.media.trim()) {
+                    try {
+                        mediaList = JSON.parse(item.media);
+                    } catch (e) {
+                        console.error('Failed to parse media JSON:', e);
+                    }
+                }
+                if (mediaList.length === 0) {
+                    if (item.image) {
+                        mediaList.push({ type: 'image', url: item.image });
+                    }
+                    const defVideo = videoSources[item.type] || videoSources['ayurveda'];
+                    if (defVideo) {
+                        mediaList.push({ type: 'video', url: defVideo });
+                    }
+                }
+
+                // Build thumbnails
+                if (modalThumbnailsContainer) {
+                    modalThumbnailsContainer.innerHTML = '';
+                    if (mediaList.length > 1) {
+                        modalThumbnailsContainer.classList.remove('hidden');
+                        mediaList.forEach((mediaItem, index) => {
+                            const btn = document.createElement('button');
+                            btn.className = "w-12 h-12 rounded-lg border-2 border-transparent overflow-hidden hover:border-herbalGreen/50 focus:outline-none transition-all flex items-center justify-center bg-lightBeige/30 flex-shrink-0";
+                            
+                            if (mediaItem.type === 'image') {
+                                btn.innerHTML = `<img src="${mediaItem.url}" class="w-full h-full object-cover">`;
+                            } else {
+                                btn.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-darkGreen text-cream text-xs"><i class="fa-solid fa-play"></i></div>`;
+                            }
+                            
+                            btn.addEventListener('click', () => {
+                                Array.from(modalThumbnailsContainer.children).forEach(child => {
+                                    child.classList.remove('border-herbalGreen', 'ring-2', 'ring-herbalGreen/30');
+                                });
+                                btn.classList.add('border-herbalGreen', 'ring-2', 'ring-herbalGreen/30');
+                                showcaseMediaItem(mediaItem);
+                            });
+                            
+                            modalThumbnailsContainer.appendChild(btn);
+                            
+                            if (index === 0) {
+                                btn.classList.add('border-herbalGreen', 'ring-2', 'ring-herbalGreen/30');
+                                showcaseMediaItem(mediaItem);
+                            }
+                        });
+                    } else {
+                        modalThumbnailsContainer.classList.add('hidden');
+                        if (mediaList.length === 1) {
+                            showcaseMediaItem(mediaList[0]);
+                        } else {
+                            showcaseMediaItem({ type: 'image', url: '' });
+                        }
+                    }
+                }
+
+                toggleProductModal(true);
+            }
+        });
+
+        // Add to Cart
+        if (modalAddToCartBtn) {
+            modalAddToCartBtn.addEventListener('click', () => {
+                if (currentActiveItem) {
+                    addToCart(currentActiveItem);
+                    
+                    modalAddToCartBtn.classList.remove('bg-herbalGreen', 'hover:bg-darkGreen');
+                    modalAddToCartBtn.classList.add('bg-softGold', 'text-darkGreen', 'dark:text-cream');
+                    const originalText = modalAddToCartBtn.innerHTML;
+                    modalAddToCartBtn.innerHTML = '<i class="fa-solid fa-check text-sm mr-2"></i>Added to Cart!';
+                    
+                    setTimeout(() => {
+                        modalAddToCartBtn.classList.remove('bg-softGold', 'text-darkGreen', 'dark:text-cream');
+                        modalAddToCartBtn.classList.add('bg-herbalGreen', 'hover:bg-darkGreen');
+                        modalAddToCartBtn.innerHTML = originalText;
+                        toggleProductModal(false);
+                        toggleCartDrawer(true);
+                    }, 800);
+                }
+            });
+        }
+
+
+        // ⚡ 1-Click Autofill: Populate checkout fields from saved profile
+        const btnAutofill = document.getElementById('btn-autofill-profile');
+        if (btnAutofill) {
+            btnAutofill.addEventListener('click', () => {
+                const profileDataEl = document.getElementById('profile-data-json');
+                if (!profileDataEl) return;
+                let profileData = {};
+                try {
+                    profileData = JSON.parse(profileDataEl.textContent.trim());
+                } catch(e) {
+                    console.warn('Could not parse profile data JSON:', e);
+                    return;
+                }
+
+                const checkoutNameEl = document.getElementById('checkout-name');
+                const checkoutPhoneEl = document.getElementById('checkout-phone');
+                const checkoutStreetEl = document.getElementById('checkout-street');
+                const checkoutLocalityEl = document.getElementById('checkout-locality');
+                const checkoutCityEl = document.getElementById('checkout-city');
+                const checkoutStateEl = document.getElementById('checkout-state');
+                const checkoutPincodeEl = document.getElementById('checkout-pincode');
+
+                // Fill name if available
+                if (profileData.full_name && checkoutNameEl) {
+                    checkoutNameEl.value = profileData.full_name;
+                }
+
+                // Fill phone
+                if (profileData.phone && checkoutPhoneEl) {
+                    checkoutPhoneEl.value = profileData.phone;
+                }
+
+                // Parse and fill default_address if available
+                if (profileData.default_address) {
+                    const addr = profileData.default_address;
+                    // Attempt smart splitting by comma-separated address segments
+                    const parts = addr.split(',').map(s => s.trim()).filter(Boolean);
+
+                    if (parts.length >= 1 && checkoutStreetEl && !checkoutStreetEl.value) {
+                        checkoutStreetEl.value = parts[0];
+                    }
+                    if (parts.length >= 2 && checkoutLocalityEl && !checkoutLocalityEl.value) {
+                        checkoutLocalityEl.value = parts[1];
+                    }
+                    if (parts.length >= 3 && checkoutCityEl && !checkoutCityEl.value) {
+                        checkoutCityEl.value = parts[2];
+                    }
+                    // State + Pincode often in last segment like "Rajasthan - 333307"
+                    if (parts.length >= 4) {
+                        const lastPart = parts[parts.length - 1];
+                        const pinMatch = lastPart.match(/\d{6}/);
+                        if (pinMatch && checkoutPincodeEl && !checkoutPincodeEl.value) {
+                            checkoutPincodeEl.value = pinMatch[0];
+                        }
+                        const statePart = lastPart.replace(/[-\d\s]+$/, '').trim();
+                        if (statePart && checkoutStateEl && !checkoutStateEl.value) {
+                            checkoutStateEl.value = statePart;
+                        }
+                    }
+                }
+
+                // Micro-flash to confirm autofill applied
+                btnAutofill.innerHTML = '<span>&#10003;</span><span>Profile Applied!</span>';
+                btnAutofill.classList.add('text-herbalGreen');
+                setTimeout(() => {
+                    btnAutofill.innerHTML = '<span>&#9889;</span><span>Use Saved Profile Details</span>';
+                    btnAutofill.classList.remove('text-herbalGreen');
+                }, 2000);
+            });
+        }
+
+        // Initialize UI on startup
+
+        updateCartUI();
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

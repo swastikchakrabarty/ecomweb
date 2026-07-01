@@ -1,0 +1,12 @@
+# ─── Django Runtime Exclusions ────────────────────────────────────────────────
+*.pyc
+__pycache__/
+db.sqlite3
+media/customer_avatars/
+media/invoices/
+
+# ─── Environment & System Configurations ──────────────────────────────────────
+venv/
+.env
+.vscode/
+.DS_Store

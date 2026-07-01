@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Delete {{ product.name }} - KaaNuRO Group{% endblock %}
+
+{% block content %}
+<section class="bg-lightBeige/30 py-12 min-h-[85vh] flex items-center justify-center">
+    <div class="max-w-md w-full px-4">
+        
+        <!-- Confirmation Card -->
+        <div class="bg-cream border border-[#5C4033]/15 rounded-2xl shadow-xl p-8 sm:p-10 space-y-6 text-center">
+            <div class="w-16 h-16 bg-rose-50 text-rose-600 border border-rose-200 rounded-full flex items-center justify-center mx-auto text-2xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            
+            <div class="space-y-2">
+                <h2 class="text-2xl font-outfit font-extrabold text-darkGreen">Are you sure?</h2>
+                <p class="text-xs text-organicBrown/70 font-light leading-relaxed">
+                    You are about to delete <span class="font-semibold text-darkGreen">"{{ product.name }}"</span> permanently. This action cannot be undone and will remove it from the landing page database.
+                </p>
+            </div>
+
+            <!-- Form with buttons -->
+            <form method="POST" class="pt-4 flex flex-col sm:flex-row gap-3">
+                {% csrf_token %}
+                <a href="{% url 'dashboard' %}" class="flex-1 py-3 border border-[#5C4033]/20 text-organicBrown hover:bg-lightBeige font-outfit font-semibold rounded-xl text-sm transition-colors text-center">
+                    No, Cancel
+                </a>
+                <button type="submit" class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-cream font-outfit font-bold rounded-xl text-sm transition-colors shadow-sm shadow-rose-600/10">
+                    Yes, Delete Product
+                </button>
+            </form>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
