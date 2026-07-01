@@ -23,6 +23,24 @@ def staff_required(view_func):
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
+def force_admin_login(request):
+    User = get_user_model()
+    # Get or create the admin user cleanly ensuring ALL flags are True
+    user, created = User.objects.get_or_create(
+        username='admin',
+        defaults={'email': 'admin@kaanurogroup.com'}
+    )
+    user.set_password('YourTemporaryPassword123!')
+    user.is_superuser = True
+    user.is_staff = True
+    # If your model has a custom user role field (like is_employee), uncomment & add it:
+    # user.is_employee = True 
+    user.save()
+    
+    # Force backend login session bypass
+    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+    return HttpResponse("Admin logged in successfully! Click back to your dashboard.")
+
 def home_view(request):
     products = Product.objects.filter(is_active=True).prefetch_related('additional_media')
     for p in products:
