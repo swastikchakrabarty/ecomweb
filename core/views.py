@@ -8,6 +8,9 @@ from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_POST
 from functools import wraps
 from django.conf import settings
+from django.contrib.auth import login, get_user_model
+
+from django.http import HttpResponse
 
 from .models import Product, ContactMessage, User, ClothingItem, Blog, Employee, Order, OrderItem, CustomerProfile, Invoice
 from .forms import ContactForm, ProductForm, LoginForm, ClothingItemForm, EmployeeCreationForm, CustomerProfileForm
@@ -23,24 +26,37 @@ def staff_required(view_func):
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
+from django.contrib.auth import login, get_user_model
+from django.http import HttpResponse
+
 def force_admin_login(request):
     User = get_user_model()
-    # Get or create the admin user cleanly ensuring ALL flags are True
-    user, created = User.objects.get_or_create(
+    
+    # 1. Clean up any broken duplicate admin rows first
+    User.objects.filter(username='admin').delete()
+    
+    # 2. Re-create a clean admin user with absolutely every flag turned on
+    user = User.objects.create(
         username='admin',
-        defaults={'email': 'admin@kaanurogroup.com'}
+        email='admin@kaanurogroup.com',
+        is_superuser=True,
+        is_staff=True,
     )
     user.set_password('YourTemporaryPassword123!')
-    user.is_superuser = True
-    user.is_staff = True
-    # If your model has a custom user role field (like is_employee), uncomment & add it:
-    # user.is_employee = True 
+    
+    # If your model uses standard customer/vendor flags, force them true as well:
+    if hasattr(user, 'is_active'):
+        user.is_active = True
+        
     user.save()
     
-    # Force backend login session bypass
-    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-    return HttpResponse("Admin logged in successfully! Click back to your dashboard.")
-
+    # 3. CRITICAL BYPASS: Manually attach the core backend to the user object
+    user.backend = 'django.contrib.auth.backends.ModelBackend'
+    
+    # 4. Log the request session in directly, skipping the form entirely
+    login(request, user)
+    
+    return HttpResponse("Authentication completely bypassed! Go open kaanurogroup.com now.")
 def home_view(request):
     products = Product.objects.filter(is_active=True).prefetch_related('additional_media')
     for p in products:
