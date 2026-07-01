@@ -12,7 +12,7 @@ def create_superuser(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('core', '0001_initial'), # Change 'core' or '0001_initial' if your first migration file matches a different name
+        ('core', '0009_customerprofile_default_address_and_more'),
     ]
 
     operations = [
