@@ -177,6 +177,23 @@ def login_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
 
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            messages.success(request, f'Welcome back, {user.username}!')
+            return redirect('dashboard')
+    else:
+        form = LoginForm()
+
+    return render(request, 'core/login.html', {'form': form})
+
+def logout_view(request):
+    auth_logout(request)
+    messages.info(request, 'You have been logged out.')
+    return redirect('home')
+
 
 def product_detail_view(request, pk):
     product = get_object_or_404(Product, pk=pk, is_active=True)
@@ -193,7 +210,7 @@ def product_detail_view(request, pk):
     else:
         review_form = ProductReviewForm()
 
-    # --- Related Products (same subtitle category tag, fallback to all active) ---
+    # --- Related Products ---
     related = Product.objects.filter(
         is_active=True, stock__gt=0
     ).exclude(pk=pk).order_by('?')[:4]
@@ -207,17 +224,14 @@ def product_detail_view(request, pk):
         viewed_ids.insert(0, pk)
     viewed_ids = viewed_ids[:4]
     request.session['recently_viewed'] = viewed_ids
-    # Fetch actual objects preserving order
     recently_viewed_qs = list(Product.objects.filter(pk__in=viewed_ids).exclude(pk=pk))
     recently_viewed_ordered = sorted(
         recently_viewed_qs,
         key=lambda p: viewed_ids.index(p.pk) if p.pk in viewed_ids else 99
     )
 
-    # --- Existing Reviews ---
     reviews = product.reviews.all()
 
-    # Build gallery list
     gallery = []
     if product.image:
         gallery.append(product.image.url)
@@ -226,18 +240,11 @@ def product_detail_view(request, pk):
     if product.image_3:
         gallery.append(product.image_3.url)
 
-    # Pre-parse ingredients and benefits for the template
     raw_ingredients = product.ingredients or ''
-    if '\n' in raw_ingredients:
-        ingredient_list = [i.strip() for i in raw_ingredients.splitlines() if i.strip()]
-    else:
-        ingredient_list = [i.strip() for i in raw_ingredients.split(',') if i.strip()]
+    ingredient_list = [i.strip() for i in (raw_ingredients.splitlines() if '\n' in raw_ingredients else raw_ingredients.split(',')) if i.strip()]
 
     raw_benefits = product.key_benefits or ''
-    if '\n' in raw_benefits:
-        benefit_list = [b.strip() for b in raw_benefits.splitlines() if b.strip()]
-    else:
-        benefit_list = [b.strip() for b in raw_benefits.split(',') if b.strip()]
+    benefit_list = [b.strip() for b in (raw_benefits.splitlines() if '\n' in raw_benefits else raw_benefits.split(',')) if b.strip()]
 
     context = {
         'product': product,
@@ -253,24 +260,6 @@ def product_detail_view(request, pk):
     }
     return render(request, 'core/product_detail.html', context)
 
-
-        
-    if request.method == 'POST':
-        form = LoginForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            auth_login(request, user)
-            messages.success(request, f'Welcome back, {user.username}!')
-            return redirect('dashboard')
-    else:
-        form = LoginForm()
-        
-    return render(request, 'core/login.html', {'form': form})
-
-def logout_view(request):
-    auth_logout(request)
-    messages.info(request, 'You have been logged out.')
-    return redirect('home')
 
 @login_required
 def dashboard_view(request):
