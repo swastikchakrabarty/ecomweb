@@ -35,6 +35,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Retail Price (INR)")
     image = models.ImageField(upload_to='products/', blank=True, null=True)
     is_active = models.BooleanField(default=True)
+    is_best_seller = models.BooleanField(default=False, verbose_name="Best Seller", help_text="Feature on homepage Best Sellers shelf")
+    is_new_arrival = models.BooleanField(default=False, verbose_name="New Arrival", help_text="Feature on homepage New Arrivals shelf")
+    is_trending = models.BooleanField(default=False, verbose_name="Trending", help_text="Feature on homepage Trending shelf")
 
     @property
     def media_list_json(self):

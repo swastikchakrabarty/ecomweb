@@ -65,6 +65,11 @@ def home_view(request):
             p.benefit_list = [b.strip() for b in p.key_benefits.split('\n') if b.strip()]
         else:
             p.benefit_list = [b.strip() for b in p.key_benefits.split(',') if b.strip()]
+
+    # --- Homepage Product Shelves ---
+    best_sellers = Product.objects.filter(is_active=True, is_best_seller=True).prefetch_related('additional_media')[:6]
+    new_arrivals = Product.objects.filter(is_active=True, is_new_arrival=True).prefetch_related('additional_media')[:6]
+    trending     = Product.objects.filter(is_active=True, is_trending=True).prefetch_related('additional_media')[:6]
             
     # Gather distinct values for apparel filtering from active items
     all_clothing = ClothingItem.objects.filter(is_active=True).prefetch_related('additional_media')
@@ -143,6 +148,9 @@ def home_view(request):
         
     context = {
         'products': products,
+        'best_sellers': best_sellers,
+        'new_arrivals': new_arrivals,
+        'trending': trending,
         'clothing_items': clothing_items,
         'blogs': blogs,
         'categories': categories,
