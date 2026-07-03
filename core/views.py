@@ -12,8 +12,8 @@ from django.contrib.auth import login, get_user_model
 
 from django.http import HttpResponse
 
-from .models import Product, ContactMessage, User, ClothingItem, Blog, Employee, Order, OrderItem, CustomerProfile, Invoice
-from .forms import ContactForm, ProductForm, LoginForm, ClothingItemForm, EmployeeCreationForm, CustomerProfileForm
+from .models import Product, ContactMessage, User, ClothingItem, Blog, Employee, Order, OrderItem, CustomerProfile, Invoice, ProductReview
+from .forms import ContactForm, ProductForm, LoginForm, ClothingItemForm, EmployeeCreationForm, CustomerProfileForm, ProductReviewForm
 
 def staff_required(view_func):
     """Decorator to restrict access to Admins, Employees, or Superusers."""
@@ -58,7 +58,8 @@ def force_admin_login(request):
     
     return HttpResponse("Authentication completely bypassed! Go open kaanurogroup.com now.")
 def home_view(request):
-    products = Product.objects.filter(is_active=True).prefetch_related('additional_media')
+    # Stock-aware catalog: only show in-stock active products
+    products = Product.objects.filter(is_active=True, stock__gt=0).prefetch_related('additional_media')
     for p in products:
         p.ingredient_list = [i.strip() for i in p.ingredients.split(',') if i.strip()]
         if '\n' in p.key_benefits:
@@ -66,10 +67,10 @@ def home_view(request):
         else:
             p.benefit_list = [b.strip() for b in p.key_benefits.split(',') if b.strip()]
 
-    # --- Homepage Product Shelves ---
-    best_sellers = Product.objects.filter(is_active=True, is_best_seller=True).prefetch_related('additional_media')[:6]
-    new_arrivals = Product.objects.filter(is_active=True, is_new_arrival=True).prefetch_related('additional_media')[:6]
-    trending     = Product.objects.filter(is_active=True, is_trending=True).prefetch_related('additional_media')[:6]
+    # --- Homepage Product Shelves (stock-aware) ---
+    best_sellers = Product.objects.filter(is_active=True, is_best_seller=True, stock__gt=0).prefetch_related('additional_media')[:6]
+    new_arrivals = Product.objects.filter(is_active=True, is_new_arrival=True, stock__gt=0).prefetch_related('additional_media')[:6]
+    trending     = Product.objects.filter(is_active=True, is_trending=True, stock__gt=0).prefetch_related('additional_media')[:6]
             
     # Gather distinct values for apparel filtering from active items
     all_clothing = ClothingItem.objects.filter(is_active=True).prefetch_related('additional_media')
@@ -175,6 +176,84 @@ def home_view(request):
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
+
+
+def product_detail_view(request, pk):
+    product = get_object_or_404(Product, pk=pk, is_active=True)
+
+    # --- Review Submission (POST) ---
+    if request.method == 'POST':
+        review_form = ProductReviewForm(request.POST)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.product = product
+            review.save()
+            messages.success(request, 'Thank you for your review!')
+            return redirect('product_detail', pk=pk)
+    else:
+        review_form = ProductReviewForm()
+
+    # --- Related Products (same subtitle category tag, fallback to all active) ---
+    related = Product.objects.filter(
+        is_active=True, stock__gt=0
+    ).exclude(pk=pk).order_by('?')[:4]
+
+    # --- Recently Viewed (session-based, last 4) ---
+    viewed_ids = request.session.get('recently_viewed', [])
+    if pk not in viewed_ids:
+        viewed_ids.insert(0, pk)
+    else:
+        viewed_ids.remove(pk)
+        viewed_ids.insert(0, pk)
+    viewed_ids = viewed_ids[:4]
+    request.session['recently_viewed'] = viewed_ids
+    # Fetch actual objects preserving order
+    recently_viewed_qs = list(Product.objects.filter(pk__in=viewed_ids).exclude(pk=pk))
+    recently_viewed_ordered = sorted(
+        recently_viewed_qs,
+        key=lambda p: viewed_ids.index(p.pk) if p.pk in viewed_ids else 99
+    )
+
+    # --- Existing Reviews ---
+    reviews = product.reviews.all()
+
+    # Build gallery list
+    gallery = []
+    if product.image:
+        gallery.append(product.image.url)
+    if product.image_2:
+        gallery.append(product.image_2.url)
+    if product.image_3:
+        gallery.append(product.image_3.url)
+
+    # Pre-parse ingredients and benefits for the template
+    raw_ingredients = product.ingredients or ''
+    if '\n' in raw_ingredients:
+        ingredient_list = [i.strip() for i in raw_ingredients.splitlines() if i.strip()]
+    else:
+        ingredient_list = [i.strip() for i in raw_ingredients.split(',') if i.strip()]
+
+    raw_benefits = product.key_benefits or ''
+    if '\n' in raw_benefits:
+        benefit_list = [b.strip() for b in raw_benefits.splitlines() if b.strip()]
+    else:
+        benefit_list = [b.strip() for b in raw_benefits.split(',') if b.strip()]
+
+    context = {
+        'product': product,
+        'ingredient_list': ingredient_list,
+        'benefit_list': benefit_list,
+        'review_form': review_form,
+        'reviews': reviews,
+        'related_products': related,
+        'recently_viewed': recently_viewed_ordered,
+        'gallery': gallery,
+        'upi_id': settings.UPI_ID,
+        'merchant_name': settings.MERCHANT_NAME,
+    }
+    return render(request, 'core/product_detail.html', context)
+
+
         
     if request.method == 'POST':
         form = LoginForm(data=request.POST)

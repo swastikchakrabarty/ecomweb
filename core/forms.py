@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from .models import ContactMessage, Product, User, ClothingItem, Employee, CustomerProfile
+from .models import ContactMessage, Product, User, ClothingItem, Employee, CustomerProfile, ProductReview
 
 
 class CustomerProfileForm(forms.ModelForm):
@@ -47,7 +47,9 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = [
             'name', 'subtitle_tagline', 'description', 'total_quantity_info',
-            'ingredients', 'key_benefits', 'directions_for_use', 'price', 'image', 'is_active'
+            'ingredients', 'key_benefits', 'directions_for_use', 'price',
+            'image', 'image_2', 'image_3', 'stock', 'is_active',
+            'is_best_seller', 'is_new_arrival', 'is_trending',
         ]
         widgets = {
             'name': forms.TextInput(attrs={
@@ -83,6 +85,19 @@ class ProductForm(forms.ModelForm):
             'is_active': forms.CheckboxInput(attrs={
                 'class': 'w-4 h-4 text-herbalGreen border-organicBrown/30 rounded focus:ring-herbalGreen'
             }),
+            'image_2': forms.ClearableFileInput(attrs={
+                'class': 'w-full text-sm text-organicBrown file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-lightBeige file:text-herbalGreen hover:file:bg-herbalGreen hover:file:text-cream'
+            }),
+            'image_3': forms.ClearableFileInput(attrs={
+                'class': 'w-full text-sm text-organicBrown file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-lightBeige file:text-herbalGreen hover:file:bg-herbalGreen hover:file:text-cream'
+            }),
+            'stock': forms.NumberInput(attrs={
+                'class': 'w-full px-4 py-2 bg-cream border border-organicBrown/30 rounded-lg focus:outline-none focus:border-herbalGreen focus:ring-1 focus:ring-herbalGreen text-organicBrown',
+                'min': '0'
+            }),
+            'is_best_seller': forms.CheckboxInput(attrs={'class': 'w-4 h-4 text-herbalGreen border-organicBrown/30 rounded focus:ring-herbalGreen'}),
+            'is_new_arrival': forms.CheckboxInput(attrs={'class': 'w-4 h-4 text-herbalGreen border-organicBrown/30 rounded focus:ring-herbalGreen'}),
+            'is_trending': forms.CheckboxInput(attrs={'class': 'w-4 h-4 text-herbalGreen border-organicBrown/30 rounded focus:ring-herbalGreen'}),
         }
 
 class LoginForm(AuthenticationForm):
@@ -170,3 +185,25 @@ class EmployeeCreationForm(forms.Form):
         if Employee.objects.filter(employee_id=employee_id).exists():
             raise forms.ValidationError("An employee with this Employee ID already exists.")
         return employee_id
+
+
+class ProductReviewForm(forms.ModelForm):
+    class Meta:
+        model = ProductReview
+        fields = ['user_name', 'rating', 'comment']
+        widgets = {
+            'user_name': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-3 bg-cream border border-organicBrown/20 rounded-lg focus:outline-none focus:border-herbalGreen text-darkGreen text-sm',
+                'placeholder': 'Your name'
+            }),
+            'rating': forms.Select(
+                choices=[(i, f'{i} Star{"s" if i > 1 else ""}') for i in range(1, 6)],
+                attrs={
+                    'class': 'w-full px-4 py-3 bg-cream border border-organicBrown/20 rounded-lg focus:outline-none focus:border-herbalGreen text-darkGreen text-sm'
+                }
+            ),
+            'comment': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-3 bg-cream border border-organicBrown/20 rounded-lg focus:outline-none focus:border-herbalGreen text-darkGreen text-sm h-28 resize-none',
+                'placeholder': 'Share your experience with this product...'
+            }),
+        }

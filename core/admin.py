@@ -1,22 +1,28 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Employee, Product, ContactMessage, ClothingItem, Blog, ProductMedia, Order, OrderItem, CustomerProfile, Invoice
+from .models import User, Employee, Product, ContactMessage, ClothingItem, Blog, ProductMedia, Order, OrderItem, CustomerProfile, Invoice, ProductReview
 
 class ProductMediaInline(admin.TabularInline):
     model = ProductMedia
     extra = 1
-    fk_name = 'product'  # Explicitly specify to avoid ambiguity when multiple FKs exist
+    fk_name = 'product'
+
+class ProductReviewInline(admin.TabularInline):
+    model = ProductReview
+    extra = 0
+    readonly_fields = ('created_at',)
 
 class ClothingItemMediaInline(admin.TabularInline):
     model = ProductMedia
     extra = 1
-    fk_name = 'clothing_item'  # Explicitly specify to avoid ambiguity when multiple FKs exist
+    fk_name = 'clothing_item'
 
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductMediaInline]
-    list_display = ('name', 'price', 'is_active')
+    inlines = [ProductMediaInline, ProductReviewInline]
+    list_display = ('name', 'price', 'stock', 'is_active', 'is_best_seller', 'is_new_arrival', 'is_trending')
     search_fields = ('name', 'subtitle_tagline')
-    list_filter = ('is_active',)
+    list_filter = ('is_active', 'is_best_seller', 'is_new_arrival', 'is_trending')
+    list_editable = ('is_active', 'is_best_seller', 'is_new_arrival', 'is_trending')
 
 class ClothingItemAdmin(admin.ModelAdmin):
     inlines = [ClothingItemMediaInline]
@@ -57,6 +63,7 @@ admin.site.register(Blog)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ClothingItem, ClothingItemAdmin)
 admin.site.register(ProductMedia)
+admin.site.register(ProductReview)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem)
 admin.site.register(CustomerProfile, CustomerProfileAdmin)

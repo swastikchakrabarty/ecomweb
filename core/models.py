@@ -34,6 +34,9 @@ class Product(models.Model):
     directions_for_use = models.TextField(blank=True, help_text="Preparation and timing guidelines")
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Retail Price (INR)")
     image = models.ImageField(upload_to='products/', blank=True, null=True)
+    image_2 = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name="Gallery Image 2")
+    image_3 = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name="Gallery Image 3")
+    stock = models.PositiveIntegerField(default=0, verbose_name="Stock Quantity", help_text="Set to 0 to auto-hide from catalog")
     is_active = models.BooleanField(default=True)
     is_best_seller = models.BooleanField(default=False, verbose_name="Best Seller", help_text="Feature on homepage Best Sellers shelf")
     is_new_arrival = models.BooleanField(default=False, verbose_name="New Arrival", help_text="Feature on homepage New Arrivals shelf")
@@ -202,3 +205,19 @@ class Invoice(models.Model):
 
     def __str__(self):
         return f"Receipt {self.invoice_number} for Order {self.order.order_id}"
+
+
+# --- PRODUCT REVIEWS ---
+class ProductReview(models.Model):
+    RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    user_name = models.CharField(max_length=100, verbose_name="Reviewer Name")
+    rating = models.IntegerField(default=5, choices=RATING_CHOICES)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user_name} — {self.rating}★ on {self.product.name}"

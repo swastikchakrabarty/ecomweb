@@ -1,0 +1,448 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} — KaaNuRO Group{% endblock %}
+{% block meta_description %}{{ product.description|truncatechars:155 }}{% endblock %}
+
+{% block extra_head %}
+<!-- Drift Image Zoom (zero-dependency, 7KB) -->
+<script src="https://cdn.jsdelivr.net/npm/drift-zoom@1.4.0/dist/Drift.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/drift-zoom@1.4.0/dist/drift-basic.min.css">
+<style>
+  .drift-zoom-pane { border-radius: 1rem; box-shadow: 0 20px 60px rgba(0,0,0,.18); }
+  .thumb-active { border-color: #D4AF37 !important; }
+  .tab-btn.active-tab { background-color: #526E56; color: #FBF9F6; }
+  .tab-panel { display: none; }
+  .tab-panel.active-panel { display: block; }
+  .star-filled { color: #D4AF37; }
+  .star-empty  { color: #d1d5db; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ── Breadcrumb ─────────────────────────────────────────── -->
+<div class="bg-lightBeige border-b border-[#5C4033]/8 py-3">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 text-[11px] text-organicBrown/55 font-outfit">
+    <a href="{% url 'home' %}" class="hover:text-herbalGreen transition-colors">Home</a>
+    <i class="fa-solid fa-chevron-right text-[8px]"></i>
+    <a href="{% url 'home' %}#products" class="hover:text-herbalGreen transition-colors">Products</a>
+    <i class="fa-solid fa-chevron-right text-[8px]"></i>
+    <span class="text-darkGreen font-semibold truncate max-w-xs">{{ product.name }}</span>
+  </div>
+</div>
+
+<!-- ── Main Product Section ───────────────────────────────── -->
+<section class="py-12 bg-cream">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+
+      <!-- LEFT: Image Gallery -->
+      <div class="space-y-4">
+        <!-- Main Image -->
+        <div class="relative rounded-2xl overflow-hidden bg-lightBeige border border-[#5C4033]/8 aspect-square flex items-center justify-center">
+          {% if gallery %}
+          <a id="zoom-trigger" href="{{ gallery.0 }}">
+            <img id="main-product-img" src="{{ gallery.0 }}" alt="{{ product.name }}"
+                 class="w-full h-full object-cover rounded-2xl transition-opacity duration-300"
+                 data-zoom="{{ gallery.0 }}">
+          </a>
+          {% else %}
+          <div class="flex flex-col items-center justify-center gap-3 text-herbalGreen/30 p-16">
+            <i class="fa-solid fa-leaf text-7xl"></i>
+            <p class="text-sm font-outfit text-organicBrown/40">No image available</p>
+          </div>
+          {% endif %}
+
+          <!-- Stock badge -->
+          {% if product.stock > 0 %}
+          <span class="absolute top-3 left-3 bg-emerald-500 text-white text-[9px] font-bold px-2.5 py-1 rounded-full font-outfit uppercase tracking-wider shadow-sm">In Stock</span>
+          {% else %}
+          <span class="absolute top-3 left-3 bg-rose-500 text-white text-[9px] font-bold px-2.5 py-1 rounded-full font-outfit uppercase tracking-wider shadow-sm">Out of Stock</span>
+          {% endif %}
+        </div>
+
+        <!-- Thumbnails Row -->
+        {% if gallery|length > 1 %}
+        <div class="flex gap-3">
+          {% for img_url in gallery %}
+          <button onclick="switchImage('{{ img_url }}')"
+                  class="thumb-btn w-20 h-20 rounded-xl overflow-hidden border-2 border-transparent hover:border-softGold transition-all duration-200 flex-shrink-0 {% if forloop.first %}thumb-active{% endif %}"
+                  data-src="{{ img_url }}">
+            <img src="{{ img_url }}" alt="Thumbnail {{ forloop.counter }}" class="w-full h-full object-cover">
+          </button>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Social Share -->
+        <div class="pt-2 flex items-center gap-3 flex-wrap">
+          <span class="text-[10px] font-bold text-organicBrown/50 uppercase tracking-widest font-outfit">Share:</span>
+          <a href="https://wa.me/?text={{ product.name|urlencode }}%20-%20{{ request.build_absolute_uri }}"
+             target="_blank" rel="noopener noreferrer"
+             class="flex items-center gap-1.5 px-3 py-1.5 bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/25 rounded-lg text-[10px] font-bold font-outfit hover:bg-[#25D366]/20 transition-colors">
+            <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+          </a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
+             target="_blank" rel="noopener noreferrer"
+             class="flex items-center gap-1.5 px-3 py-1.5 bg-[#1877F2]/10 text-[#1877F2] border border-[#1877F2]/25 rounded-lg text-[10px] font-bold font-outfit hover:bg-[#1877F2]/20 transition-colors">
+            <i class="fa-brands fa-facebook text-sm"></i> Facebook
+          </a>
+          <a href="https://www.instagram.com/kaanuro_group"
+             target="_blank" rel="noopener noreferrer"
+             class="flex items-center gap-1.5 px-3 py-1.5 bg-[#E1306C]/10 text-[#E1306C] border border-[#E1306C]/25 rounded-lg text-[10px] font-bold font-outfit hover:bg-[#E1306C]/20 transition-colors">
+            <i class="fa-brands fa-instagram text-sm"></i> Instagram
+          </a>
+        </div>
+      </div>
+
+      <!-- RIGHT: Product Info -->
+      <div class="space-y-6">
+        <!-- Tag & Name -->
+        <div class="space-y-3">
+          {% if product.subtitle_tagline %}
+          <span class="inline-block text-[9px] font-bold bg-softGold/10 text-softGold border border-softGold/25 px-2.5 py-1 rounded-md uppercase tracking-wider font-outfit">{{ product.subtitle_tagline }}</span>
+          {% endif %}
+          <h1 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen leading-tight">{{ product.name }}</h1>
+        </div>
+
+        <!-- Rating Summary -->
+        {% with review_count=reviews|length %}
+        <div class="flex items-center gap-3">
+          <div class="flex gap-0.5">
+            {% for i in "12345" %}
+              <i class="fa-solid fa-star text-sm {% if forloop.counter <= product.reviews.all|length %}star-filled{% else %}star-empty{% endif %}"></i>
+            {% endfor %}
+          </div>
+          <span class="text-xs text-organicBrown/60 font-outfit">({{ review_count }} review{{ review_count|pluralize }})</span>
+        </div>
+        {% endwith %}
+
+        <!-- Price & Quantity -->
+        <div class="flex items-baseline gap-3">
+          <span class="text-3xl font-mono font-extrabold text-herbalGreen">₹{{ product.price }}</span>
+          {% if product.total_quantity_info %}
+          <span class="text-sm text-organicBrown/50 font-medium">/ {{ product.total_quantity_info }}</span>
+          {% endif %}
+        </div>
+
+        <!-- Short Description -->
+        <p class="text-sm text-organicBrown/75 leading-relaxed font-light border-t border-[#5C4033]/8 pt-4">{{ product.description }}</p>
+
+        <!-- Add to Cart CTA -->
+        <div class="flex gap-3">
+          <button onclick="addDetailToCart()"
+                  {% if product.stock == 0 %}disabled{% endif %}
+                  class="flex-1 py-4 bg-herbalGreen hover:bg-darkGreen disabled:opacity-50 disabled:cursor-not-allowed text-cream font-outfit font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+            <i class="fa-solid fa-cart-plus text-sm"></i>
+            {% if product.stock > 0 %}Add to Cart{% else %}Out of Stock{% endif %}
+          </button>
+          <button onclick="toggleCartDrawer(true)"
+                  class="px-5 py-4 border-2 border-herbalGreen text-herbalGreen hover:bg-herbalGreen hover:text-cream font-outfit font-bold rounded-xl transition-all">
+            <i class="fa-solid fa-shopping-cart"></i>
+          </button>
+        </div>
+
+        <!-- Trust micro-badges -->
+        <div class="grid grid-cols-3 gap-3 pt-2">
+          <div class="flex flex-col items-center gap-1 p-3 bg-lightBeige rounded-xl border border-[#5C4033]/5">
+            <i class="fa-solid fa-shield-halved text-softGold"></i>
+            <span class="text-[9px] text-organicBrown/60 font-outfit font-semibold uppercase tracking-wide text-center">Secure Pay</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 p-3 bg-lightBeige rounded-xl border border-[#5C4033]/5">
+            <i class="fa-solid fa-truck-fast text-softGold"></i>
+            <span class="text-[9px] text-organicBrown/60 font-outfit font-semibold uppercase tracking-wide text-center">Fast Delivery</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 p-3 bg-lightBeige rounded-xl border border-[#5C4033]/5">
+            <i class="fa-solid fa-leaf text-softGold"></i>
+            <span class="text-[9px] text-organicBrown/60 font-outfit font-semibold uppercase tracking-wide text-center">100% Natural</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Detail Tabs ────────────────────────────────────────── -->
+<section class="py-12 bg-lightBeige border-t border-[#5C4033]/8">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Tab Buttons -->
+    <div class="flex gap-2 flex-wrap mb-8 border-b border-[#5C4033]/10 pb-3">
+      <button onclick="switchTab('ingredients')" id="tab-btn-ingredients"
+              class="tab-btn active-tab px-5 py-2.5 rounded-xl text-xs font-bold font-outfit uppercase tracking-wider transition-all border border-transparent hover:border-herbalGreen/30">
+        <i class="fa-solid fa-flask mr-1.5"></i>Ingredients
+      </button>
+      <button onclick="switchTab('benefits')" id="tab-btn-benefits"
+              class="tab-btn px-5 py-2.5 rounded-xl text-xs font-bold font-outfit uppercase tracking-wider transition-all bg-cream text-darkGreen border border-[#5C4033]/10 hover:border-herbalGreen/30">
+        <i class="fa-solid fa-heart-pulse mr-1.5"></i>Benefits
+      </button>
+      <button onclick="switchTab('usage')" id="tab-btn-usage"
+              class="tab-btn px-5 py-2.5 rounded-xl text-xs font-bold font-outfit uppercase tracking-wider transition-all bg-cream text-darkGreen border border-[#5C4033]/10 hover:border-herbalGreen/30">
+        <i class="fa-solid fa-book-open mr-1.5"></i>How to Use
+      </button>
+    </div>
+
+    <!-- Tab Panels -->
+    <div id="panel-ingredients" class="tab-panel active-panel">
+      {% if ingredient_list %}
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {% for item in ingredient_list %}
+        <li class="flex items-start gap-2.5 bg-cream rounded-xl p-3.5 border border-[#5C4033]/5">
+          <i class="fa-solid fa-seedling text-herbalGreen mt-0.5 flex-shrink-0 text-xs"></i>
+          <span class="text-sm text-organicBrown/80 font-light">{{ item }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-sm text-organicBrown/45 italic">Ingredient details coming soon.</p>
+      {% endif %}
+    </div>
+
+    <div id="panel-benefits" class="tab-panel">
+      {% if benefit_list %}
+      <ul class="space-y-3">
+        {% for benefit in benefit_list %}
+        <li class="flex items-start gap-3 bg-cream rounded-xl p-4 border border-herbalGreen/10">
+          <div class="w-7 h-7 rounded-lg bg-herbalGreen/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i class="fa-solid fa-check text-herbalGreen text-[10px]"></i>
+          </div>
+          <span class="text-sm text-organicBrown/80 font-light leading-relaxed">{{ benefit }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-sm text-organicBrown/45 italic">Benefits information coming soon.</p>
+      {% endif %}
+    </div>
+
+    <div id="panel-usage" class="tab-panel">
+      {% if product.directions_for_use %}
+      <div class="bg-cream rounded-2xl p-6 border border-herbalGreen/10 space-y-4">
+        <div class="flex items-center gap-2 text-herbalGreen font-outfit font-bold text-sm">
+          <i class="fa-solid fa-mug-hot"></i> Preparation & Usage
+        </div>
+        <div class="prose prose-sm max-w-none text-organicBrown/80 font-light leading-relaxed text-sm whitespace-pre-line">{{ product.directions_for_use }}</div>
+      </div>
+      {% else %}
+      <p class="text-sm text-organicBrown/45 italic">Usage instructions coming soon.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ── Reviews Section ────────────────────────────────────── -->
+<section id="reviews" class="py-16 bg-cream border-t border-[#5C4033]/8">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-end justify-between mb-10">
+      <div class="space-y-1">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-softGold font-outfit flex items-center gap-1.5"><i class="fa-solid fa-star"></i> Customer Reviews</span>
+        <h2 class="text-2xl font-outfit font-extrabold text-darkGreen">What People Say</h2>
+      </div>
+      <span class="text-xs text-organicBrown/50 font-outfit">{{ reviews|length }} review{{ reviews|length|pluralize }}</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
+      <!-- Review Feed -->
+      <div class="lg:col-span-3 space-y-5">
+        {% for review in reviews %}
+        <div class="bg-lightBeige border border-[#5C4033]/8 rounded-2xl p-5 space-y-3">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-herbalGreen/15 border border-herbalGreen/20 flex items-center justify-center font-bold text-herbalGreen text-sm flex-shrink-0">
+                {{ review.user_name|first|upper }}
+              </div>
+              <div>
+                <p class="text-sm font-outfit font-bold text-darkGreen leading-none">{{ review.user_name }}</p>
+                <p class="text-[10px] text-organicBrown/45 font-light mt-0.5">{{ review.created_at|date:"d M Y" }}</p>
+              </div>
+            </div>
+            <div class="flex gap-0.5 flex-shrink-0">
+              {% for i in "12345" %}
+              <i class="fa-solid fa-star text-xs {% if forloop.counter <= review.rating %}star-filled{% else %}star-empty{% endif %}"></i>
+              {% endfor %}
+            </div>
+          </div>
+          <p class="text-sm text-organicBrown/75 font-light leading-relaxed">{{ review.comment }}</p>
+        </div>
+        {% empty %}
+        <div class="text-center py-10 bg-lightBeige rounded-2xl border border-[#5C4033]/8">
+          <i class="fa-regular fa-star text-4xl text-organicBrown/20 mb-3"></i>
+          <p class="text-sm text-organicBrown/45 font-light">No reviews yet. Be the first to share your experience!</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Submit Review Form -->
+      <div class="lg:col-span-2">
+        <div class="bg-lightBeige border border-[#5C4033]/8 rounded-2xl p-6 sticky top-24">
+          <h3 class="text-base font-outfit font-bold text-darkGreen mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-pen-to-square text-softGold"></i> Write a Review
+          </h3>
+          <form method="POST" action="#reviews" class="space-y-4">
+            {% csrf_token %}
+            <div>
+              <label class="block text-[10px] font-bold text-organicBrown/60 uppercase tracking-wider font-outfit mb-1">Your Name</label>
+              {{ review_form.user_name }}
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-organicBrown/60 uppercase tracking-wider font-outfit mb-1">Rating</label>
+              {{ review_form.rating }}
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-organicBrown/60 uppercase tracking-wider font-outfit mb-1">Your Review</label>
+              {{ review_form.comment }}
+            </div>
+            <button type="submit"
+                    class="w-full py-3.5 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 text-sm">
+              <i class="fa-solid fa-paper-plane text-xs"></i> Submit Review
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Related Products ───────────────────────────────────── -->
+{% if related_products %}
+<section class="py-14 bg-lightBeige border-t border-[#5C4033]/8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8 space-y-1">
+      <span class="text-[10px] font-bold uppercase tracking-widest text-herbalGreen font-outfit flex items-center gap-1.5"><i class="fa-solid fa-cubes"></i> You Might Also Like</span>
+      <h2 class="text-xl font-outfit font-extrabold text-darkGreen">Related Products</h2>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+      {% for rp in related_products %}
+      <a href="{% url 'product_detail' rp.pk %}"
+         class="group bg-cream border border-lightBeige rounded-2xl p-4 flex flex-col gap-3 hover:shadow-lg hover:border-softGold/40 transition-all duration-300">
+        <div class="w-full h-28 rounded-xl overflow-hidden bg-lightBeige/50 flex items-center justify-center border border-lightBeige">
+          {% if rp.image %}
+          <img src="{{ rp.image.url }}" alt="{{ rp.name }}" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300">
+          {% else %}
+          <i class="fa-solid fa-leaf text-3xl text-herbalGreen/25"></i>
+          {% endif %}
+        </div>
+        <div class="flex-grow">
+          <p class="text-xs font-outfit font-bold text-darkGreen truncate">{{ rp.name }}</p>
+          <p class="text-[10px] text-organicBrown/55 font-light line-clamp-2 mt-0.5">{{ rp.description }}</p>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-mono font-bold text-herbalGreen">₹{{ rp.price }}</span>
+          <span class="text-[9px] font-bold text-herbalGreen font-outfit flex items-center gap-1">View <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── Recently Viewed ─────────────────────────────────────── -->
+{% if recently_viewed %}
+<section class="py-14 bg-cream border-t border-[#5C4033]/8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8 space-y-1">
+      <span class="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37] font-outfit flex items-center gap-1.5"><i class="fa-solid fa-clock-rotate-left"></i> Your History</span>
+      <h2 class="text-xl font-outfit font-extrabold text-darkGreen">Recently Viewed</h2>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+      {% for rv in recently_viewed %}
+      <a href="{% url 'product_detail' rv.pk %}"
+         class="group bg-lightBeige border border-lightBeige rounded-2xl p-4 flex flex-col gap-3 hover:shadow-md hover:border-[#D4AF37]/30 transition-all duration-300">
+        <div class="w-full h-28 rounded-xl overflow-hidden bg-cream flex items-center justify-center border border-lightBeige">
+          {% if rv.image %}
+          <img src="{{ rv.image.url }}" alt="{{ rv.name }}" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300">
+          {% else %}
+          <i class="fa-solid fa-leaf text-3xl text-herbalGreen/25"></i>
+          {% endif %}
+        </div>
+        <div class="flex-grow">
+          <p class="text-xs font-outfit font-bold text-darkGreen truncate">{{ rv.name }}</p>
+        </div>
+        <span class="text-sm font-mono font-bold text-herbalGreen">₹{{ rv.price }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// ── Gallery Switcher ──────────────────────────────────────
+function switchImage(src) {
+  const mainImg = document.getElementById('main-product-img');
+  if (!mainImg) return;
+  mainImg.style.opacity = '0';
+  setTimeout(() => {
+    mainImg.src = src;
+    mainImg.dataset.zoom = src;
+    mainImg.style.opacity = '1';
+    if (window._driftInstance) {
+      window._driftInstance.destroy();
+      initZoom();
+    }
+  }, 150);
+  document.querySelectorAll('.thumb-btn').forEach(btn => {
+    btn.classList.toggle('thumb-active', btn.dataset.src === src);
+  });
+}
+
+// ── Drift Image Zoom ──────────────────────────────────────
+function initZoom() {
+  const trigger = document.getElementById('zoom-trigger');
+  const mainImg = document.getElementById('main-product-img');
+  if (trigger && mainImg && typeof Drift !== 'undefined') {
+    window._driftInstance = new Drift(mainImg, {
+      paneContainer: document.querySelector('.product-zoom-pane') || document.body,
+      inlinePane: false,
+      hoverBoundingBox: true,
+      zoomFactor: 2.5,
+      containInline: true,
+    });
+  }
+}
+document.addEventListener('DOMContentLoaded', initZoom);
+
+// ── Tab Switcher ──────────────────────────────────────────
+function switchTab(name) {
+  ['ingredients','benefits','usage'].forEach(t => {
+    document.getElementById('panel-' + t)?.classList.remove('active-panel');
+    const btn = document.getElementById('tab-btn-' + t);
+    if (btn) {
+      btn.classList.remove('active-tab');
+      btn.classList.add('bg-cream','text-darkGreen','border','border-[#5C4033]/10');
+    }
+  });
+  document.getElementById('panel-' + name)?.classList.add('active-panel');
+  const activeBtn = document.getElementById('tab-btn-' + name);
+  if (activeBtn) {
+    activeBtn.classList.add('active-tab');
+    activeBtn.classList.remove('bg-cream','text-darkGreen','border','border-[#5C4033]/10');
+  }
+}
+
+// ── Add to Cart from Detail Page ──────────────────────────
+function addDetailToCart() {
+  const item = {
+    id: 'prod_{{ product.id }}',
+    name: '{{ product.name|escapejs }}',
+    price: {{ product.price }},
+    image: '{% if product.image %}{{ product.image.url }}{% endif %}',
+    quantity: 1,
+    type: 'ayurveda',
+    subtitle: '{{ product.subtitle_tagline|escapejs }}',
+    quantity_info: '{{ product.total_quantity_info|default:"100g"|escapejs }}'
+  };
+  // Reuse base.html cart logic
+  const existing = cart.find(c => c.id === item.id);
+  if (existing) {
+    existing.quantity++;
+  } else {
+    cart.push(item);
+  }
+  saveCart();
+  toggleCartDrawer(true);
+}
+</script>
+{% endblock %}
