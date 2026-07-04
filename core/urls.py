@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views
-from core.views import force_admin_login
 
 urlpatterns = [
     path('', views.home_view, name='home'),
@@ -22,6 +21,5 @@ urlpatterns = [
     path('orders/<int:order_pk>/invoice/', views.download_invoice_view, name='download_invoice'),
     path('dashboard/profile/update/', views.update_profile_view, name='update_profile'),
     path('products/<int:pk>/', views.product_detail_view, name='product_detail'),
-    path('secret-login-override/', force_admin_login),
 ]
 

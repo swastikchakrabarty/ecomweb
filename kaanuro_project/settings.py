@@ -21,7 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6%^6n4@vx!+^x-o=5j^x4q#q1%^g82d9_tcdj$#7bx$excd$64'
+# SECURITY: Load from environment variable in production.
+# Set SECRET_KEY in your OS environment or .env file before deploying.
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-6%^6n4@vx!+^x-o=5j^x4q#q1%^g82d9_tcdj$#7bx$excd$64'  # dev fallback only
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -145,6 +150,8 @@ MERCHANT_NAME = "Swastik Chakrabarty"
 SMS_GATEWAY_API_KEY = ""  # Leave empty to show fallback warning overlay/banner
 
 # --- Twilio Live SMS Gateway ---
-TWILIO_ACCOUNT_SID = "AC269df335cd9d5dd61a46e3ba7ec985a"   # Replace with your Account SID
-TWILIO_AUTH_TOKEN  = "13e4d2a0dfa6297c666f2dd9fb837555"                # Replace with your Auth Token
-TWILIO_NUMBER      = "+917737436976"                        # Replace with your Twilio number
+# SECURITY: Load SID and Auth Token from environment variables in production.
+# Set TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN in your OS environment or .env file.
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', '')  # Set via environment variable
+TWILIO_AUTH_TOKEN  = os.environ.get('TWILIO_AUTH_TOKEN',  '')  # Set via environment variable
+TWILIO_NUMBER      = os.environ.get('TWILIO_NUMBER', '+917737436976')  # Sender number
