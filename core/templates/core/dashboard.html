@@ -322,8 +322,12 @@
                                         <select name="status" onchange="this.form.submit()" class="bg-cream border border-organicBrown/20 text-xs rounded-xl px-3 py-2 text-darkGreen font-bold focus:outline-none focus:border-herbalGreen cursor-pointer shadow-sm">
                                             <option value="pending" {% if order.status == 'pending' %}selected{% endif %} class="text-rose-600 font-semibold">Awaiting Verification</option>
                                             <option value="confirmed" {% if order.status == 'confirmed' %}selected{% endif %} class="text-indigo-600 font-semibold">Confirmed</option>
-                                            <option value="processing" {% if order.status == 'processing' %}selected{% endif %} class="text-amber-600 font-semibold">Processing & Packing</option>
-                                            <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %} class="text-emerald-600 font-semibold">Dispatched</option>
+                                            <option value="processing" {% if order.status == 'processing' %}selected{% endif %} class="text-amber-600 font-semibold">Processing &amp; Packing</option>
+                                            <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %} class="text-teal-600 font-semibold">Dispatched</option>
+                                            <option value="out_for_delivery" {% if order.status == 'out_for_delivery' %}selected{% endif %} class="text-herbalGreen font-semibold">Out for Delivery</option>
+                                            <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %} class="text-emerald-600 font-semibold">Delivered</option>
+                                            <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %} class="text-rose-700 font-semibold">Cancelled</option>
+                                            <option value="return_requested" {% if order.status == 'return_requested' %}selected{% endif %} class="text-orange-600 font-semibold">Return Requested</option>
                                         </select>
                                     </form>
                                 </td>
@@ -537,6 +541,25 @@
                     {% endif %}
                 </div>
 
+                <!-- Wallet Balance Chip -->
+                {% if profile %}
+                <div class="bg-softGold/8 border border-softGold/25 rounded-xl p-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 bg-softGold/15 rounded-lg flex items-center justify-center">
+                            <i class="fa-solid fa-wallet text-softGold text-xs"></i>
+                        </div>
+                        <div>
+                            <p class="text-[9px] uppercase tracking-wider text-organicBrown/60 font-outfit font-semibold">Wallet Balance</p>
+                            <p class="text-sm font-mono font-bold text-darkGreen">₹{{ profile.wallet_balance|default:"0.00" }}</p>
+                        </div>
+                    </div>
+                    <a href="{% url 'wishlist' %}" class="text-[9px] text-herbalGreen font-semibold hover:underline flex items-center gap-1">
+                        <i class="fa-solid fa-heart text-[8px]"></i>
+                        <span>{{ wishlist_count }} Saved</span>
+                    </a>
+                </div>
+                {% endif %}
+
                 <!-- Profile Update Form -->
                 {% if profile %}
                 <div class="border-t border-lightBeige pt-4 space-y-4">
@@ -592,6 +615,7 @@
 
             <!-- Right Order Tracking Workspace -->
             <div class="md:col-span-8 space-y-6">
+                <!-- ORDER TRACKING TABLE -->
                 <div class="bg-cream border border-organicBrown/10 rounded-2xl p-6 shadow-sm space-y-6">
                     <div class="border-b border-lightBeige pb-4 flex justify-between items-center">
                         <h2 class="text-xl font-outfit font-extrabold text-darkGreen">
@@ -609,9 +633,9 @@
                                     <th class="py-3 px-4">Order ID</th>
                                     <th class="py-3 px-4">Date</th>
                                     <th class="py-3 px-4">Items</th>
-                                    <th class="py-3 px-4">Total Amount</th>
+                                    <th class="py-3 px-4">Total</th>
                                     <th class="py-3 px-4">Status</th>
-                                    <th class="py-3 px-4 text-right">Invoice</th>
+                                    <th class="py-3 px-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-lightBeige text-sm">
@@ -636,31 +660,71 @@
                                     <td class="py-4 px-4">
                                         {% if order.status == 'pending' %}
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                                            Awaiting Verification
+                                            <i class="fa-solid fa-clock text-[8px] mr-1"></i> Awaiting Verify
                                         </span>
                                         {% elif order.status == 'confirmed' %}
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                                            Confirmed
+                                            <i class="fa-solid fa-circle-check text-[8px] mr-1"></i> Confirmed
                                         </span>
                                         {% elif order.status == 'processing' %}
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                                            Processing
+                                            <i class="fa-solid fa-gear text-[8px] mr-1"></i> Processing
                                         </span>
                                         {% elif order.status == 'shipped' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200">
+                                            <i class="fa-solid fa-truck text-[8px] mr-1"></i> Dispatched
+                                        </span>
+                                        {% elif order.status == 'out_for_delivery' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-herbalGreen/10 text-herbalGreen border border-herbalGreen/25">
+                                            <i class="fa-solid fa-motorcycle text-[8px] mr-1"></i> Out for Delivery
+                                        </span>
+                                        {% elif order.status == 'delivered' %}
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                            Dispatched
+                                            <i class="fa-solid fa-house-circle-check text-[8px] mr-1"></i> Delivered
+                                        </span>
+                                        {% elif order.status == 'cancelled' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                            <i class="fa-solid fa-ban text-[8px] mr-1"></i> Cancelled
+                                        </span>
+                                        {% elif order.status == 'return_requested' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-50 text-orange-700 border border-orange-200">
+                                            <i class="fa-solid fa-rotate-left text-[8px] mr-1"></i> Return Requested
                                         </span>
                                         {% endif %}
                                     </td>
-                                    <td class="py-4 px-4 text-right">
-                                        {% if order.invoice %}
-                                        <a href="{% url 'download_invoice' order.pk %}" class="inline-flex items-center justify-center px-2.5 py-1.5 bg-herbalGreen text-cream rounded-lg hover:bg-darkGreen transition-colors text-xs font-semibold space-x-1">
-                                            <i class="fa-solid fa-file-arrow-down text-[10px]"></i>
-                                            <span>Invoice</span>
-                                        </a>
-                                        {% else %}
-                                        <span class="text-xs text-organicBrown/40 font-light">N/A</span>
-                                        {% endif %}
+                                    <td class="py-4 px-4">
+                                        <div class="flex flex-col items-center gap-1.5">
+                                            <!-- Invoice Download -->
+                                            {% if order.invoice %}
+                                            <a href="{% url 'download_invoice' order.pk %}" class="inline-flex items-center justify-center px-2.5 py-1.5 bg-herbalGreen text-cream rounded-lg hover:bg-darkGreen transition-colors text-xs font-semibold gap-1">
+                                                <i class="fa-solid fa-file-arrow-down text-[10px]"></i> Invoice
+                                            </a>
+                                            {% endif %}
+                                            <!-- Cancel Button (pending/confirmed only) -->
+                                            {% if order.status == 'pending' or order.status == 'confirmed' %}
+                                            <form action="{% url 'order_cancel_return' order.pk %}" method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="cancel">
+                                                <button type="submit" class="inline-flex items-center px-2.5 py-1.5 border border-rose-200 text-rose-600 rounded-lg hover:bg-rose-50 transition-colors text-xs font-semibold gap-1" onclick="return confirm('Cancel this order?')">
+                                                    <i class="fa-solid fa-ban text-[9px]"></i> Cancel
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                            <!-- Return Request Button (delivered only) -->
+                                            {% if order.status == 'delivered' %}
+                                            <form action="{% url 'order_cancel_return' order.pk %}" method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="return">
+                                                <button type="submit" class="inline-flex items-center px-2.5 py-1.5 border border-orange-200 text-orange-600 rounded-lg hover:bg-orange-50 transition-colors text-xs font-semibold gap-1" onclick="return confirm('Request a return for this order?')">
+                                                    <i class="fa-solid fa-rotate-left text-[9px]"></i> Return
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                            <!-- No action available -->
+                                            {% if not order.invoice and order.status not in 'pending,confirmed,delivered' %}
+                                            <span class="text-[9px] text-organicBrown/35 font-light">—</span>
+                                            {% endif %}
+                                        </div>
                                     </td>
                                 </tr>
                                 {% empty %}
@@ -674,6 +738,108 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- ══ ADDRESSES MANAGEMENT PANEL ══════════════════════════════ -->
+                <div class="bg-cream border border-organicBrown/10 rounded-2xl p-6 shadow-sm space-y-6">
+                    <div class="border-b border-lightBeige pb-4 flex justify-between items-center">
+                        <h2 class="text-xl font-outfit font-extrabold text-darkGreen">
+                            <i class="fa-solid fa-location-dot text-softGold mr-2"></i>Saved Addresses
+                        </h2>
+                        <button id="toggle-address-form-btn" onclick="document.getElementById('add-address-panel').classList.toggle('hidden')" class="text-xs font-bold text-herbalGreen hover:text-darkGreen flex items-center gap-1.5 font-outfit transition-colors">
+                            <i class="fa-solid fa-plus text-[10px]"></i> Add New
+                        </button>
+                    </div>
+
+                    <!-- Add Address Form (hidden by default) -->
+                    <div id="add-address-panel" class="hidden bg-lightBeige/30 border border-lightBeige rounded-xl p-5 space-y-4">
+                        <h3 class="text-sm font-bold font-outfit text-darkGreen">New Address Details</h3>
+                        <form method="POST" action="{% url 'address_add' %}" class="space-y-4">
+                            {% csrf_token %}
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-organicBrown/70 uppercase tracking-wider mb-1.5 font-outfit">Label</label>
+                                    {{ address_form.label }}
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-organicBrown/70 uppercase tracking-wider mb-1.5 font-outfit">Phone Number</label>
+                                    {{ address_form.phone_number }}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-organicBrown/70 uppercase tracking-wider mb-1.5 font-outfit">Street Address *</label>
+                                {{ address_form.address_line_1 }}
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-organicBrown/70 uppercase tracking-wider mb-1.5 font-outfit">Locality / Landmark</label>
+                                {{ address_form.address_line_2 }}
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-organicBrown/70 uppercase tracking-wider mb-1.5 font-outfit">City *</label>
+                                    {{ address_form.city }}
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-semibold text-organicBrown/70 uppercase tracking-wider mb-1.5 font-outfit">State *</label>
+                                    {{ address_form.state }}
+                                </div>
+                                <div class="col-span-2 sm:col-span-1">
+                                    <label class="block text-[10px] font-semibold text-organicBrown/70 uppercase tracking-wider mb-1.5 font-outfit">PIN Code *</label>
+                                    {{ address_form.postal_code }}
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                {{ address_form.is_default }}
+                                <label class="text-xs text-organicBrown/70 font-medium">Set as default shipping address</label>
+                            </div>
+                            <button type="submit" class="px-6 py-2.5 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold text-xs rounded-xl transition-all shadow-sm flex items-center gap-2">
+                                <i class="fa-solid fa-floppy-disk text-[10px]"></i> Save Address
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Saved Addresses List -->
+                    {% if addresses %}
+                    <div class="space-y-3">
+                        {% for addr in addresses %}
+                        <div class="bg-lightBeige/20 border {% if addr.is_default %}border-softGold/50 bg-softGold/5{% else %}border-lightBeige{% endif %} rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 group">
+                            <div class="space-y-1 flex-grow">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold font-outfit text-darkGreen">{{ addr.label }}</span>
+                                    {% if addr.is_default %}
+                                    <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-softGold/15 text-[#9a7b24] border border-softGold/30">Default</span>
+                                    {% endif %}
+                                </div>
+                                <p class="text-xs text-organicBrown/70 font-light leading-relaxed">
+                                    {{ addr.address_line_1 }}{% if addr.address_line_2 %}, {{ addr.address_line_2 }}{% endif %},
+                                    {{ addr.city }}, {{ addr.state }} — {{ addr.postal_code }}
+                                </p>
+                                <p class="text-[10px] text-organicBrown/50 font-mono"><i class="fa-solid fa-phone text-[8px] mr-1"></i>{{ addr.phone_number }}</p>
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                {% if not addr.is_default %}
+                                <form action="{% url 'address_set_default' addr.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-[10px] text-herbalGreen font-semibold hover:underline font-outfit">Set Default</button>
+                                </form>
+                                {% endif %}
+                                <form action="{% url 'address_delete' addr.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="w-7 h-7 flex items-center justify-center rounded-lg border border-rose-200 text-rose-500 hover:bg-rose-50 transition-colors" onclick="return confirm('Remove this address?')" title="Delete">
+                                        <i class="fa-solid fa-trash-can text-[9px]"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8 space-y-2">
+                        <i class="fa-solid fa-location-dot text-3xl text-organicBrown/20"></i>
+                        <p class="text-xs text-organicBrown/50 font-light">No saved addresses yet. Add one above for faster checkout.</p>
+                    </div>
+                    {% endif %}
+                </div>
+
             </div>
         </div>
         {% endif %}

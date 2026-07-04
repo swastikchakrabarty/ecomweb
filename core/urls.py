@@ -20,6 +20,30 @@ urlpatterns = [
     path('api/otp/verify/', views.otp_verify_view, name='otp_verify'),
     path('orders/<int:order_pk>/invoice/', views.download_invoice_view, name='download_invoice'),
     path('dashboard/profile/update/', views.update_profile_view, name='update_profile'),
-    path('products/<int:pk>/', views.product_detail_view, name='product_detail'),
-]
 
+    # ── Phase 4: SEO slug-based product detail ────────────────────────────────
+    path('products/<slug:slug>/', views.product_detail_view, name='product_detail'),
+
+    # ── Phase 3: Wishlist ─────────────────────────────────────────────────────
+    path('api/wishlist/toggle/', views.wishlist_toggle_view, name='wishlist_toggle'),
+    path('wishlist/', views.wishlist_view, name='wishlist'),
+
+    # ── Phase 3: Address Management ───────────────────────────────────────────
+    path('dashboard/addresses/add/', views.address_add_view, name='address_add'),
+    path('dashboard/addresses/<int:pk>/delete/', views.address_delete_view, name='address_delete'),
+    path('dashboard/addresses/<int:pk>/default/', views.address_set_default_view, name='address_set_default'),
+
+    # ── Phase 3: Order Actions ────────────────────────────────────────────────
+    path('orders/<int:pk>/action/', views.order_cancel_return_view, name='order_cancel_return'),
+
+    # ── Phase 3: Coupon Engine ────────────────────────────────────────────────
+    path('api/coupons/validate/', views.coupon_validate_view, name='coupon_validate'),
+
+    # ── Phase 4: SEO Infrastructure ───────────────────────────────────────────
+    path('sitemap.xml', views.sitemap_view, name='sitemap'),
+    path('robots.txt', views.robots_txt_view, name='robots_txt'),
+
+    # ── Phase 4: Blog Engine ──────────────────────────────────────────────────
+    path('blog/', views.blog_list_view, name='blog_list'),
+    path('blog/<slug:slug>/', views.blog_detail_view, name='blog_detail'),
+]

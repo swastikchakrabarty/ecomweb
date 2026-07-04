@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from .models import ContactMessage, Product, User, ClothingItem, Employee, CustomerProfile, ProductReview
+from .models import ContactMessage, Product, User, ClothingItem, Employee, CustomerProfile, ProductReview, Address
 
 
 class CustomerProfileForm(forms.ModelForm):
@@ -207,3 +207,31 @@ class ProductReviewForm(forms.ModelForm):
                 'placeholder': 'Share your experience with this product...'
             }),
         }
+
+
+class AddressForm(forms.ModelForm):
+    """Form for customer saved address management."""
+    class Meta:
+        model = Address
+        fields = ['label', 'address_line_1', 'address_line_2', 'city', 'state', 'postal_code', 'phone_number', 'is_default']
+
+    _cls = 'w-full px-4 py-3 bg-cream border border-organicBrown/15 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen font-medium transition-colors'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        placeholders = {
+            'label': 'e.g. Home, Work, Other',
+            'address_line_1': 'House No., Street Name',
+            'address_line_2': 'Landmark, Area (optional)',
+            'city': 'City',
+            'state': 'State',
+            'postal_code': '6-digit PIN Code',
+            'phone_number': '10-digit contact number',
+        }
+        for field_name, field in self.fields.items():
+            if field_name == 'is_default':
+                field.widget.attrs['class'] = 'w-4 h-4 text-herbalGreen border-organicBrown/30 rounded focus:ring-herbalGreen'
+            else:
+                field.widget.attrs['class'] = self._cls
+                if field_name in placeholders:
+                    field.widget.attrs['placeholder'] = placeholders[field_name]

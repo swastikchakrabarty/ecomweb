@@ -1,0 +1,151 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ post.title }} — KaaNuRO Wellness Blog{% endblock %}
+{% block meta_description %}{{ post.meta_description|default:post.summary|default:post.content|truncatechars:155 }}{% endblock %}
+
+{% block og_image %}
+{% if post.featured_image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.featured_image.url }}">
+{% elif post.image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}">{% endif %}
+{% endblock %}
+
+{% block extra_head %}
+<!-- JSON-LD Article Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Article",
+  "headline": "{{ post.title|escapejs }}",
+  "description": "{{ post.summary|default:post.content|truncatechars:155|escapejs }}",
+  "author": {
+    "@type": "Organization",
+    "name": "{{ post.author|escapejs }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "KaaNuRO Group",
+    "url": "{{ request.scheme }}://{{ request.get_host }}"
+  },
+  "datePublished": "{{ post.created_at|date:'Y-m-d' }}",
+  "url": "{{ request.build_absolute_uri }}"{% if post.featured_image %},
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ post.featured_image.url }}"{% elif post.image %},
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}"{% endif %}
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<article class="bg-cream">
+
+    <!-- Breadcrumb -->
+    <div class="bg-lightBeige border-b border-[#5C4033]/8 py-3">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 text-[11px] text-organicBrown/55 font-outfit flex-wrap">
+            {% for crumb in breadcrumbs %}
+                {% if crumb.url %}
+                    <a href="{{ crumb.url }}" class="hover:text-herbalGreen transition-colors">{{ crumb.label }}</a>
+                    <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                {% else %}
+                    <span class="text-darkGreen font-semibold truncate max-w-xs">{{ crumb.label }}</span>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Hero / Featured Image -->
+    {% if post.featured_image or post.image %}
+    <div class="w-full h-72 sm:h-96 bg-darkGreen overflow-hidden relative">
+        <img src="{% if post.featured_image %}{{ post.featured_image.url }}{% else %}{{ post.image.url }}{% endif %}"
+             alt="{{ post.title }}"
+             class="w-full h-full object-cover opacity-80">
+        <div class="absolute inset-0 bg-gradient-to-t from-darkGreen/60 to-transparent"></div>
+    </div>
+    {% endif %}
+
+    <!-- Article Header -->
+    <header class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-4">
+        <div class="flex items-center gap-3 flex-wrap">
+            <span class="px-3 py-1 rounded-full bg-herbalGreen/10 text-herbalGreen text-[10px] font-bold font-outfit uppercase tracking-wider border border-herbalGreen/15">
+                <i class="fa-solid fa-leaf text-[8px] mr-1"></i> Wellness
+            </span>
+            <span class="text-xs text-organicBrown/45 font-outfit">{{ post.created_at|date:"d F Y" }}</span>
+            <span class="text-organicBrown/25 text-xs">·</span>
+            <span class="text-xs text-organicBrown/45 font-outfit flex items-center gap-1">
+                <i class="fa-solid fa-pen-nib text-[9px] text-softGold"></i> {{ post.author }}
+            </span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen leading-tight">
+            {{ post.title }}
+        </h1>
+        {% if post.summary %}
+        <p class="text-lg text-organicBrown/65 font-light leading-relaxed border-l-4 border-softGold/40 pl-4">
+            {{ post.summary }}
+        </p>
+        {% endif %}
+    </header>
+
+    <!-- Article Body -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div class="prose prose-lg max-w-none text-organicBrown/80 leading-relaxed
+                    prose-headings:font-outfit prose-headings:text-darkGreen
+                    prose-a:text-herbalGreen prose-a:no-underline hover:prose-a:underline
+                    prose-strong:text-darkGreen prose-strong:font-bold
+                    prose-ul:list-disc prose-ol:list-decimal
+                    prose-blockquote:border-l-4 prose-blockquote:border-softGold/50 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-organicBrown/60
+                    whitespace-pre-line">
+            {{ post.content }}
+        </div>
+    </div>
+
+    <!-- Share Strip -->
+    <div class="border-t border-lightBeige bg-lightBeige/30 py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-sm font-outfit font-semibold text-darkGreen">Share this article:</p>
+            <div class="flex items-center gap-3">
+                <a href="https://wa.me/?text={{ post.title|urlencode }}%20{{ request.build_absolute_uri }}"
+                   target="_blank" rel="noopener noreferrer"
+                   class="flex items-center gap-1.5 px-4 py-2 bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/25 rounded-xl text-xs font-bold font-outfit hover:bg-[#25D366]/20 transition-colors">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+                </a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
+                   target="_blank" rel="noopener noreferrer"
+                   class="flex items-center gap-1.5 px-4 py-2 bg-[#1877F2]/10 text-[#1877F2] border border-[#1877F2]/25 rounded-xl text-xs font-bold font-outfit hover:bg-[#1877F2]/20 transition-colors">
+                    <i class="fa-brands fa-facebook text-sm"></i> Facebook
+                </a>
+            </div>
+        </div>
+    </div>
+
+</article>
+
+<!-- Related Posts -->
+{% if related_posts %}
+<section class="bg-cream border-t border-lightBeige py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-8 space-y-1">
+            <span class="text-[10px] font-bold uppercase tracking-widest text-herbalGreen font-outfit flex items-center gap-1.5">
+                <i class="fa-solid fa-book-open"></i> More from the Blog
+            </span>
+            <h2 class="text-xl font-outfit font-extrabold text-darkGreen">Related Articles</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for rp in related_posts %}
+            <a href="{% url 'blog_detail' rp.slug %}" class="group bg-lightBeige/50 border border-lightBeige rounded-2xl p-5 flex flex-col gap-3 hover:shadow-md hover:border-softGold/30 transition-all duration-300">
+                {% if rp.featured_image or rp.image %}
+                <div class="w-full h-36 rounded-xl overflow-hidden">
+                    <img src="{% if rp.featured_image %}{{ rp.featured_image.url }}{% else %}{{ rp.image.url }}{% endif %}"
+                         alt="{{ rp.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                {% endif %}
+                <div class="space-y-1 flex-grow">
+                    <p class="text-xs font-outfit font-bold text-darkGreen leading-snug group-hover:text-herbalGreen transition-colors line-clamp-2">{{ rp.title }}</p>
+                    {% if rp.summary %}
+                    <p class="text-[10px] text-organicBrown/55 font-light line-clamp-2">{{ rp.summary }}</p>
+                    {% endif %}
+                </div>
+                <span class="text-[10px] text-organicBrown/40 font-outfit">{{ rp.created_at|date:"d M Y" }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

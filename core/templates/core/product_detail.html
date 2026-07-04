@@ -17,7 +17,34 @@
   .star-filled { color: #D4AF37; }
   .star-empty  { color: #d1d5db; }
 </style>
+
+<!-- JSON-LD Product Schema (Google Structured Data) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ product.name|escapejs }}",
+  {% if product.image %}"image": "{{ request.scheme }}://{{ request.get_host }}{{ product.image.url }}",{% endif %}
+  "description": "{{ product.description|striptags|escapejs }}",
+  "brand": {
+    "@type": "Brand",
+    "name": "KaaNuRO Group"
+  },
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "INR",
+    "price": "{{ product.price }}",
+    "availability": "{% if product.stock > 0 %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+    "seller": {
+      "@type": "Organization",
+      "name": "KaaNuRO Group"
+    }
+  }
+}
+</script>
 {% endblock %}
+
+{% block og_image %}{% if product.image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ product.image.url }}">{% endif %}{% endblock %}
 
 {% block content %}
 <!-- ── Breadcrumb ─────────────────────────────────────────── -->
@@ -312,7 +339,7 @@
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
       {% for rp in related_products %}
-      <a href="{% url 'product_detail' rp.pk %}"
+      <a href="{% url 'product_detail' rp.slug %}"
          class="group bg-cream border border-lightBeige rounded-2xl p-4 flex flex-col gap-3 hover:shadow-lg hover:border-softGold/40 transition-all duration-300">
         <div class="w-full h-28 rounded-xl overflow-hidden bg-lightBeige/50 flex items-center justify-center border border-lightBeige">
           {% if rp.image %}
@@ -346,7 +373,7 @@
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
       {% for rv in recently_viewed %}
-      <a href="{% url 'product_detail' rv.pk %}"
+      <a href="{% url 'product_detail' rv.slug %}"
          class="group bg-lightBeige border border-lightBeige rounded-2xl p-4 flex flex-col gap-3 hover:shadow-md hover:border-[#D4AF37]/30 transition-all duration-300">
         <div class="w-full h-28 rounded-xl overflow-hidden bg-cream flex items-center justify-center border border-lightBeige">
           {% if rv.image %}

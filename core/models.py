@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils.text import slugify
 
 # --- USER ROLES & CUSTOM USER MODEL ---
 class User(AbstractUser):
@@ -42,29 +43,34 @@ class Product(models.Model):
     is_new_arrival = models.BooleanField(default=False, verbose_name="New Arrival", help_text="Feature on homepage New Arrivals shelf")
     is_trending = models.BooleanField(default=False, verbose_name="Trending", help_text="Feature on homepage Trending shelf")
 
+    # ── Phase 4: SEO Fields ───────────────────────────────────────────────────
+    slug = models.SlugField(max_length=280, unique=False, blank=True, null=True, help_text="Auto-generated from product name. Used in SEO-friendly URLs.")
+    meta_title = models.CharField(max_length=150, blank=True, null=True, help_text="Custom SEO title (max 150 chars). Falls back to product name.")
+    meta_description = models.TextField(blank=True, null=True, help_text="Custom meta description for search engines. Falls back to product description.")
+
     @property
     def media_list_json(self):
         import json
         media_items = []
         if self.image:
-            media_items.append({
-                'type': 'image',
-                'url': self.image.url
-            })
+            media_items.append({'type': 'image', 'url': self.image.url})
         for m in self.additional_media.all():
             if m.media_type == 'image' and m.file:
-                media_items.append({
-                    'type': 'image',
-                    'url': m.file.url
-                })
+                media_items.append({'type': 'image', 'url': m.file.url})
             elif m.media_type == 'video':
                 url = m.file.url if m.file else m.embed_url
                 if url:
-                    media_items.append({
-                        'type': 'video',
-                        'url': url
-                    })
+                    media_items.append({'type': 'video', 'url': url})
         return json.dumps(media_items)
+
+    def save(self, *args, **kwargs):
+        if not self.slug and self.name:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+        # Post-save: resolve slug collision by suffixing pk
+        if self.slug and Product.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+            self.slug = f"{slugify(self.name)}-{self.pk}"
+            Product.objects.filter(pk=self.pk).update(slug=self.slug)
 
     def __str__(self):
         return self.name
@@ -128,11 +134,28 @@ class ClothingItem(models.Model):
 # --- BLOG POST MODEL ---
 class Blog(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=280, unique=False, blank=True, help_text="Auto-generated from title. Used in SEO-friendly URLs.")
     summary = models.TextField(blank=True, default="")
     content = models.TextField()
     image = models.ImageField(upload_to='blogs/', blank=True, null=True)
+    featured_image = models.ImageField(upload_to='blog/', blank=True, null=True, verbose_name="Featured Image")
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.CharField(max_length=100, default="KaaNuRO Group")
+    # ── Phase 4: SEO & Publishing Fields ────────────────────────────────────
+    meta_title = models.CharField(max_length=150, blank=True, null=True)
+    meta_description = models.TextField(blank=True, null=True)
+    is_published = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug and self.title:
+            base_slug = slugify(self.title)
+            candidate = base_slug
+            counter = 1
+            while Blog.objects.filter(slug=candidate).exclude(pk=self.pk).exists():
+                candidate = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = candidate
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -158,10 +181,14 @@ import uuid
 
 class Order(models.Model):
     ORDER_STATUS_CHOICES = (
-        ('pending', 'Payment Awaiting Verification'),
-        ('confirmed', 'Confirmed'),
-        ('processing', 'Processing & Packing'),
-        ('shipped', 'Dispatched'),
+        ('pending',           'Payment Awaiting Verification'),
+        ('confirmed',         'Confirmed'),
+        ('processing',        'Processing & Packing'),
+        ('shipped',           'Dispatched'),
+        ('out_for_delivery',  'Out for Delivery'),
+        ('delivered',         'Delivered'),
+        ('cancelled',         'Cancelled'),
+        ('return_requested',  'Return Requested'),
     )
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='orders')
     order_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
@@ -170,7 +197,7 @@ class Order(models.Model):
     shipping_address = models.TextField()
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     utr_number = models.CharField(max_length=50, verbose_name="UPI Reference / UTR Number")
-    status = models.CharField(max_length=15, choices=ORDER_STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -190,6 +217,7 @@ class CustomerProfile(models.Model):
     shipping_address = models.TextField(blank=True, null=True)
     profile_image = models.ImageField(upload_to='customer_avatars/', blank=True, null=True, verbose_name="Profile Avatar")
     default_address = models.TextField(blank=True, null=True, verbose_name="Default Shipping Address")
+    wallet_balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Wallet Balance (INR)")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -221,3 +249,60 @@ class ProductReview(models.Model):
 
     def __str__(self):
         return f"{self.user_name} — {self.rating}★ on {self.product.name}"
+
+
+# ── PHASE 3 ADDITIONS ────────────────────────────────────────────────────────
+
+# --- SAVED ADDRESSES ---
+class Address(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
+    label = models.CharField(max_length=50, default='Home', help_text="e.g. Home, Work, Other")
+    address_line_1 = models.CharField(max_length=255)
+    address_line_2 = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    postal_code = models.CharField(max_length=10)
+    phone_number = models.CharField(max_length=15)
+    is_default = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = 'Saved Addresses'
+        ordering = ['-is_default', 'id']
+
+    def __str__(self):
+        return f"{self.label} — {self.address_line_1}, {self.city} ({self.user.username})"
+
+
+# --- WISHLIST ---
+class WishlistItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist_items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='wishlisted_by')
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'product')
+        ordering = ['-added_at']
+
+    def __str__(self):
+        return f"{self.user.username} → {self.product.name}"
+
+
+# --- COUPON ENGINE ---
+class Coupon(models.Model):
+    code = models.CharField(max_length=50, unique=True, verbose_name="Coupon Code")
+    discount_amount = models.DecimalField(
+        max_digits=10, decimal_places=2,
+        verbose_name="Flat Discount (INR)",
+        help_text="Fixed rupee discount applied to the cart total."
+    )
+    minimum_order_value = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00,
+        verbose_name="Minimum Order Value",
+        help_text="Minimum cart total required for this coupon to apply."
+    )
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        status = "Active" if self.is_active else "Inactive"
+        return f"{self.code} — ₹{self.discount_amount} off [{status}]"

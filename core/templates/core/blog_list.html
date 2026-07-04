@@ -1,0 +1,108 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Wellness Blog — KaaNuRO Group{% endblock %}
+{% block meta_description %}Explore herbal wellness tips, Ayurvedic remedies, and natural health insights from the KaaNuRO Group research team.{% endblock %}
+
+{% block content %}
+<section class="bg-lightBeige/30 py-12 min-h-[85vh]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Page Header -->
+        <div class="bg-darkGreen text-cream rounded-2xl p-10 mb-12 shadow-lg relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:20px_20px]"></div>
+            <div class="relative z-10 max-w-2xl space-y-3">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-softGold/15 text-softGold font-outfit text-xs font-bold uppercase tracking-wider border border-softGold/20">
+                    <i class="fa-solid fa-feather-pointed text-[10px]"></i> Wellness Journal
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-outfit font-extrabold text-[#E8D8B8] leading-tight">
+                    KaaNuRO Wellness Blog
+                </h1>
+                <p class="text-sm text-cream/65 font-light leading-relaxed">
+                    Herbal insights, Ayurvedic wisdom, and nature-backed health science — curated by our research team.
+                </p>
+            </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-2 text-[11px] text-organicBrown/55 font-outfit mb-8">
+            {% for crumb in breadcrumbs %}
+                {% if crumb.url %}
+                    <a href="{{ crumb.url }}" class="hover:text-herbalGreen transition-colors">{{ crumb.label }}</a>
+                    <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                {% else %}
+                    <span class="text-darkGreen font-semibold">{{ crumb.label }}</span>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        {% if posts %}
+        <!-- Blog Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for post in posts %}
+            <article class="bg-cream border border-lightBeige rounded-2xl overflow-hidden hover:shadow-xl hover:border-softGold/30 transition-all duration-300 flex flex-col group">
+                <!-- Featured Image -->
+                <a href="{% url 'blog_detail' post.slug %}" class="block w-full h-48 bg-lightBeige overflow-hidden flex-shrink-0 relative">
+                    {% if post.featured_image %}
+                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    {% elif post.image %}
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-herbalGreen/10 to-softGold/5">
+                        <i class="fa-solid fa-leaf text-5xl text-herbalGreen/20"></i>
+                    </div>
+                    {% endif %}
+                </a>
+
+                <!-- Content -->
+                <div class="p-6 flex flex-col flex-grow space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[9px] font-bold bg-herbalGreen/10 text-herbalGreen px-2 py-0.5 rounded-full uppercase tracking-wider font-outfit">
+                            <i class="fa-solid fa-leaf text-[7px] mr-0.5"></i> Wellness
+                        </span>
+                        <span class="text-[10px] text-organicBrown/45 font-outfit">{{ post.created_at|date:"d M Y" }}</span>
+                    </div>
+
+                    <div class="flex-grow space-y-2">
+                        <h2 class="text-base font-outfit font-bold text-darkGreen leading-snug group-hover:text-herbalGreen transition-colors">
+                            <a href="{% url 'blog_detail' post.slug %}">{{ post.title }}</a>
+                        </h2>
+                        {% if post.summary %}
+                        <p class="text-sm text-organicBrown/65 font-light leading-relaxed line-clamp-3">{{ post.summary }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex items-center justify-between pt-3 border-t border-lightBeige">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-softGold/15 flex items-center justify-center">
+                                <i class="fa-solid fa-pen-nib text-[8px] text-softGold"></i>
+                            </div>
+                            <span class="text-[10px] text-organicBrown/60 font-outfit">{{ post.author }}</span>
+                        </div>
+                        <a href="{% url 'blog_detail' post.slug %}" class="text-[10px] text-herbalGreen font-bold font-outfit flex items-center gap-1 hover:gap-2 transition-all">
+                            Read More <i class="fa-solid fa-arrow-right text-[8px]"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="bg-cream border border-lightBeige rounded-2xl p-16 text-center space-y-6 max-w-lg mx-auto">
+            <div class="w-20 h-20 mx-auto bg-herbalGreen/5 border border-herbalGreen/10 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-feather text-4xl text-herbalGreen/25"></i>
+            </div>
+            <div class="space-y-2">
+                <h2 class="text-xl font-outfit font-bold text-darkGreen">No Articles Yet</h2>
+                <p class="text-sm text-organicBrown/55 font-light">Our wellness journal is being curated. Check back soon for herbal health insights.</p>
+            </div>
+            <a href="{% url 'home' %}" class="inline-flex items-center gap-2 px-8 py-3.5 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md text-sm">
+                <i class="fa-solid fa-home"></i> Back to Home
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

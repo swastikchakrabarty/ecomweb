@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}KaaNuRO Group - Natural Wellness & Heart Care{% endblock %}</title>
-    
+    <title>{% block title %}{{ meta_title|default:"KaaNuRO Group - Natural Wellness Solutions" }}{% endblock %}</title>
+
     <!-- SEO Meta Tags -->
-    <meta name="description" content="{% block meta_description %}KaaNuRO Group offers premium herbal products for heart health, skin beauty, and complete peace of mind. Experience nature's touch from Udaipurwati, Rajasthan.{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{{ meta_description|default:"Traditional organic remedies backed by modern validation. Discover KaaNuRO herbal products from Udaipurwati, Rajasthan." }}{% endblock %}">
     <meta name="keywords" content="KaaNuRO, KaaNuRO Group, Herbal Tea, Heart Health, Skin Beauty, Natural Wellness, Udaipurwati, Rajasthan, Jhunjhunu">
     <meta name="author" content="KaaNuRO Group">
-    
+    <meta name="robots" content="index, follow">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="KaaNuRO Group">
+    <meta property="og:title" content="{% block og_title %}{{ meta_title|default:"KaaNuRO Group — Natural Wellness" }}{% endblock %}">
+    <meta property="og:description" content="{{ meta_description|default:"Traditional organic remedies backed by modern validation." }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    {% block og_image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/images/og-default.jpg">{% endblock %}
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -319,6 +331,23 @@
                     </div>
                     <span class="text-[10px] bg-herbalGreen/10 text-herbalGreen px-2.5 py-1 rounded-full uppercase tracking-wider font-outfit font-bold">Estimated GST Included</span>
                 </div>
+
+                <!-- Coupon Code Input -->
+                <div class="space-y-2" id="coupon-block">
+                    <div class="flex gap-2">
+                        <input
+                            type="text"
+                            id="coupon-input"
+                            placeholder="Enter Coupon Code"
+                            class="flex-1 px-3 py-2.5 bg-cream border border-organicBrown/15 dark:border-cream/10 dark:bg-[#121A13] rounded-xl text-xs text-darkGreen dark:text-cream/90 font-mono font-bold tracking-wider focus:outline-none focus:border-herbalGreen transition-colors uppercase"
+                        >
+                        <button id="coupon-apply-btn" type="button" class="px-4 py-2.5 bg-softGold/15 border border-softGold/30 text-[#9a7b24] font-outfit font-bold text-xs rounded-xl hover:bg-softGold/25 transition-all flex items-center gap-1.5 whitespace-nowrap">
+                            <i class="fa-solid fa-tag text-[9px]"></i> Apply
+                        </button>
+                    </div>
+                    <div id="coupon-feedback" class="hidden text-[10px] font-medium px-3 py-2 rounded-lg"></div>
+                </div>
+
                 <button id="cart-checkout" class="w-full py-4 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md shadow-herbalGreen/15 flex items-center justify-center space-x-2 transform active:scale-95 duration-100">
                     <span>Buy Now</span>
                     <i class="fa-solid fa-arrow-right text-xs"></i>
@@ -853,7 +882,12 @@
                     `;
                     cartItemsList.appendChild(itemRow);
                 });
-                cartTotalPrice.textContent = `₹${total.toFixed(2)}`;
+                const discount = (window.activeCouponDiscount || 0);
+                const finalTotal = Math.max(0, total - discount);
+                cartTotalPrice.textContent = `₹${finalTotal.toFixed(2)}`;
+                if (discount > 0) {
+                    cartTotalPrice.innerHTML = `₹${finalTotal.toFixed(2)} <span class="text-[9px] line-through text-organicBrown/40 font-normal ml-1">₹${total.toFixed(2)}</span>`;
+                }
             }
         }
 
@@ -1599,8 +1633,76 @@
         }
 
         // Initialize UI on startup
-
         updateCartUI();
+
+        // \u2500\u2500 COUPON ENGINE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+        window.activeCouponDiscount = 0;
+        let activeCouponCode = null;
+
+        const couponInput = document.getElementById('coupon-input');
+        const couponApplyBtn = document.getElementById('coupon-apply-btn');
+        const couponFeedback = document.getElementById('coupon-feedback');
+
+        function getCsrfCookie() {
+            const match = document.cookie.split(';').find(c => c.trim().startsWith('csrftoken='));
+            return match ? decodeURIComponent(match.trim().split('=')[1]) : '';
+        }
+
+        function showCouponFeedback(msg, success) {
+            if (!couponFeedback) return;
+            couponFeedback.className = `text-[10px] font-medium px-3 py-2 rounded-lg ${success ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-600 border border-rose-200'}`;
+            couponFeedback.textContent = msg;
+            couponFeedback.classList.remove('hidden');
+        }
+
+        function clearCoupon() {
+            window.activeCouponDiscount = 0;
+            activeCouponCode = null;
+            if (couponInput) { couponInput.value = ''; couponInput.disabled = false; }
+            if (couponApplyBtn) { couponApplyBtn.innerHTML = '<i class="fa-solid fa-tag text-[9px]"></i> Apply'; couponApplyBtn.disabled = false; }
+            if (couponFeedback) couponFeedback.classList.add('hidden');
+            updateCartUI();
+        }
+
+        if (couponApplyBtn) {
+            couponApplyBtn.addEventListener('click', () => {
+                if (activeCouponCode) { clearCoupon(); return; }
+
+                const code = (couponInput ? couponInput.value.trim().toUpperCase() : '');
+                if (!code) { showCouponFeedback('Please enter a coupon code.', false); return; }
+
+                const rawTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                couponApplyBtn.disabled = true;
+                couponApplyBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin text-[9px]"></i>';
+
+                fetch('/api/coupons/validate/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrfCookie() },
+                    body: JSON.stringify({ code: code, cart_total: rawTotal })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    couponApplyBtn.disabled = false;
+                    if (data.success) {
+                        window.activeCouponDiscount = data.discount_amount;
+                        activeCouponCode = data.code;
+                        couponApplyBtn.innerHTML = '<i class="fa-solid fa-xmark text-[9px]"></i> Remove';
+                        if (couponInput) couponInput.disabled = true;
+                        showCouponFeedback(`\u2713 ${data.message}`, true);
+                        updateCartUI();
+                    } else {
+                        window.activeCouponDiscount = 0;
+                        couponApplyBtn.innerHTML = '<i class="fa-solid fa-tag text-[9px]"></i> Apply';
+                        showCouponFeedback(data.message, false);
+                    }
+                })
+                .catch(() => {
+                    couponApplyBtn.disabled = false;
+                    couponApplyBtn.innerHTML = '<i class="fa-solid fa-tag text-[9px]"></i> Apply';
+                    showCouponFeedback('Network error. Please try again.', false);
+                });
+            });
+        }
     </script>
     {% block extra_js %}{% endblock %}
 </body>

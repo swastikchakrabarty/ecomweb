@@ -12,8 +12,8 @@ from django.contrib.auth import login, get_user_model
 
 from django.http import HttpResponse
 
-from .models import Product, ContactMessage, User, ClothingItem, Blog, Employee, Order, OrderItem, CustomerProfile, Invoice, ProductReview
-from .forms import ContactForm, ProductForm, LoginForm, ClothingItemForm, EmployeeCreationForm, CustomerProfileForm, ProductReviewForm
+from .models import Product, ContactMessage, User, ClothingItem, Blog, Employee, Order, OrderItem, CustomerProfile, Invoice, ProductReview, Address, WishlistItem, Coupon
+from .forms import ContactForm, ProductForm, LoginForm, ClothingItemForm, EmployeeCreationForm, CustomerProfileForm, ProductReviewForm, AddressForm
 
 def staff_required(view_func):
     """Decorator to restrict access to Admins, Employees, or Superusers."""
@@ -195,8 +195,9 @@ def logout_view(request):
     return redirect('home')
 
 
-def product_detail_view(request, pk):
-    product = get_object_or_404(Product, pk=pk, is_active=True)
+def product_detail_view(request, slug):
+    product = get_object_or_404(Product, slug=slug, is_active=True)
+    pk = product.pk  # keep for internal session logic
 
     # --- Review Submission (POST) ---
     if request.method == 'POST':
@@ -206,7 +207,7 @@ def product_detail_view(request, pk):
             review.product = product
             review.save()
             messages.success(request, 'Thank you for your review!')
-            return redirect('product_detail', pk=pk)
+            return redirect('product_detail', slug=product.slug)
     else:
         review_form = ProductReviewForm()
 
@@ -215,7 +216,7 @@ def product_detail_view(request, pk):
         is_active=True, stock__gt=0
     ).exclude(pk=pk).order_by('?')[:4]
 
-    # --- Recently Viewed (session-based, last 4) ---
+    # --- Recently Viewed (session-based, last 4, stored by pk) ---
     viewed_ids = request.session.get('recently_viewed', [])
     if pk not in viewed_ids:
         viewed_ids.insert(0, pk)
@@ -246,6 +247,15 @@ def product_detail_view(request, pk):
     raw_benefits = product.key_benefits or ''
     benefit_list = [b.strip() for b in (raw_benefits.splitlines() if '\n' in raw_benefits else raw_benefits.split(',')) if b.strip()]
 
+    # --- SEO Context ---
+    seo_meta_title = product.meta_title or f"{product.name} — KaaNuRO Group"
+    seo_meta_description = product.meta_description or product.description[:155]
+    breadcrumbs = [
+        {'label': 'Home', 'url': '/'},
+        {'label': 'Products', 'url': '/#products'},
+        {'label': product.name, 'url': None},
+    ]
+
     context = {
         'product': product,
         'ingredient_list': ingredient_list,
@@ -257,6 +267,10 @@ def product_detail_view(request, pk):
         'gallery': gallery,
         'upi_id': settings.UPI_ID,
         'merchant_name': settings.MERCHANT_NAME,
+        # Phase 4: SEO
+        'meta_title': seo_meta_title,
+        'meta_description': seo_meta_description,
+        'breadcrumbs': breadcrumbs,
     }
     return render(request, 'core/product_detail.html', context)
 
@@ -304,6 +318,9 @@ def dashboard_view(request):
         'clothing_items': ClothingItem.objects.filter(is_active=True).prefetch_related('additional_media'),
         'profile': profile,
         'profile_form': CustomerProfileForm(instance=profile),
+        'addresses': Address.objects.filter(user=request.user),
+        'address_form': AddressForm(),
+        'wishlist_count': WishlistItem.objects.filter(user=request.user).count(),
     }
     # Ensure clean 10-digit stripping for query symmetry
     cleaned_10_digit_phone = ''.join(filter(str.isdigit, request.user.username))[-10:]
@@ -588,7 +605,8 @@ All products are sourced and packed at Udaipurwati, Jhunjhunu, Rajasthan.
 def order_update_status_view(request, pk):
     order = get_object_or_404(Order, pk=pk)
     new_status = request.POST.get('status')
-    if new_status in ['pending', 'confirmed', 'processing', 'shipped']:
+    valid_statuses = ['pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'return_requested']
+    if new_status in valid_statuses:
         order.status = new_status
         order.save()
         messages.success(request, f"Order status updated to {order.get_status_display()}.")
@@ -739,3 +757,273 @@ def otp_verify_view(request):
 
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# PHASE 3 VIEWS
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Wishlist Toggle (AJAX POST) ──────────────────────────────────────────────
+@login_required
+@require_POST
+def wishlist_toggle_view(request):
+    """Toggle a product in/out of the user's wishlist. Returns JSON."""
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON.'}, status=400)
+
+    product_id = data.get('product_id')
+    if not product_id:
+        return JsonResponse({'success': False, 'message': 'product_id is required.'}, status=400)
+
+    product = get_object_or_404(Product, pk=product_id, is_active=True)
+    item, created = WishlistItem.objects.get_or_create(user=request.user, product=product)
+    if not created:
+        item.delete()
+        added = False
+    else:
+        added = True
+
+    count = WishlistItem.objects.filter(user=request.user).count()
+    return JsonResponse({'success': True, 'added': added, 'count': count})
+
+
+# ── Wishlist Page (GET) ──────────────────────────────────────────────────────
+@login_required
+def wishlist_view(request):
+    """Renders the user's saved wishlist products."""
+    wishlist_items = WishlistItem.objects.filter(user=request.user).select_related('product')
+    return render(request, 'core/wishlist.html', {'wishlist_items': wishlist_items})
+
+
+# ── Address Add (POST) ───────────────────────────────────────────────────────
+@login_required
+@require_POST
+def address_add_view(request):
+    """Saves a new address for the logged-in user."""
+    form = AddressForm(request.POST)
+    if form.is_valid():
+        address = form.save(commit=False)
+        address.user = request.user
+        # If this is marked as default, clear all others for this user first
+        if address.is_default:
+            Address.objects.filter(user=request.user).update(is_default=False)
+        elif not Address.objects.filter(user=request.user).exists():
+            # First address always becomes default
+            address.is_default = True
+        address.save()
+        messages.success(request, f'Address "{address.label}" saved successfully.')
+    else:
+        for field, errs in form.errors.items():
+            for err in errs:
+                messages.error(request, f"{field.replace('_', ' ').title()}: {err}")
+    return redirect('dashboard')
+
+
+# ── Address Delete (POST) ────────────────────────────────────────────────────
+@login_required
+@require_POST
+def address_delete_view(request, pk):
+    """Deletes an address owned by the requesting user."""
+    address = get_object_or_404(Address, pk=pk, user=request.user)
+    address.delete()
+    # If we just deleted the default, promote the next available
+    if address.is_default:
+        next_addr = Address.objects.filter(user=request.user).first()
+        if next_addr:
+            next_addr.is_default = True
+            next_addr.save()
+    messages.success(request, 'Address removed.')
+    return redirect('dashboard')
+
+
+# ── Address Set Default (POST) ───────────────────────────────────────────────
+@login_required
+@require_POST
+def address_set_default_view(request, pk):
+    """Marks the specified address as the user's default."""
+    address = get_object_or_404(Address, pk=pk, user=request.user)
+    Address.objects.filter(user=request.user).update(is_default=False)
+    address.is_default = True
+    address.save()
+    messages.success(request, f'"{address.label}" is now your default address.')
+    return redirect('dashboard')
+
+
+# ── Order Cancel / Return Request (POST) ────────────────────────────────────
+@login_required
+@require_POST
+def order_cancel_return_view(request, pk):
+    """Allows a customer to cancel or request a return on their own order."""
+    order = get_object_or_404(Order, pk=pk)
+
+    # Ownership check: must belong to the logged-in user
+    if order.user != request.user:
+        # Also check via phone number (guest checkout path)
+        try:
+            profile = request.user.customer_profile
+            profile_phone = ''.join(filter(str.isdigit, str(profile.phone_number)))[-10:]
+            order_phone = ''.join(filter(str.isdigit, str(order.phone_number)))[-10:]
+            if profile_phone != order_phone:
+                raise PermissionDenied
+        except CustomerProfile.DoesNotExist:
+            raise PermissionDenied
+
+    action = request.POST.get('action')
+    if action == 'cancel':
+        if order.status in ('pending', 'confirmed'):
+            order.status = 'cancelled'
+            order.save()
+            messages.success(request, f'Order #{str(order.order_id)[:8].upper()} has been cancelled.')
+        else:
+            messages.error(request, 'This order cannot be cancelled at its current stage.')
+    elif action == 'return':
+        if order.status == 'delivered':
+            order.status = 'return_requested'
+            order.save()
+            messages.success(request, f'Return request submitted for order #{str(order.order_id)[:8].upper()}.')
+        else:
+            messages.error(request, 'Return requests can only be raised for delivered orders.')
+    else:
+        messages.error(request, 'Invalid action.')
+
+    return redirect('dashboard')
+
+
+# ── Coupon Validation (AJAX POST) ────────────────────────────────────────────
+@require_POST
+def coupon_validate_view(request):
+    """Validates a coupon code and returns the discount amount."""
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON.'}, status=400)
+
+    code = data.get('code', '').strip().upper()
+    cart_total = data.get('cart_total', 0)
+
+    if not code:
+        return JsonResponse({'success': False, 'message': 'Please enter a coupon code.'}, status=400)
+
+    try:
+        coupon = Coupon.objects.get(code=code, is_active=True)
+    except Coupon.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'This coupon code is invalid or expired.'}, status=404)
+
+    try:
+        cart_total_decimal = float(cart_total)
+    except (ValueError, TypeError):
+        cart_total_decimal = 0
+
+    if cart_total_decimal < float(coupon.minimum_order_value):
+        return JsonResponse({
+            'success': False,
+            'message': f'Minimum order value of ₹{coupon.minimum_order_value} required for this coupon.'
+        }, status=400)
+
+    return JsonResponse({
+        'success': True,
+        'code': coupon.code,
+        'discount_amount': float(coupon.discount_amount),
+        'message': f'Coupon applied! You save ₹{coupon.discount_amount}.'
+    })
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PHASE 4 VIEWS — SEO & CONTENT ENGINE
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── XML Sitemap ───────────────────────────────────────────────────────────────
+def sitemap_view(request):
+    """Dynamic XML sitemap for Google Search Console submission."""
+    scheme = request.scheme
+    host = request.get_host()
+    base = f"{scheme}://{host}"
+
+    urls = []
+
+    # Static pages
+    for page in ['', '/login/', '/blog/']:
+        urls.append(f"""
+    <url>
+        <loc>{base}{page}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>""")
+
+    # Product pages (slug-based)
+    products = Product.objects.filter(is_active=True).exclude(slug__isnull=True).exclude(slug='')
+    for p in products:
+        urls.append(f"""
+    <url>
+        <loc>{base}/products/{p.slug}/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>""")
+
+    # Blog posts
+    blog_posts = Blog.objects.filter(is_published=True).exclude(slug='')
+    for post in blog_posts:
+        urls.append(f"""
+    <url>
+        <loc>{base}/blog/{post.slug}/</loc>
+        <lastmod>{post.created_at.strftime('%Y-%m-%d')}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>""")
+
+    xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml_content += '<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">'
+    xml_content += ''.join(urls)
+    xml_content += '\n</urlset>'
+
+    return HttpResponse(xml_content, content_type='application/xml')
+
+
+# ── Robots.txt ────────────────────────────────────────────────────────────────
+def robots_txt_view(request):
+    """Serve robots.txt dynamically so the Sitemap URL is always correct."""
+    base = f"{request.scheme}://{request.get_host()}"
+    content = f"""User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /admin/
+
+Sitemap: {base}/sitemap.xml
+"""
+    return HttpResponse(content, content_type='text/plain')
+
+
+# ── Blog List ─────────────────────────────────────────────────────────────────
+def blog_list_view(request):
+    """Public blog index page listing all published posts."""
+    posts = Blog.objects.filter(is_published=True).order_by('-created_at')
+    context = {
+        'posts': posts,
+        'meta_title': 'Wellness Blog — KaaNuRO Group',
+        'meta_description': 'Explore herbal wellness tips, Ayurvedic remedies, and natural health insights from the KaaNuRO Group research team.',
+        'breadcrumbs': [
+            {'label': 'Home', 'url': '/'},
+            {'label': 'Blog', 'url': None},
+        ],
+    }
+    return render(request, 'core/blog_list.html', context)
+
+
+# ── Blog Detail ───────────────────────────────────────────────────────────────
+def blog_detail_view(request, slug):
+    """Individual blog post with full SEO context and JSON-LD Article schema."""
+    post = get_object_or_404(Blog, slug=slug, is_published=True)
+    related_posts = Blog.objects.filter(is_published=True).exclude(pk=post.pk).order_by('-created_at')[:3]
+    context = {
+        'post': post,
+        'related_posts': related_posts,
+        'meta_title': post.meta_title or f"{post.title} — KaaNuRO Wellness Blog",
+        'meta_description': post.meta_description or post.summary or post.content[:155],
+        'breadcrumbs': [
+            {'label': 'Home', 'url': '/'},
+            {'label': 'Blog', 'url': '/blog/'},
+            {'label': post.title, 'url': None},
+        ],
+    }
+    return render(request, 'core/blog_detail.html', context)
