@@ -1,0 +1,178 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{% if q %}Search: {{ q }} — {% endif %}{% if shelf_label %}{{ shelf_label }} — {% endif %}KaaNuRO Product Catalog{% endblock %}
+{% block meta_description %}Browse KaaNuRO's full natural wellness catalog. Herbal teas, Ayurvedic remedies, and organic supplements from Udaipurwati, Rajasthan.{% endblock %}
+
+{% block content %}
+<section class="bg-white min-h-screen">
+
+  <!-- Page Header Bar -->
+  <div class="bg-[#1A5A32] text-white py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto space-y-3">
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-2 text-[11px] text-white/55 font-outfit flex-wrap">
+        {% for crumb in breadcrumbs %}
+          {% if crumb.url %}
+            <a href="{{ crumb.url }}" class="hover:text-white transition-colors">{{ crumb.label }}</a>
+            <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          {% else %}
+            <span class="text-white/90 font-semibold">{{ crumb.label }}</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-playfair font-bold text-white">
+        {% if shelf_label %}{{ shelf_label }}
+        {% elif q %}Search Results
+        {% else %}All Products{% endif %}
+      </h1>
+      <p class="text-sm text-white/65 font-light max-w-xl">
+        Natural Ayurvedic remedies and herbal wellness products — rooted in tradition, validated by science.
+      </p>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- Search Bar -->
+    <form method="GET" action="{% url 'product_catalog' %}" class="mb-10">
+      {% if shelf %}<input type="hidden" name="shelf" value="{{ shelf }}">{% endif %}
+      <div class="relative max-w-2xl mx-auto">
+        <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+          <i class="fa-solid fa-magnifying-glass text-[#1A5A32]/50 text-sm"></i>
+        </div>
+        <input type="text"
+               name="q"
+               value="{{ q }}"
+               placeholder="Search products… (e.g. 'heart tea', 'skin care')"
+               class="w-full pl-11 pr-4 py-4 text-[#2D2D2D] bg-white border-2 border-[#E5E5E5] rounded-2xl
+                      focus:outline-none focus:border-[#1A5A32] focus:ring-2 focus:ring-[#1A5A32]/10
+                      font-sans text-sm placeholder:text-[#2D2D2D]/35 shadow-sm transition-all">
+        {% if q %}
+        <a href="{% url 'product_catalog' %}{% if shelf %}?shelf={{ shelf }}{% endif %}"
+           class="absolute inset-y-0 right-4 flex items-center text-[#2D2D2D]/40 hover:text-[#1A5A32] transition-colors">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </a>
+        {% endif %}
+      </div>
+    </form>
+
+    <!-- Shelf Filter Tabs -->
+    <div class="flex flex-wrap gap-2 mb-8">
+      <a href="{% url 'product_catalog' %}{% if q %}?q={{ q }}{% endif %}"
+         class="px-4 py-2 rounded-xl text-xs font-bold font-outfit border transition-all
+                {% if not shelf %}bg-[#1A5A32] text-white border-[#1A5A32]{% else %}bg-white text-[#2D2D2D]/60 border-[#E5E5E5] hover:border-[#1A5A32]/30 hover:text-[#1A5A32]{% endif %}">
+        <i class="fa-solid fa-grid-2 mr-1"></i> All
+      </a>
+      <a href="{% url 'product_catalog' %}?shelf=best_sellers{% if q %}&q={{ q }}{% endif %}"
+         class="px-4 py-2 rounded-xl text-xs font-bold font-outfit border transition-all
+                {% if shelf == 'best_sellers' %}bg-[#D4AF37] text-white border-[#D4AF37]{% else %}bg-white text-[#2D2D2D]/60 border-[#E5E5E5] hover:border-[#D4AF37]/40 hover:text-[#D4AF37]{% endif %}">
+        <i class="fa-solid fa-fire mr-1"></i> Best Sellers
+      </a>
+      <a href="{% url 'product_catalog' %}?shelf=new_arrivals{% if q %}&q={{ q }}{% endif %}"
+         class="px-4 py-2 rounded-xl text-xs font-bold font-outfit border transition-all
+                {% if shelf == 'new_arrivals' %}bg-[#1A5A32] text-white border-[#1A5A32]{% else %}bg-white text-[#2D2D2D]/60 border-[#E5E5E5] hover:border-[#1A5A32]/30 hover:text-[#1A5A32]{% endif %}">
+        <i class="fa-solid fa-star mr-1"></i> New Arrivals
+      </a>
+      <a href="{% url 'product_catalog' %}?shelf=trending{% if q %}&q={{ q }}{% endif %}"
+         class="px-4 py-2 rounded-xl text-xs font-bold font-outfit border transition-all
+                {% if shelf == 'trending' %}bg-[#1A5A32] text-white border-[#1A5A32]{% else %}bg-white text-[#2D2D2D]/60 border-[#E5E5E5] hover:border-[#1A5A32]/30 hover:text-[#1A5A32]{% endif %}">
+        <i class="fa-solid fa-chart-line mr-1"></i> Trending
+      </a>
+    </div>
+
+    <!-- Search Fallback / Corrected Query Banner -->
+    {% if search_fallback and q %}
+    <div class="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-8">
+      <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <i class="fa-solid fa-wand-magic-sparkles text-amber-600 text-sm"></i>
+      </div>
+      <div>
+        <p class="text-sm font-outfit font-bold text-amber-800">No exact match found for "<em>{{ q }}</em>"</p>
+        <p class="text-xs text-amber-700/75 font-light mt-0.5">Showing recommended alternatives you might enjoy instead.</p>
+      </div>
+    </div>
+    {% elif corrected_query and q %}
+    <div class="flex items-center gap-2 bg-[#1A5A32]/5 border border-[#1A5A32]/15 rounded-xl px-4 py-3 mb-8 text-sm text-[#1A5A32] font-outfit">
+      <i class="fa-solid fa-spell-check text-sm"></i>
+      <span>Did you mean <strong>"{{ corrected_query }}"</strong>? Showing closest results for <em>"{{ q }}"</em>.</span>
+    </div>
+    {% endif %}
+
+    <!-- Results Count -->
+    <div class="flex items-center justify-between mb-6">
+      <p class="text-xs text-[#2D2D2D]/50 font-outfit">
+        {% with products|length as count %}
+          <span class="font-bold text-[#2D2D2D]">{{ count }}</span> product{{ count|pluralize }} found
+          {% if q %} for "<span class="italic text-[#1A5A32]">{{ q }}</span>"{% endif %}
+          {% if shelf_label %} in <span class="font-bold text-[#1A5A32]">{{ shelf_label }}</span>{% endif %}
+        {% endwith %}
+      </p>
+    </div>
+
+    <!-- Product Grid -->
+    {% if products %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+      {% for product in products %}
+      <a href="{% url 'product_detail' product.slug %}"
+         class="group bg-white border border-[#E5E5E5] rounded-2xl overflow-hidden flex flex-col hover:shadow-xl hover:border-[#1A5A32]/20 transition-all duration-300">
+
+        <!-- Product Image -->
+        <div class="w-full h-44 bg-[#F9F9F9] overflow-hidden flex items-center justify-center relative">
+          {% if product.is_best_seller %}
+          <span class="absolute top-2 left-2 text-[8px] font-bold bg-[#D4AF37] text-white px-2 py-0.5 rounded-full uppercase tracking-wider font-outfit z-10">
+            <i class="fa-solid fa-fire text-[7px]"></i> Top Pick
+          </span>
+          {% elif product.is_new_arrival %}
+          <span class="absolute top-2 left-2 text-[8px] font-bold bg-[#1A5A32] text-white px-2 py-0.5 rounded-full uppercase tracking-wider font-outfit z-10">
+            <i class="fa-solid fa-star text-[7px]"></i> New
+          </span>
+          {% elif product.is_trending %}
+          <span class="absolute top-2 left-2 text-[8px] font-bold bg-[#1A5A32]/80 text-white px-2 py-0.5 rounded-full uppercase tracking-wider font-outfit z-10">
+            <i class="fa-solid fa-chart-line text-[7px]"></i> Trending
+          </span>
+          {% endif %}
+
+          {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}"
+               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          {% else %}
+          <i class="fa-solid fa-leaf text-5xl text-[#1A5A32]/15"></i>
+          {% endif %}
+        </div>
+
+        <!-- Product Info -->
+        <div class="p-4 flex flex-col flex-grow gap-2">
+          {% if product.subtitle_tagline %}
+          <span class="text-[9px] font-bold text-[#1A5A32] font-outfit uppercase tracking-wider">{{ product.subtitle_tagline }}</span>
+          {% endif %}
+          <h2 class="text-sm font-outfit font-bold text-[#1A1A1A] leading-snug group-hover:text-[#1A5A32] transition-colors line-clamp-2 flex-grow">
+            {{ product.name }}
+          </h2>
+          <p class="text-[10px] text-[#2D2D2D]/55 font-light line-clamp-2 leading-relaxed">
+            {{ product.description|truncatechars:80 }}
+          </p>
+          <div class="flex items-center justify-between pt-2 border-t border-[#E5E5E5] mt-auto">
+            <span class="text-base font-mono font-bold text-[#1A5A32]">₹{{ product.price }}</span>
+            <span class="text-[10px] font-bold text-white bg-[#1A5A32] px-3 py-1.5 rounded-lg font-outfit group-hover:bg-[#D4AF37] transition-colors">
+              View
+            </span>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Should never appear due to fallback, but safety net -->
+    <div class="text-center py-24 space-y-4">
+      <i class="fa-solid fa-leaf text-6xl text-[#1A5A32]/15"></i>
+      <p class="text-[#2D2D2D]/45 font-light text-sm">No products available right now.</p>
+      <a href="{% url 'product_catalog' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-[#1A5A32] text-white font-outfit font-bold rounded-xl text-sm hover:bg-[#D4AF37] transition-colors">
+        <i class="fa-solid fa-arrow-left"></i> Browse All
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}

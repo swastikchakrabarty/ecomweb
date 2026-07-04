@@ -22,10 +22,10 @@
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     {% block og_image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/images/og-default.jpg">{% endblock %}
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Inter + Outfit (body) + Playfair Display (editorial) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
     
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -34,11 +34,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -54,45 +52,30 @@
                         lightBeige: 'rgb(var(--border-color) / <alpha-value>)',
                     }),
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
                         outfit: ['Outfit', 'sans-serif'],
+                        playfair: ['Playfair Display', 'Georgia', 'serif'],
                     }
                 }
             }
         }
     </script>
     <style>
+        /* ── Phase 6: Unified High-Contrast Light Theme ─────────────────── */
         :root {
-            --canvas-bg: 251 249 246;       /* #FBF9F6 */
-            --card-bg: 244 239 234;         /* #F4EFEA */
-            --text-primary: 107 86 76;       /* #6B564C */
-            --heading-accent: 82 110 86;     /* #526E56 */
-            --border-color: 244 239 234;     /* #F4EFEA */
-            --herbal-green: 82 110 86;       /* #526E56 */
+            --canvas-bg: 255 255 255;       /* #FFFFFF — pure white canvas */
+            --card-bg: 249 249 249;         /* #F9F9F9 — warm soft gray cards */
+            --text-primary: 45 45 45;       /* #2D2D2D — dark charcoal body text */
+            --heading-accent: 26 90 50;     /* #1A5A32 — deep forest green headings */
+            --border-color: 229 229 229;    /* #E5E5E5 — clean neutral border */
+            --herbal-green: 26 90 50;       /* #1A5A32 — primary brand green */
         }
-        
-        html.dark {
-            --canvas-bg: 18 26 19;          /* #121A13 */
-            --card-bg: 26 36 27;            /* #1A241B */
-            --text-primary: 232 216 184;    /* #E8D8B8 */
-            --heading-accent: 232 216 184;  /* #E8D8B8 */
-            --border-color: 38 54 39;       /* #263627 */
-            --herbal-green: 212 175 55;     /* #D4AF37 */
-        }
-        
+
         .faq-accordion-item.active .faq-answer {
             max-height: 200px;
             margin-top: 1rem;
         }
     </style>
-    <!-- Dark Mode Initializer -->
-    <script>
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark')
-        }
-    </script>
     {% block extra_head %}{% endblock %}
 </head>
 <body class="bg-cream font-sans text-organicBrown flex flex-col min-h-screen selection:bg-herbalGreen/20 selection:text-darkGreen">

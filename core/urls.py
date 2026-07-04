@@ -21,6 +21,9 @@ urlpatterns = [
     path('orders/<int:order_pk>/invoice/', views.download_invoice_view, name='download_invoice'),
     path('dashboard/profile/update/', views.update_profile_view, name='update_profile'),
 
+    # ── Phase 6: Product Catalog (must be before slug route) ──────────────────
+    path('products/', views.product_catalog_view, name='product_catalog'),
+
     # ── Phase 4: SEO slug-based product detail ────────────────────────────────
     path('products/<slug:slug>/', views.product_detail_view, name='product_detail'),
 

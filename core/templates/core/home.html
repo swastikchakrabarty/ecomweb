@@ -455,7 +455,7 @@
                 <span class="text-[10px] font-bold uppercase tracking-widest text-softGold font-outfit flex items-center gap-1.5"><i class="fa-solid fa-fire"></i> Most Popular</span>
                 <h2 class="text-2xl sm:text-3xl font-outfit font-extrabold text-darkGreen">Best Sellers</h2>
             </div>
-            <a href="#products" class="hidden sm:flex items-center gap-1.5 text-xs font-bold text-herbalGreen font-outfit hover:text-darkGreen transition-colors">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
+            <a href="{% url 'product_catalog' %}?shelf=best_sellers" class="flex items-center gap-1.5 text-xs font-bold text-herbalGreen font-outfit hover:text-darkGreen transition-colors">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for product in best_sellers %}
@@ -484,6 +484,11 @@
             <p class="{{ shelf_empty_class }}">No best sellers tagged yet. Mark products as Best Seller in the admin panel.</p>
             {% endfor %}
         </div>
+        <div class="mt-8 text-right">
+            <a href="{% url 'product_catalog' %}?shelf=best_sellers" class="inline-flex items-center gap-2 px-6 py-2.5 border border-herbalGreen/30 text-herbalGreen font-outfit font-bold text-xs rounded-xl hover:bg-herbalGreen hover:text-cream transition-all">
+                View More Best Sellers <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </a>
+        </div>
     </div>
 </section>
 
@@ -495,7 +500,7 @@
                 <span class="text-[10px] font-bold uppercase tracking-widest text-herbalGreen font-outfit flex items-center gap-1.5"><i class="fa-solid fa-sparkles"></i> Just Launched</span>
                 <h2 class="text-2xl sm:text-3xl font-outfit font-extrabold text-darkGreen">New Arrivals</h2>
             </div>
-            <a href="#products" class="hidden sm:flex items-center gap-1.5 text-xs font-bold text-herbalGreen font-outfit hover:text-darkGreen transition-colors">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
+            <a href="{% url 'product_catalog' %}?shelf=new_arrivals" class="flex items-center gap-1.5 text-xs font-bold text-herbalGreen font-outfit hover:text-darkGreen transition-colors">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for product in new_arrivals %}
@@ -524,6 +529,11 @@
             <p class="{{ shelf_empty_class }}">No new arrivals tagged yet. Mark products as New Arrival in the admin panel.</p>
             {% endfor %}
         </div>
+        <div class="mt-8 text-right">
+            <a href="{% url 'product_catalog' %}?shelf=new_arrivals" class="inline-flex items-center gap-2 px-6 py-2.5 border border-herbalGreen/30 text-herbalGreen font-outfit font-bold text-xs rounded-xl hover:bg-herbalGreen hover:text-cream transition-all">
+                View More New Arrivals <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </a>
+        </div>
     </div>
 </section>
 
@@ -535,7 +545,7 @@
                 <span class="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37] font-outfit flex items-center gap-1.5"><i class="fa-solid fa-chart-line"></i> Trending Now</span>
                 <h2 class="text-2xl sm:text-3xl font-outfit font-extrabold text-darkGreen">Trending</h2>
             </div>
-            <a href="#products" class="hidden sm:flex items-center gap-1.5 text-xs font-bold text-herbalGreen font-outfit hover:text-darkGreen transition-colors">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
+            <a href="{% url 'product_catalog' %}?shelf=trending" class="flex items-center gap-1.5 text-xs font-bold text-herbalGreen font-outfit hover:text-darkGreen transition-colors">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for product in trending %}
@@ -564,10 +574,13 @@
             <p class="{{ shelf_empty_class }}">No trending products tagged yet. Mark products as Trending in the admin panel.</p>
             {% endfor %}
         </div>
+        <div class="mt-8 text-right">
+            <a href="{% url 'product_catalog' %}?shelf=trending" class="inline-flex items-center gap-2 px-6 py-2.5 border border-[#D4AF37]/30 text-[#D4AF37] font-outfit font-bold text-xs rounded-xl hover:bg-[#D4AF37] hover:text-cream transition-all">
+                View More Trending <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </a>
+        </div>
     </div>
 </section>
-
-{% endwith %}
 <!-- ═══════════════════════ END PRODUCT SHELVES ═══════════════ -->
 
 <!-- Our Products Section -->

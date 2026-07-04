@@ -3,14 +3,13 @@ from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 import random
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_POST
 from functools import wraps
 from django.conf import settings
 from django.contrib.auth import login, get_user_model
-
-from django.http import HttpResponse
+from django.db.models import Q
 
 from .models import Product, ContactMessage, User, ClothingItem, Blog, Employee, Order, OrderItem, CustomerProfile, Invoice, ProductReview, Address, WishlistItem, Coupon
 from .forms import ContactForm, ProductForm, LoginForm, ClothingItemForm, EmployeeCreationForm, CustomerProfileForm, ProductReviewForm, AddressForm
@@ -67,10 +66,10 @@ def home_view(request):
         else:
             p.benefit_list = [b.strip() for b in p.key_benefits.split(',') if b.strip()]
 
-    # --- Homepage Product Shelves (stock-aware) ---
-    best_sellers = Product.objects.filter(is_active=True, is_best_seller=True, stock__gt=0).prefetch_related('additional_media')[:6]
-    new_arrivals = Product.objects.filter(is_active=True, is_new_arrival=True, stock__gt=0).prefetch_related('additional_media')[:6]
-    trending     = Product.objects.filter(is_active=True, is_trending=True, stock__gt=0).prefetch_related('additional_media')[:6]
+    # --- Homepage Product Shelves (stock-aware, limited to 2 per shelf) ---
+    best_sellers = Product.objects.filter(is_active=True, is_best_seller=True, stock__gt=0).prefetch_related('additional_media')[:2]
+    new_arrivals = Product.objects.filter(is_active=True, is_new_arrival=True, stock__gt=0).prefetch_related('additional_media')[:2]
+    trending     = Product.objects.filter(is_active=True, is_trending=True, stock__gt=0).prefetch_related('additional_media')[:2]
             
     # Gather distinct values for apparel filtering from active items
     all_clothing = ClothingItem.objects.filter(is_active=True).prefetch_related('additional_media')
@@ -201,6 +200,18 @@ def product_detail_view(request, slug):
 
     # --- Review Submission (POST) ---
     if request.method == 'POST':
+        # Phase 6: Only delivered-order users may submit reviews
+        can_submit = (
+            request.user.is_authenticated and
+            Order.objects.filter(
+                user=request.user,
+                items__product_name=product.name,
+                status='delivered'
+            ).exists()
+        )
+        if not can_submit:
+            messages.error(request, 'Reviews are restricted to verified purchasers who have received this product.')
+            return redirect('product_detail', slug=product.slug)
         review_form = ProductReviewForm(request.POST)
         if review_form.is_valid():
             review = review_form.save(commit=False)
@@ -211,10 +222,12 @@ def product_detail_view(request, slug):
     else:
         review_form = ProductReviewForm()
 
-    # --- Related Products ---
-    related = Product.objects.filter(
+    # --- Related Products (up to 8; random fallback if < 2) ---
+    related = list(Product.objects.filter(
         is_active=True, stock__gt=0
-    ).exclude(pk=pk).order_by('?')[:4]
+    ).exclude(pk=pk).order_by('?')[:8])
+    if len(related) < 2:
+        related = list(Product.objects.filter(is_active=True).exclude(pk=pk).order_by('?')[:6])
 
     # --- Recently Viewed (session-based, last 4, stored by pk) ---
     viewed_ids = request.session.get('recently_viewed', [])
@@ -252,9 +265,19 @@ def product_detail_view(request, slug):
     seo_meta_description = product.meta_description or product.description[:155]
     breadcrumbs = [
         {'label': 'Home', 'url': '/'},
-        {'label': 'Products', 'url': '/#products'},
+        {'label': 'Products', 'url': '/products/'},
         {'label': product.name, 'url': None},
     ]
+
+    # --- Phase 6: Review Guard (delivered orders only) ---
+    can_review = (
+        request.user.is_authenticated and
+        Order.objects.filter(
+            user=request.user,
+            items__product_name=product.name,
+            status='delivered'
+        ).exists()
+    )
 
     context = {
         'product': product,
@@ -271,6 +294,8 @@ def product_detail_view(request, slug):
         'meta_title': seo_meta_title,
         'meta_description': seo_meta_description,
         'breadcrumbs': breadcrumbs,
+        # Phase 6: Review guard
+        'can_review': can_review,
     }
     return render(request, 'core/product_detail.html', context)
 
@@ -1027,3 +1052,89 @@ def blog_detail_view(request, slug):
         ],
     }
     return render(request, 'core/blog_detail.html', context)
+
+
+# \u2500\u2500 Product Catalog View (Phase 6) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+
+import difflib
+
+def product_catalog_view(request):
+    """
+    Full product catalog with:
+    - Shelf filtering (?shelf=best_sellers|new_arrivals|trending)
+    - Exact search via icontains (?q=...)
+    - Fuzzy fallback via difflib.get_close_matches
+    - Zero-results safeguard: always shows products (search_fallback flag)
+    """
+    import difflib
+
+    q = request.GET.get('q', '').strip()
+    shelf = request.GET.get('shelf', '').strip()
+
+    base_qs = Product.objects.filter(is_active=True, stock__gt=0)
+
+    # --- Shelf filter ---
+    shelf_label = ''
+    if shelf == 'best_sellers':
+        base_qs = base_qs.filter(is_best_seller=True)
+        shelf_label = 'Best Sellers'
+    elif shelf == 'new_arrivals':
+        base_qs = base_qs.filter(is_new_arrival=True)
+        shelf_label = 'New Arrivals'
+    elif shelf == 'trending':
+        base_qs = base_qs.filter(is_trending=True)
+        shelf_label = 'Trending'
+
+    search_fallback = False
+    corrected_query = ''
+
+    if q:
+        # Step 1: Exact icontains match across name, subtitle, description
+        exact_results = base_qs.filter(
+            Q(name__icontains=q) |
+            Q(subtitle_tagline__icontains=q) |
+            Q(description__icontains=q)
+        )
+
+        if exact_results.exists():
+            products = exact_results
+        else:
+            # Step 2: Fuzzy match against all product names
+            all_names = list(Product.objects.filter(is_active=True).values_list('name', flat=True))
+            close = difflib.get_close_matches(q, all_names, n=5, cutoff=0.45)
+
+            if close:
+                # Build OR query from close matches
+                from functools import reduce
+                import operator
+                q_objs = [Q(name__icontains=name) for name in close]
+                fuzzy_filter = reduce(operator.or_, q_objs)
+                products = base_qs.filter(fuzzy_filter)
+                corrected_query = close[0] if close else ''
+            else:
+                products = None
+
+            # Step 3: Zero-results fallback \u2014 never show empty page
+            if not products or not products.exists():
+                products = Product.objects.filter(is_active=True, stock__gt=0).order_by('?')[:12]
+                search_fallback = True
+    else:
+        products = base_qs.order_by('name')
+
+    seo_title = f"Products \u2014 KaaNuRO Group" if not q else f'Search: {q} \u2014 KaaNuRO'
+
+    context = {
+        'products': products,
+        'q': q,
+        'shelf': shelf,
+        'shelf_label': shelf_label,
+        'search_fallback': search_fallback,
+        'corrected_query': corrected_query,
+        'meta_title': seo_title,
+        'meta_description': 'Browse the full KaaNuRO natural wellness product catalog. Herbal teas, Ayurvedic remedies, and organic supplements.',
+        'breadcrumbs': [
+            {'label': 'Home', 'url': '/'},
+            {'label': 'Products', 'url': None},
+        ],
+    }
+    return render(request, 'core/products.html', context)

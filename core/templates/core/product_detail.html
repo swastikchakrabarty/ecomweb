@@ -300,10 +300,11 @@
 
       <!-- Submit Review Form -->
       <div class="lg:col-span-2">
-        <div class="bg-lightBeige border border-[#5C4033]/8 rounded-2xl p-6 sticky top-24">
+        <div class="bg-[#F9F9F9] border border-[#E5E5E5] rounded-2xl p-6 sticky top-24">
           <h3 class="text-base font-outfit font-bold text-darkGreen mb-4 flex items-center gap-2">
             <i class="fa-solid fa-pen-to-square text-softGold"></i> Write a Review
           </h3>
+          {% if can_review %}
           <form method="POST" action="#reviews" class="space-y-4">
             {% csrf_token %}
             <div>
@@ -323,45 +324,79 @@
               <i class="fa-solid fa-paper-plane text-xs"></i> Submit Review
             </button>
           </form>
+          {% else %}
+          <!-- Phase 6: Verified purchaser gate -->
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 space-y-3">
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i class="fa-solid fa-shield-halved text-amber-600 text-sm"></i>
+              </div>
+              <div class="space-y-1">
+                <p class="text-sm font-outfit font-bold text-amber-800">Verified Purchases Only</p>
+                <p class="text-xs text-amber-700/80 font-light leading-relaxed">
+                  Reviews are restricted to verified purchasers who have received this product.
+                </p>
+              </div>
+            </div>
+            {% if not request.user.is_authenticated %}
+            <a href="{% url 'login' %}" class="block w-full text-center py-2.5 bg-herbalGreen text-cream text-xs font-bold font-outfit rounded-lg hover:bg-darkGreen transition-colors">
+              <i class="fa-solid fa-right-to-bracket mr-1"></i> Sign in to Check Eligibility
+            </a>
+            {% endif %}
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Related Products ───────────────────────────────────── -->
+<!-- ── Related Products (Horizontal Swiper) ──────────────────────────── -->
 {% if related_products %}
-<section class="py-14 bg-lightBeige border-t border-[#5C4033]/8">
+<section class="py-14 bg-[#F9F9F9] border-t border-[#E5E5E5]">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="mb-8 space-y-1">
-      <span class="text-[10px] font-bold uppercase tracking-widest text-herbalGreen font-outfit flex items-center gap-1.5"><i class="fa-solid fa-cubes"></i> You Might Also Like</span>
-      <h2 class="text-xl font-outfit font-extrabold text-darkGreen">Related Products</h2>
-    </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-      {% for rp in related_products %}
-      <a href="{% url 'product_detail' rp.slug %}"
-         class="group bg-cream border border-lightBeige rounded-2xl p-4 flex flex-col gap-3 hover:shadow-lg hover:border-softGold/40 transition-all duration-300">
-        <div class="w-full h-28 rounded-xl overflow-hidden bg-lightBeige/50 flex items-center justify-center border border-lightBeige">
-          {% if rp.image %}
-          <img src="{{ rp.image.url }}" alt="{{ rp.name }}" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300">
-          {% else %}
-          <i class="fa-solid fa-leaf text-3xl text-herbalGreen/25"></i>
-          {% endif %}
-        </div>
-        <div class="flex-grow">
-          <p class="text-xs font-outfit font-bold text-darkGreen truncate">{{ rp.name }}</p>
-          <p class="text-[10px] text-organicBrown/55 font-light line-clamp-2 mt-0.5">{{ rp.description }}</p>
-        </div>
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-mono font-bold text-herbalGreen">₹{{ rp.price }}</span>
-          <span class="text-[9px] font-bold text-herbalGreen font-outfit flex items-center gap-1">View <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
-        </div>
+    <div class="flex items-center justify-between mb-6">
+      <div class="space-y-0.5">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-herbalGreen font-outfit flex items-center gap-1.5"><i class="fa-solid fa-cubes"></i> Explore More</span>
+        <h2 class="text-xl font-outfit font-extrabold text-darkGreen">You Might Also Like</h2>
+      </div>
+      <a href="{% url 'product_catalog' %}" class="text-xs font-bold text-herbalGreen font-outfit flex items-center gap-1 hover:gap-2 transition-all">
+        View All <i class="fa-solid fa-arrow-right text-[9px]"></i>
       </a>
-      {% endfor %}
+    </div>
+
+    <div class="relative">
+      <div class="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-[#F9F9F9] to-transparent z-10 pointer-events-none rounded-r-2xl"></div>
+      <div class="flex gap-5 overflow-x-auto pb-4"
+           style="scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+                  scrollbar-width: thin; scrollbar-color: #E5E5E5 transparent;">
+        {% for rp in related_products %}
+        <a href="{% url 'product_detail' rp.slug %}"
+           style="scroll-snap-align: start; flex-shrink: 0; width: 200px;"
+           class="group bg-white border border-[#E5E5E5] rounded-2xl p-4 flex flex-col gap-3 hover:shadow-lg hover:border-softGold/40 transition-all duration-300">
+          <div class="w-full h-32 rounded-xl overflow-hidden bg-[#F9F9F9] flex items-center justify-center border border-[#E5E5E5]">
+            {% if rp.image %}
+            <img src="{{ rp.image.url }}" alt="{{ rp.name }}" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300">
+            {% else %}
+            <i class="fa-solid fa-leaf text-3xl text-herbalGreen/25"></i>
+            {% endif %}
+          </div>
+          <div class="flex-grow space-y-1">
+            <p class="text-xs font-outfit font-bold text-darkGreen leading-snug line-clamp-2 group-hover:text-herbalGreen transition-colors">{{ rp.name }}</p>
+            {% if rp.subtitle_tagline %}<p class="text-[9px] text-organicBrown/50 font-light">{{ rp.subtitle_tagline }}</p>{% endif %}
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-[#E5E5E5]">
+            <span class="text-sm font-mono font-bold text-herbalGreen">₹{{ rp.price }}</span>
+            <span class="text-[9px] font-bold text-herbalGreen font-outfit flex items-center gap-0.5">View <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </section>
 {% endif %}
+
 
 <!-- ── Recently Viewed ─────────────────────────────────────── -->
 {% if recently_viewed %}
