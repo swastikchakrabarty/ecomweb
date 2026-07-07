@@ -33,7 +33,7 @@
   "offers": {
     "@type": "Offer",
     "priceCurrency": "INR",
-    "price": "{{ product.price }}",
+    "price": "{{ product.current_price }}",
     "availability": "{% if product.stock > 0 %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
     "seller": {
       "@type": "Organization",
@@ -67,6 +67,15 @@
       <div class="space-y-4">
         <!-- Main Image -->
         <div class="relative rounded-2xl overflow-hidden bg-lightBeige border border-[#5C4033]/8 aspect-square flex items-center justify-center">
+          <!-- Heart Button Overlay -->
+          <button type="button" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/95 shadow-md flex items-center justify-center text-gray-700 hover:text-red-500 transition-colors z-20 toggle-wishlist" data-product-id="{{ product.id }}">
+              {% if product.id|stringformat:"s" in request.session.wishlist %}
+                  <i class="fa-solid fa-heart text-red-500"></i>
+              {% else %}
+                  <i class="fa-regular fa-heart text-gray-700"></i>
+              {% endif %}
+          </button>
+
           {% if gallery %}
           <a id="zoom-trigger" href="{{ gallery.0 }}">
             <img id="main-product-img" src="{{ gallery.0 }}" alt="{{ product.name }}"
@@ -79,7 +88,7 @@
             <p class="text-sm font-outfit text-organicBrown/40">No image available</p>
           </div>
           {% endif %}
-
+ 
           <!-- Stock badge -->
           {% if product.stock > 0 %}
           <span class="absolute top-3 left-3 bg-emerald-500 text-white text-[9px] font-bold px-2.5 py-1 rounded-full font-outfit uppercase tracking-wider shadow-sm">In Stock</span>
@@ -145,8 +154,14 @@
         {% endwith %}
 
         <!-- Price & Quantity -->
-        <div class="flex items-baseline gap-3">
-          <span class="text-3xl font-mono font-extrabold text-herbalGreen">₹{{ product.price }}</span>
+        <div class="flex items-baseline gap-3 flex-wrap">
+          <span class="text-3xl font-mono font-extrabold text-herbalGreen">₹{{ product.current_price }}</span>
+          {% if product.discount_percentage > 0 %}
+          <span class="text-lg font-mono text-organicBrown/40 line-through">₹{{ product.price }}</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-600 font-outfit">
+            <i class="fa-solid fa-tag mr-1 text-[10px]"></i>{{ product.discount_percentage }}% OFF
+          </span>
+          {% endif %}
           {% if product.total_quantity_info %}
           <span class="text-sm text-organicBrown/50 font-medium">/ {{ product.total_quantity_info }}</span>
           {% endif %}
@@ -200,7 +215,7 @@
       </button>
       <button onclick="switchTab('benefits')" id="tab-btn-benefits"
               class="tab-btn px-5 py-2.5 rounded-xl text-xs font-bold font-outfit uppercase tracking-wider transition-all bg-cream text-darkGreen border border-[#5C4033]/10 hover:border-herbalGreen/30">
-        <i class="fa-solid fa-heart-pulse mr-1.5"></i>Benefits
+        <i class="fa-solid fa-star mr-1.5"></i>Benefits
       </button>
       <button onclick="switchTab('usage')" id="tab-btn-usage"
               class="tab-btn px-5 py-2.5 rounded-xl text-xs font-bold font-outfit uppercase tracking-wider transition-all bg-cream text-darkGreen border border-[#5C4033]/10 hover:border-herbalGreen/30">

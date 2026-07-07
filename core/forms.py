@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from .models import ContactMessage, Product, User, ClothingItem, Employee, CustomerProfile, ProductReview, Address
+from .models import ContactMessage, Product, User, Employee, CustomerProfile, ProductReview, Address
+
 
 
 class CustomerProfileForm(forms.ModelForm):
@@ -109,40 +110,6 @@ class LoginForm(AuthenticationForm):
         'class': 'w-full px-4 py-3 bg-cream border border-organicBrown/30 rounded-lg focus:outline-none focus:border-herbalGreen focus:ring-1 focus:ring-herbalGreen text-organicBrown',
         'placeholder': 'Password'
     }))
-
-class ClothingItemForm(forms.ModelForm):
-    class Meta:
-        model = ClothingItem
-        fields = ['name', 'category', 'price', 'fabric', 'colors', 'sizes', 'image', 'is_active']
-        widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-2 bg-cream border border-organicBrown/30 rounded-lg focus:outline-none focus:border-herbalGreen focus:ring-1 focus:ring-herbalGreen text-organicBrown'
-            }),
-            'category': forms.Select(attrs={
-                'class': 'w-full px-4 py-2 bg-cream border border-organicBrown/30 rounded-lg focus:outline-none focus:border-herbalGreen focus:ring-1 focus:ring-herbalGreen text-organicBrown'
-            }),
-            'price': forms.NumberInput(attrs={
-                'class': 'w-full px-4 py-2 bg-cream border border-organicBrown/30 rounded-lg focus:outline-none focus:border-herbalGreen focus:ring-1 focus:ring-herbalGreen text-organicBrown',
-                'step': '0.01'
-            }),
-            'fabric': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-2 bg-cream border border-organicBrown/30 rounded-lg focus:outline-none focus:border-herbalGreen focus:ring-1 focus:ring-herbalGreen text-organicBrown'
-            }),
-            'colors': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-2 bg-cream border border-organicBrown/30 rounded-lg focus:outline-none focus:border-herbalGreen focus:ring-1 focus:ring-herbalGreen text-organicBrown',
-                'placeholder': 'e.g. White, Beige, Green'
-            }),
-            'sizes': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-2 bg-cream border border-organicBrown/30 rounded-lg focus:outline-none focus:border-herbalGreen focus:ring-1 focus:ring-herbalGreen text-organicBrown',
-                'placeholder': 'e.g. S, M, L, XL'
-            }),
-            'image': forms.ClearableFileInput(attrs={
-                'class': 'w-full text-sm text-organicBrown file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-lightBeige file:text-herbalGreen hover:file:bg-herbalGreen hover:file:text-cream'
-            }),
-            'is_active': forms.CheckboxInput(attrs={
-                'class': 'w-4 h-4 text-herbalGreen border-organicBrown/30 rounded focus:ring-herbalGreen'
-            }),
-        }
 
 class EmployeeCreationForm(forms.Form):
     username = forms.CharField(max_length=150, widget=forms.TextInput(attrs={

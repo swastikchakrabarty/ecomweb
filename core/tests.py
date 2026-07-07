@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
-from core.models import User, Employee, Product, ContactMessage, ClothingItem, Blog, ProductMedia, Order, OrderItem
+from core.models import User, Employee, Product, ContactMessage, Blog, ProductMedia, Order, OrderItem
 from core.forms import ContactForm
+
 
 class CoreModelsTestCase(TestCase):
     def setUp(self):
@@ -83,7 +84,9 @@ class CoreViewsTestCase(TestCase):
             description='Organic Tulsi',
             ingredients='Tulsi',
             key_benefits='Anti-stress',
-            is_active=True
+            is_active=True,
+            stock=10,
+            is_best_seller=True
         )
 
     def test_home_page_renders(self):
@@ -92,7 +95,7 @@ class CoreViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Tulsi Tea')
         self.assertContains(response, 'Empower Your')
-        self.assertContains(response, 'Heart First')
+        self.assertContains(response, 'Sleep Optimization')
         self.assertEqual(response.context['upi_id'], settings.UPI_ID)
         self.assertEqual(response.context['merchant_name'], settings.MERCHANT_NAME)
 
@@ -154,100 +157,6 @@ class CoreViewsTestCase(TestCase):
         self.client.login(username='admin_user', password='password123')
         response = self.client.get(reverse('product_create'))
         self.assertEqual(response.status_code, 200)
-        self.client.logout()
-
-
-class ClothingTestCase(TestCase):
-    def setUp(self):
-        self.admin = User.objects.create_user(username='admin_test_cloth', password='password', role='admin')
-        self.regular_user = User.objects.create_user(username='user_test_cloth', password='password', role='user')
-        
-        # Create a few clothing items
-        self.item1 = ClothingItem.objects.create(
-            name='Cotton Kurta',
-            category='female',
-            price=1200,
-            fabric='Cotton',
-            colors='Red, Green',
-            sizes='M, L',
-            is_active=True
-        )
-        self.item2 = ClothingItem.objects.create(
-            name='Linen Shirt',
-            category='male',
-            price=1800,
-            fabric='Linen',
-            colors='White, Blue',
-            sizes='XL',
-            is_active=True
-        )
-        self.item3 = ClothingItem.objects.create(
-            name='Kids Frock',
-            category='kids',
-            price=800,
-            fabric='Cotton',
-            colors='Yellow',
-            sizes='S',
-            is_active=False # Inactive
-        )
-        
-        # Create a blog post
-        self.blog = Blog.objects.create(
-            title='Test Blog Wisdom',
-            content='Some wise words about organic lifestyle.',
-            author='Sage'
-        )
-
-    def test_clothing_filtering(self):
-        # 1. Filter by category
-        response = self.client.get(reverse('home'), {'category': 'female'})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Cotton Kurta')
-        self.assertNotContains(response, 'Linen Shirt')
-
-        # 2. Filter by size
-        response = self.client.get(reverse('home'), {'size': 'XL'})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Linen Shirt')
-        self.assertNotContains(response, 'Cotton Kurta')
-
-        # 3. Filter by fabric
-        response = self.client.get(reverse('home'), {'fabric': 'Cotton'})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Cotton Kurta')
-        self.assertNotContains(response, 'Linen Shirt')
-
-        # 4. Filter by price
-        response = self.client.get(reverse('home'), {'price': '1500'})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Cotton Kurta')
-        self.assertNotContains(response, 'Linen Shirt') # Linen is 1800, which is > 1500
-
-    def test_clothing_crud_permissions(self):
-        # Regular user cannot access add page
-        self.client.login(username='user_test_cloth', password='password')
-        response = self.client.get(reverse('clothing_create'))
-        self.assertEqual(response.status_code, 403)
-        self.client.logout()
-
-        # Admin user can access add page
-        self.client.login(username='admin_test_cloth', password='password')
-        response = self.client.get(reverse('clothing_create'))
-        self.assertEqual(response.status_code, 200)
-
-        # Admin user can create a clothing item
-        post_data = {
-            'name': 'New Silk Scarf',
-            'category': 'female',
-            'price': 999,
-            'fabric': 'Silk',
-            'colors': 'Pink',
-            'sizes': 'Free',
-            'is_active': True
-        }
-        response = self.client.post(reverse('clothing_create'), post_data)
-        self.assertEqual(response.status_code, 302) # Redirect on success
-        self.assertTrue(ClothingItem.objects.filter(name='New Silk Scarf').exists())
         self.client.logout()
 
 
@@ -341,8 +250,11 @@ class OrderCheckoutTestCase(TestCase):
     def setUp(self):
         self.admin = User.objects.create_user(username='admin_staff_test', password='password', role='admin')
         self.regular_user = User.objects.create_user(username='user_staff_test', password='password', role='user')
+        self.product1 = Product.objects.create(name='Test Tea 1', price=299.00, is_active=True)
+        self.product2 = Product.objects.create(name='Test Tea 2', price=299.00, is_active=True)
         
     def test_order_creation_success(self):
+        self.client.login(username='user_staff_test', password='password')
         import uuid
         order_uuid = str(uuid.uuid4())
         payload = {
@@ -353,8 +265,8 @@ class OrderCheckoutTestCase(TestCase):
             'total_amount': '598.00',
             'utr_number': '123456789012',
             'items': [
-                {'name': 'Test Tea 1', 'quantity': 1, 'price': 299.00},
-                {'name': 'Test Tea 2', 'quantity': 1, 'price': 299.00}
+                {'id': f"prod_{self.product1.pk}", 'name': 'Test Tea 1', 'quantity': 1, 'price': 299.00},
+                {'id': f"prod_{self.product2.pk}", 'name': 'Test Tea 2', 'quantity': 1, 'price': 299.00}
             ]
         }
         import json
@@ -373,18 +285,19 @@ class OrderCheckoutTestCase(TestCase):
         self.assertEqual(order.utr_number, '123456789012')
         self.assertEqual(order.items.count(), 2)
         self.assertEqual(order.items.first().product_name, 'Test Tea 1')
+        self.client.logout()
 
     def test_order_creation_invalid_payload(self):
-        # Missing total_amount
+        self.client.login(username='user_staff_test', password='password')
+        # Missing utr_number
         import uuid
         payload = {
             'order_id': str(uuid.uuid4()),
             'customer_name': 'Rajesh Kumar',
             'phone_number': '+919999999999',
             'shipping_address': 'Street 1, Locality 2, Udaipurwati, Rajasthan - 333307',
-            'utr_number': '123456789012',
             'items': [
-                {'name': 'Test Tea 1', 'quantity': 1, 'price': 299.00}
+                {'id': f"prod_{self.product1.pk}", 'name': 'Test Tea 1', 'quantity': 1, 'price': 299.00}
             ]
         }
         import json
@@ -395,6 +308,7 @@ class OrderCheckoutTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertFalse(Order.objects.exists())
+        self.client.logout()
 
     def test_order_phone_normalization_and_dashboard_sync(self):
         import uuid
@@ -405,6 +319,9 @@ class OrderCheckoutTestCase(TestCase):
         customer_username = f"cust_{customer_phone}"
         customer_user = User.objects.create_user(username=customer_username, password='password123', role='user')
         
+        # Log in customer
+        self.client.login(username=customer_username, password='password123')
+
         # Create an order with country prefix and spaces
         order_uuid = str(uuid.uuid4())
         payload = {
@@ -415,7 +332,7 @@ class OrderCheckoutTestCase(TestCase):
             'total_amount': '299.00',
             'utr_number': '123456789012',
             'items': [
-                {'name': 'Test Tea 1', 'quantity': 1, 'price': 299.00}
+                {'id': f"prod_{self.product1.pk}", 'name': 'Test Tea 1', 'quantity': 1, 'price': 299.00}
             ]
         }
         
@@ -433,9 +350,6 @@ class OrderCheckoutTestCase(TestCase):
         self.assertEqual(order.phone_number, '9876543210')
         
         # Verify dashboard sync
-        self.client.login(username=customer_username, password='password123')
-        
-        # Request dashboard
         response = self.client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 200)
         
@@ -611,9 +525,10 @@ class CustomerAuthAndInvoiceTestCase(TestCase):
             'total_amount': 300.00,
             'utr_number': '123456789012',
             'items': [
-                {'name': 'Test Herbal Tea', 'quantity': 2, 'price': 150.00}
+                {'id': f"prod_{self.product.pk}", 'name': 'Test Herbal Tea', 'quantity': 2, 'price': 150.00}
             ]
         }
+        self.client.login(username='cust_9876543210', password='password')
         response = self.client.post(reverse('checkout_order_create'), post_data, content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()['success'])
@@ -645,7 +560,8 @@ class CustomerAuthAndInvoiceTestCase(TestCase):
             shipping_address='Udaipurwati',
             total_amount=150.00,
             utr_number='123456789012',
-            status='confirmed'
+            status='confirmed',
+            user=self.customer_user
         )
         invoice = Invoice.objects.create(invoice_number='INV-DOWNLOAD-123', order=order)
 
@@ -696,6 +612,115 @@ class CustomerAuthAndInvoiceTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn('customer_profiles', response.context)
         self.client.logout()
+
+
+class LegalDocumentTestCase(TestCase):
+    def test_legal_document_model(self):
+        from core.models import LegalDocument
+        doc = LegalDocument.objects.create(
+            doc_type='PRIVACY_POLICY',
+            title='Privacy Policy',
+            content='# Heading 1\nSome paragraph.'
+        )
+        self.assertEqual(str(doc), 'Privacy Policy')
+
+    def test_legal_document_view_fallback_seeding(self):
+        # View should auto-create document if it doesn't exist
+        response = self.client.get(reverse('legal_document', args=['privacy-policy']))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Privacy Policy')
+        
+        # Verify markdown parsing worked (should render as HTML heading/paragraph)
+        self.assertContains(response, '<h1>Privacy Policy</h1>')
+
+    def test_legal_document_view_with_content(self):
+        from core.models import LegalDocument
+        LegalDocument.objects.create(
+            doc_type='TERMS_OF_SERVICE',
+            title='Custom Terms',
+            content='## 1. Rules\n* First rule\n* Second rule'
+        )
+        response = self.client.get(reverse('legal_document', args=['terms-of-service']))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Custom Terms')
+        self.assertContains(response, '<h2>1. Rules</h2>')
+        self.assertContains(response, '<li>First rule</li>')
+
+
+class NavbarGreetingTestCase(TestCase):
+    def setUp(self):
+        # 1. Superuser
+        self.superuser = User.objects.create_superuser(username='super_user_test', email='super@test.com', password='password')
+        
+        # 2. Staff user
+        self.staff_with_name = User.objects.create_user(
+            username='staff_name_test',
+            first_name='Vikram',
+            password='password',
+            is_staff=True
+        )
+        self.staff_without_name = User.objects.create_user(
+            username='staff_noname_test',
+            password='password',
+            is_staff=True
+        )
+        
+        # 3. Regular customer (is_staff=False, is_superuser=False)
+        self.customer_with_name = User.objects.create_user(
+            username='cust_name_test',
+            first_name='Amit',
+            password='password'
+        )
+        self.customer_without_name = User.objects.create_user(
+            username='cust_noname_test',
+            password='password'
+        )
+
+    def test_navbar_greeting_guest(self):
+        # Unauthenticated user
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Hello, Guest')
+
+    def test_navbar_greeting_superuser(self):
+        # Logged in as superuser
+        self.client.login(username='super_user_test', password='password')
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Hello, Admin')
+        self.client.logout()
+
+    def test_navbar_greeting_staff(self):
+        # Logged in as staff with first name
+        self.client.login(username='staff_name_test', password='password')
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Hello, Vikram')
+        self.client.logout()
+
+        # Logged in as staff without first name (should fallback to username)
+        self.client.login(username='staff_noname_test', password='password')
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Hello, staff_noname_test')
+        self.client.logout()
+
+    def test_navbar_greeting_customer(self):
+        # Logged in as regular customer with first name
+        self.client.login(username='cust_name_test', password='password')
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Hello, Amit')
+        self.client.logout()
+
+        # Logged in as regular customer without first name
+        self.client.login(username='cust_noname_test', password='password')
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Hello, Customer')
+        self.client.logout()
+
+
 
 
 

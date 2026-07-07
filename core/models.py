@@ -43,10 +43,24 @@ class Product(models.Model):
     is_new_arrival = models.BooleanField(default=False, verbose_name="New Arrival", help_text="Feature on homepage New Arrivals shelf")
     is_trending = models.BooleanField(default=False, verbose_name="Trending", help_text="Feature on homepage Trending shelf")
 
+    # ── Percentage Discount Matrix ────────────────────────────────────────────
+    discount_percentage = models.PositiveIntegerField(
+        default=0,
+        help_text="Discount value in percentage (0 to 100). Set to 0 for no discount."
+    )
+
     # ── Phase 4: SEO Fields ───────────────────────────────────────────────────
     slug = models.SlugField(max_length=280, unique=False, blank=True, null=True, help_text="Auto-generated from product name. Used in SEO-friendly URLs.")
     meta_title = models.CharField(max_length=150, blank=True, null=True, help_text="Custom SEO title (max 150 chars). Falls back to product name.")
     meta_description = models.TextField(blank=True, null=True, help_text="Custom meta description for search engines. Falls back to product description.")
+
+    @property
+    def current_price(self):
+        """Dynamically computes the active checkout price after applying discount_percentage."""
+        if self.discount_percentage > 0:
+            discount_amount = (self.price * self.discount_percentage) / 100
+            return round(self.price - discount_amount, 2)
+        return self.price
 
     @property
     def media_list_json(self):
@@ -87,50 +101,6 @@ class ContactMessage(models.Model):
         return f"Message from {self.name} ({self.email}) at {self.created_at}"
 
 
-# --- CLOTHING ITEM MODEL ---
-class ClothingItem(models.Model):
-    CATEGORY_CHOICES = (
-        ('female', 'Female'),
-        ('male', 'Male'),
-        ('kids', 'Kids'),
-    )
-    name = models.CharField(max_length=255)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    fabric = models.CharField(max_length=100)
-    colors = models.CharField(max_length=255, help_text="Comma-separated colors")
-    sizes = models.CharField(max_length=255, help_text="Comma-separated sizes")
-    image = models.ImageField(upload_to='clothing/', blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-
-    @property
-    def media_list_json(self):
-        import json
-        media_items = []
-        if self.image:
-            media_items.append({
-                'type': 'image',
-                'url': self.image.url
-            })
-        for m in self.additional_media.all():
-            if m.media_type == 'image' and m.file:
-                media_items.append({
-                    'type': 'image',
-                    'url': m.file.url
-                })
-            elif m.media_type == 'video':
-                url = m.file.url if m.file else m.embed_url
-                if url:
-                    media_items.append({
-                        'type': 'video',
-                        'url': url
-                    })
-        return json.dumps(media_items)
-
-    def __str__(self):
-        return self.name
-
-
 # --- BLOG POST MODEL ---
 class Blog(models.Model):
     title = models.CharField(max_length=255)
@@ -168,13 +138,13 @@ class ProductMedia(models.Model):
         ('video', 'Video Upload/Embed Link'),
     )
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='additional_media', null=True, blank=True)
-    clothing_item = models.ForeignKey(ClothingItem, on_delete=models.CASCADE, related_name='additional_media', null=True, blank=True)
     media_type = models.CharField(max_length=10, choices=MEDIA_TYPE_CHOICES, default='image')
     file = models.FileField(upload_to='product_gallery/', help_text="Upload product photo or MP4 video snippet")
     embed_url = models.URLField(blank=True, null=True, help_text="Optional YouTube/Vimeo video streaming URL code link")
 
     def __str__(self):
-        return f"Media asset for {self.product.name if self.product else self.clothing_item.name}"
+        return f"Media asset for {self.product.name if self.product else 'Unnamed Product'}"
+
 
 
 import uuid
@@ -301,8 +271,45 @@ class Coupon(models.Model):
         help_text="Minimum cart total required for this coupon to apply."
     )
     is_active = models.BooleanField(default=True)
+    # ── Temporal Validity Window (2026 billing year) ──────────────────────────
+    start_date = models.DateTimeField(
+        null=True, blank=True,
+        verbose_name="Valid From",
+        help_text="Coupon becomes redeemable at this UTC timestamp. Leave blank for no start restriction."
+    )
+    end_date = models.DateTimeField(
+        null=True, blank=True,
+        verbose_name="Valid Until",
+        help_text="Coupon expires at this UTC timestamp. Leave blank for no expiry restriction."
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         status = "Active" if self.is_active else "Inactive"
-        return f"{self.code} — ₹{self.discount_amount} off [{status}]"
+        expiry = f" | Expires: {self.end_date.strftime('%d %b %Y')})" if self.end_date else ""
+        return f"{self.code} — ₹{self.discount_amount} off [{status}{expiry}]"
+
+
+class LegalDocument(models.Model):
+    DOCUMENT_TYPES = [
+        ('PRIVACY_POLICY', 'Privacy Policy'),
+        ('TERMS_OF_SERVICE', 'Terms of Service'),
+    ]
+    doc_type = models.CharField(
+        max_length=20,
+        choices=DOCUMENT_TYPES,
+        unique=True,
+        help_text="The classification archetype of the legal document."
+    )
+    title = models.CharField(
+        max_length=200,
+        help_text="The public-facing display title for this document entry."
+    )
+    content = models.TextField(
+        help_text="The markdown or HTML formatted string content holding the official legal clauses."
+    )
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+

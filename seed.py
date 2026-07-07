@@ -5,7 +5,8 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'kaanuro_project.settings')
 django.setup()
 
-from core.models import User, Employee, Product, ClothingItem, Blog
+from core.models import User, Employee, Product, Blog
+
 
 def seed_database():
     print("Starting database seeding...")
@@ -71,38 +72,47 @@ def seed_database():
     else:
         print("Regular User already exists.")
 
-    # 4. Create Mock Products
+    # 4. Clean up old cardiovascular products and blogs first
+    print("Cleaning up old database records...")
+    Product.objects.filter(name__in=['Arjuna Heart Tea', 'Tejpatra Glow Oil', 'Sarpagandha Calming Blend']).delete()
+    Blog.objects.filter(title__in=[
+        'The Secrets of Arjuna Bark for Cardiovascular Longevity',
+        'Natural Skin Glow: Saffron and Bay Leaf Elixirs',
+        'Deep Bedtime Calming: Ayurveda\'s Sleep Herbs Decoded'
+    ]).delete()
+
+    # 5. Create Mock Products
     products_data = [
         {
-            'name': 'Arjuna Heart Tea',
-            'subtitle_tagline': 'Herbal Heart Infusion',
-            'description': 'A revitalizing organic tea blend containing Arjuna bark extract and wild rosehip to support muscle tone, clean circulation, and arterial resilience.',
-            'total_quantity_info': '120g loose tea',
-            'ingredients': 'Arjuna Bark, Rosehip, Hibiscus Petals, Cardamom, Ginger',
-            'key_benefits': 'Supports cardiovascular health\nImproves circulation efficiency\nRich in heart-protective antioxidants',
-            'directions_for_use': 'Boil 1 teaspoon in 200ml water for 5 minutes. Strain and consume warm once daily in the morning.',
+            'name': 'KaanuRO Kesh Vitality Formulation',
+            'subtitle_tagline': 'Herbal Hair Growth Elixir',
+            'description': 'A premium Ayurvedic formulation targeting scalp nourishment, DHT-blocking botanicals, and hair follicle density to naturally restore hair vitality.',
+            'total_quantity_info': '120g loose herb blend',
+            'ingredients': 'Bhringraj Extract, Saw Palmetto, Amalaki, Rosemary, Neem',
+            'key_benefits': 'Nourishes scalp and hair roots\nBlocks DHT naturally to reduce hair fall\nAccelerates hair follicle density',
+            'directions_for_use': 'Apply 5-10ml to the scalp and massage gently. Leave on for at least 2 hours or overnight before washing. Use 3 times a week.',
             'price': 499.00,
             'is_active': True
         },
         {
-            'name': 'Tejpatra Glow Oil',
-            'subtitle_tagline': 'Natural Skin Radiance',
-            'description': 'An ancient cold-pressed formulation using bay leaves, saffron, and sweet almond oil to deeply cleanse and naturally brighten the skin barrier.',
-            'total_quantity_info': '50ml dropper bottle',
-            'ingredients': 'Tejpatra (Bay Leaf) Extract, Kashmiri Saffron, Sweet Almond Oil, Vetiver Root',
-            'key_benefits': 'Enhances skin brightness\nRestores skin moisture barrier\nDefends against free radical damage',
-            'directions_for_use': 'Apply 3-4 drops onto clean face and neck. Massage gently in circular upward strokes before bedtime.',
+            'name': 'Veda Lean Fat Loss Infusion',
+            'subtitle_tagline': 'Metabolic Fire Herbal Accelerator',
+            'description': 'A high-potency organic tea blend that accelerates natural thermogenesis, aids in appetite regulation, and supports an antioxidant-rich cellular cleanse.',
+            'total_quantity_info': '100g loose tea',
+            'ingredients': 'Green Tea Extract, Garcinia Cambogia, Guggul, Ginger, Cinnamon',
+            'key_benefits': 'Accelerates natural thermogenesis\nSupports healthy appetite regulation\nPromotes cellular cleanse and digestion',
+            'directions_for_use': 'Steep 1 teaspoon in boiling water for 5-7 minutes. Consume warm twice daily before meals.',
             'price': 599.00,
             'is_active': True
         },
         {
-            'name': 'Sarpagandha Calming Blend',
-            'subtitle_tagline': 'Sleep & Mind Balance',
-            'description': 'A soothing bedtime formula combining Sarpagandha and Ashwagandha to ease nervous tension, lower stress hormones, and induce deep, restful sleep.',
+            'name': 'Nidra Deep Sleep Blend',
+            'subtitle_tagline': 'Circadian Calm Herbal Infusion',
+            'description': 'A soothing, non-habit-forming formulation containing traditional roots designed to ease nervous tension, lower stress metrics, and extend deep REM sleep cycles.',
             'total_quantity_info': '60 vegetable capsules',
-            'ingredients': 'Sarpagandha extract, Ashwagandha root, Brahmi extract, Shankhpushpi',
-            'key_benefits': 'Reduces anxiety and stress\nPromotes restful sleep cycles\nSupports cognitive calmness',
-            'directions_for_use': 'Take 1 capsule with warm water or milk 30 minutes before sleep, or as directed by a healthcare associate.',
+            'ingredients': 'Sarpagandha extract, Valerian Root, Chamomile, Ashwagandha, Brahmi',
+            'key_benefits': 'Promotes restful and extended REM sleep\nReduces nighttime stress and anxiety\nSupports morning clarity without grogginess',
+            'directions_for_use': 'Mix 1 teaspoon with warm water or milk and consume 30 minutes before bed.',
             'price': 699.00,
             'is_active': True
         }
@@ -121,64 +131,23 @@ def seed_database():
         else:
             print(f"Created Product: {prod.name}")
 
-    # 5. Create Mock Clothing Items
-    clothing_data = [
-        {
-            'name': 'Organic Cotton Female Kurti',
-            'category': 'female',
-            'price': 1499.00,
-            'fabric': '100% Organic Cotton',
-            'colors': 'Cream, Sage Green, Soft Gold',
-            'sizes': 'S, M, L, XL',
-            'is_active': True
-        },
-        {
-            'name': 'Handwoven Linen Male Shirt',
-            'category': 'male',
-            'price': 1899.00,
-            'fabric': 'Handwoven Linen',
-            'colors': 'Beige, Herbal Green, White',
-            'sizes': 'M, L, XL, XXL',
-            'is_active': True
-        },
-        {
-            'name': 'Soft Herbal Kids Romper',
-            'category': 'kids',
-            'price': 899.00,
-            'fabric': 'Organic Bamboo Cotton',
-            'colors': 'Cream, Soft Gold, Pale Pink',
-            'sizes': '6-12M, 12-18M, 2T',
-            'is_active': True
-        }
-    ]
-
-    for c_info in clothing_data:
-        item, created = ClothingItem.objects.get_or_create(
-            name=c_info['name'],
-            defaults=c_info
-        )
-        if created:
-            print(f"Created Clothing Item: {item.name}")
-        else:
-            print(f"Clothing Item already exists: {item.name}")
-
     blog_data = [
         {
-            'title': 'The Secrets of Arjuna Bark for Cardiovascular Longevity',
-            'summary': 'Arjuna has been a cardiotonic cornerstone for centuries. Learn how Arjuna bark extract supports muscle tone, clean circulation, and arterial resilience.',
-            'content': 'Arjuna (Terminalia arjuna) has been a cornerstone of cardiotonic therapy in Rajasthan and ancient India for centuries. In this post, we discuss the scientific mechanisms through which Arjuna bark extract supports muscle tone, clean circulation, and arterial resilience, protecting your heart first.',
+            'title': 'Ayurvedic Secrets for Restoring Hair Density and Scalp Vitality',
+            'summary': 'Discover how traditional DHT-blocking botanicals like Bhringraj and Saw Palmetto nourish hair follicles and promote thick, healthy hair growth.',
+            'content': 'Hair loss can be deeply frustrating. In this article, we dive into the Ayurvedic science of Kesh health, highlighting how natural herbs like Bhringraj, Amalaki, and Saw Palmetto block DHT receptors, revitalize the scalp, and increase follicle density from the root.',
             'author': 'Dr. Alok Sharma, Wellness Associate'
         },
         {
-            'title': 'Natural Skin Glow: Saffron and Bay Leaf Elixirs',
-            'summary': 'Discover how natural bay leaf and saffron extracts brighten the skin barrier and defend against aging.',
-            'content': 'External radiance is a reflection of internal purity. Traditional cold-pressed oils incorporating Tejpatra (Bay Leaf) extract and Kashmiri Saffron work to naturally brighten the skin barrier. Discover how these organic elements defend against premature aging and bring out your natural glow.',
+            'title': 'Igniting Metabolism: The Science of Natural Thermogenesis',
+            'summary': 'Discover how metabolic accelerators and green tea extracts support appetite regulation, cellular cleansing, and active fat loss.',
+            'content': 'Achieving a healthy metabolic rate involves more than just counting calories. We analyze how natural thermogenic herbs like Guggul, Garcinia Cambogia, and green tea catechins elevate metabolic speed, aid in appetite control, and support a comprehensive cellular detox.',
             'author': 'Pooja Verma, Beauty Consultant'
         },
         {
-            'title': 'Deep Bedtime Calming: Ayurveda\'s Sleep Herbs Decoded',
-            'summary': 'Ease nervous tension and induce restorative sleep using traditional Ayurvedic roots like Sarpagandha and Ashwagandha.',
-            'content': 'In our modern, busy life, stress hormones can build up and lead to restless sleep. Ayurveda offers powerful root extracts like Sarpagandha and Ashwagandha to ease nervous tension, promote neural calming, and induce deep, restorative sleep. Learn how to incorporate them safely.',
+            'title': 'Deep Bedtime Calming: Restoring Circadian Sleep Metrics Naturally',
+            'summary': 'Learn how non-habit-forming calming roots like Sarpagandha and Ashwagandha ease nervous tension and promote restorative REM sleep cycles.',
+            'content': 'Quality sleep is the foundation of cognitive clarity and overall health. We explore the biological mechanisms of circadian rhythms and how traditional Ayurvedic adaptogens like Sarpagandha, Valerian root, and Ashwagandha lower cortisol levels to facilitate deep, uninterrupted REM sleep.',
             'author': 'KaaNuRO Wellness Editorial'
         }
     ]

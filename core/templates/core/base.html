@@ -7,7 +7,7 @@
 
     <!-- SEO Meta Tags -->
     <meta name="description" content="{% block meta_description %}{{ meta_description|default:"Traditional organic remedies backed by modern validation. Discover KaaNuRO herbal products from Udaipurwati, Rajasthan." }}{% endblock %}">
-    <meta name="keywords" content="KaaNuRO, KaaNuRO Group, Herbal Tea, Heart Health, Skin Beauty, Natural Wellness, Udaipurwati, Rajasthan, Jhunjhunu">
+    <meta name="keywords" content="KaaNuRO, KaaNuRO Group, Herbal Tea, Hair Growth, Sleep Optimization, Fat Loss, Natural Wellness, Udaipurwati, Rajasthan, Jhunjhunu">
     <meta name="author" content="KaaNuRO Group">
     <meta name="robots" content="index, follow">
 
@@ -89,7 +89,7 @@
     {% endif %}
 
     <!-- Sticky Navigation Bar -->
-    <nav class="sticky top-0 z-50 bg-cream/95 dark:bg-[#121A13]/95 backdrop-blur-md border-b border-lightBeige shadow-sm transition-all duration-300">
+    <nav class="sticky top-0 z-50 backdrop-blur-md border-b border-lightBeige shadow-sm transition-all duration-300" style="background-color: #F9F9F9;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <!-- Logo -->
@@ -103,7 +103,7 @@
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="{% if request.resolver_match.url_name == 'home' %}#home{% else %}{% url 'home' %}#home{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Home</a>
                     <a href="{% if request.resolver_match.url_name == 'home' %}#about{% else %}{% url 'home' %}#about{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">About Us</a>
-                    <a href="{% if request.resolver_match.url_name == 'home' %}#products{% else %}{% url 'home' %}#products{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Our Products</a>
+                    <a href="{% url 'product_catalog' %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Products</a>
                     <a href="{% if request.resolver_match.url_name == 'home' %}#faq{% else %}{% url 'home' %}#faq{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">FAQ</a>
                     <a href="{% if request.resolver_match.url_name == 'home' %}#contact{% else %}{% url 'home' %}#contact{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Contact Us</a>
                 </div>
@@ -115,12 +115,26 @@
                         <i class="fa-solid fa-shopping-cart text-lg"></i>
                         <span id="cart-badge" class="absolute -top-1 -right-1 bg-softGold text-darkGreen text-[9px] font-bold px-1.5 py-0.5 rounded-full scale-0 transition-transform duration-300">0</span>
                     </button>
-
-                    <!-- Theme Toggle -->
-                    <button id="theme-toggle" class="p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 focus:outline-none" aria-label="Toggle Theme">
-                        <i id="theme-toggle-dark-icon" class="fa-solid fa-moon text-lg"></i>
-                        <i id="theme-toggle-light-icon" class="fa-solid fa-sun text-lg text-softGold hidden"></i>
-                    </button>
+                    
+                    <!-- Wishlist Trigger Desktop -->
+                    <a href="{% url 'wishlist_view' %}" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 flex items-center" aria-label="Wishlist">
+                        <i class="far fa-heart mr-1 text-gray-700"></i>
+                        <span id="wishlist-counter" class="ml-1 bg-gray-200 text-gray-800 text-xs px-2 py-0.5 rounded-full">{{ request.session.wishlist|length }}</span>
+                    </a>
+                    
+                    <span class="text-sm font-outfit font-medium text-darkGreen/80 mr-2">
+                        {% if user.is_authenticated %}
+                            {% if user.is_superuser %}
+                                Hello, Admin
+                            {% elif user.is_staff %}
+                                Hello, {{ user.first_name|default:user.username }}
+                            {% else %}
+                                Hello, {{ user.first_name|default:"Customer" }}
+                            {% endif %}
+                        {% else %}
+                            Hello, Guest
+                        {% endif %}
+                    </span>
                     
                     {% if user.is_authenticated %}
                         <a href="{% url 'dashboard' %}" class="px-5 py-2.5 bg-herbalGreen text-cream font-outfit font-semibold rounded-lg hover:bg-darkGreen hover:text-cream transition-all text-sm shadow-md shadow-herbalGreen/10">Dashboard</a>
@@ -130,18 +144,18 @@
                     {% endif %}
                 </div>
 
-                <!-- Mobile Menu Button with Theme Toggle -->
+                <!-- Mobile Menu Button -->
                 <div class="md:hidden flex items-center space-x-2">
                     <!-- Cart Trigger Mobile -->
                     <button id="cart-toggle-mobile" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 focus:outline-none" aria-label="Toggle Cart">
                         <i class="fa-solid fa-shopping-cart text-lg"></i>
                         <span id="cart-badge-mobile" class="absolute -top-1 -right-1 bg-softGold text-darkGreen text-[9px] font-bold px-1.5 py-0.5 rounded-full scale-0 transition-transform duration-300">0</span>
                     </button>
-
-                    <button id="theme-toggle-mobile" class="p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 focus:outline-none" aria-label="Toggle Theme">
-                        <i id="theme-toggle-dark-icon-mobile" class="fa-solid fa-moon text-lg"></i>
-                        <i id="theme-toggle-light-icon-mobile" class="fa-solid fa-sun text-lg text-softGold hidden"></i>
-                    </button>
+                    <!-- Wishlist Trigger Mobile -->
+                    <a href="{% url 'wishlist_view' %}" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 flex items-center" aria-label="Wishlist">
+                        <i class="far fa-heart text-lg text-gray-700"></i>
+                        <span id="wishlist-counter-mobile" class="absolute -top-1 -right-1 bg-gray-200 text-gray-800 text-[9px] font-bold px-1.5 py-0.5 rounded-full">{{ request.session.wishlist|length }}</span>
+                    </a>
                     <button id="mobile-menu-button" class="text-darkGreen hover:text-herbalGreen focus:outline-none" aria-label="Toggle menu">
                         <i class="fa-solid fa-bars text-2xl"></i>
                     </button>
@@ -150,7 +164,7 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-cream dark:bg-[#121A13] border-t border-lightBeige">
+        <div id="mobile-menu" class="hidden md:hidden border-t border-lightBeige" style="background-color: #F9F9F9;">
             <div class="px-4 pt-2 pb-6 space-y-3">
                 <a href="{% if request.resolver_match.url_name == 'home' %}#home{% else %}{% url 'home' %}#home{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Home</a>
                 <a href="{% if request.resolver_match.url_name == 'home' %}#about{% else %}{% url 'home' %}#about{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">About Us</a>
@@ -158,6 +172,19 @@
                 <a href="{% if request.resolver_match.url_name == 'home' %}#faq{% else %}{% url 'home' %}#faq{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">FAQ</a>
                 <a href="{% if request.resolver_match.url_name == 'home' %}#contact{% else %}{% url 'home' %}#contact{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Contact Us</a>
                 <div class="pt-4 border-t border-lightBeige flex flex-col space-y-2">
+                    <span class="text-center text-sm font-outfit font-medium text-darkGreen/80 mb-2">
+                        {% if user.is_authenticated %}
+                            {% if user.is_superuser %}
+                                Hello, Admin
+                            {% elif user.is_staff %}
+                                Hello, {{ user.first_name|default:user.username }}
+                            {% else %}
+                                Hello, {{ user.first_name|default:"Customer" }}
+                            {% endif %}
+                        {% else %}
+                            Hello, Guest
+                        {% endif %}
+                    </span>
                     {% if user.is_authenticated %}
                         <a href="{% url 'dashboard' %}" class="text-center px-4 py-2.5 bg-herbalGreen text-cream font-medium rounded-md shadow-sm">Dashboard</a>
                         <a href="{% url 'logout' %}" class="text-center px-4 py-2.5 border border-darkGreen/20 text-darkGreen font-medium rounded-md">Logout</a>
@@ -207,7 +234,7 @@
                         <img src="/static/images/logo.png" alt="KaaNuRO Group Logo" class="h-14 md:h-16 w-auto object-contain select-none transition duration-300 transform hover:scale-105 brightness-0 invert drop-shadow-sm">
                     </a>
                     <p class="text-cream/70 text-sm leading-relaxed font-light">
-                        Dedicated to purity and science-backed herbal formulas. Empower your heart first and watch the natural glow follow.
+                        Dedicated to purity and science-backed herbal formulas. Empower your routine with targeted remedies for hair, sleep, and fat loss.
                     </p>
                     <div class="flex space-x-4 pt-2">
                         <a href="https://www.facebook.com/share/18ayJE4REe/" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-cream/10 flex items-center justify-center hover:bg-softGold hover:text-darkGreen transition-all text-cream"><i class="fa-brands fa-facebook-f"></i></a>
@@ -257,8 +284,8 @@
             <div class="pt-8 border-t border-cream/10 text-center flex flex-col md:flex-row items-center justify-between text-xs text-cream/50 font-light">
                 <p>&copy; {% now "Y" %} KaaNuRO Group. All rights reserved.</p>
                 <div class="flex space-x-6 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-softGold">Privacy Policy</a>
-                    <a href="#" class="hover:text-softGold">Terms of Service</a>
+                    <a href="{% url 'legal_document' 'privacy-policy' %}" class="hover:text-softGold">Privacy Policy</a>
+                    <a href="{% url 'legal_document' 'terms-of-service' %}" class="hover:text-softGold">Terms of Service</a>
                 </div>
             </div>
 
@@ -276,13 +303,13 @@
     <div id="cart-overlay" class="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
     <!-- Floating Drawer Shopping Cart -->
-    <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full sm:w-[450px] bg-cream dark:bg-[#1A241B] shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out border-l border-lightBeige flex flex-col">
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full sm:w-[450px] bg-[#FFFFFF] shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out border-l border-lightBeige flex flex-col">
         <!-- Cart Header -->
         <div class="p-6 border-b border-lightBeige flex items-center justify-between">
-            <h2 id="cart-drawer-title" class="text-xl font-outfit font-extrabold text-darkGreen flex items-center">
+            <h2 id="cart-drawer-title" class="text-xl font-outfit font-extrabold text-[#1A1A1A] flex items-center">
                 <i class="fa-solid fa-shopping-cart mr-2 text-softGold"></i>Your Cart
             </h2>
-            <button id="cart-close" class="p-2 rounded-lg text-organicBrown hover:bg-lightBeige transition-colors" aria-label="Close Cart">
+            <button id="cart-close" class="p-2 rounded-lg text-[#1A1A1A] hover:bg-lightBeige transition-colors" aria-label="Close Cart">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
         </div>
@@ -296,8 +323,8 @@
                     <div class="w-16 h-16 rounded-full bg-lightBeige/30 border border-lightBeige flex items-center justify-center text-herbalGreen">
                         <i class="fa-solid fa-cart-shopping text-2xl"></i>
                     </div>
-                    <h3 class="text-base font-outfit font-bold text-darkGreen">Your cart is empty</h3>
-                    <p class="text-xs text-organicBrown/60 max-w-[200px] mx-auto">Add organic remedies or apparel to begin your wellness journey.</p>
+                    <h3 class="text-base font-outfit font-bold text-[#1A1A1A]">Your cart is empty</h3>
+                    <p class="text-xs text-[#1A1A1A] max-w-[200px] mx-auto">Add organic remedies to begin your wellness journey.</p>
                 </div>
                 
                 <div id="cart-items-list" class="space-y-4 hidden">
@@ -309,8 +336,8 @@
             <div id="cart-footer" class="p-6 border-t border-lightBeige bg-lightBeige/20 space-y-4">
                 <div class="bg-lightBeige border border-lightBeige/50 rounded-xl p-4 flex justify-between items-center">
                     <div>
-                        <p class="text-[10px] text-organicBrown/65 uppercase tracking-wider font-semibold font-outfit">Total Value</p>
-                        <p id="cart-total-price" class="text-lg font-mono font-bold text-darkGreen">₹0.00</p>
+                        <p class="text-[10px] text-[#1A1A1A] uppercase tracking-wider font-semibold font-outfit">Total Value</p>
+                        <p id="cart-total-price" class="text-lg font-mono font-bold text-[#1A1A1A]">₹0.00</p>
                     </div>
                     <span class="text-[10px] bg-herbalGreen/10 text-herbalGreen px-2.5 py-1 rounded-full uppercase tracking-wider font-outfit font-bold">Estimated GST Included</span>
                 </div>
@@ -322,7 +349,7 @@
                             type="text"
                             id="coupon-input"
                             placeholder="Enter Coupon Code"
-                            class="flex-1 px-3 py-2.5 bg-cream border border-organicBrown/15 dark:border-cream/10 dark:bg-[#121A13] rounded-xl text-xs text-darkGreen dark:text-cream/90 font-mono font-bold tracking-wider focus:outline-none focus:border-herbalGreen transition-colors uppercase"
+                            class="flex-1 px-3 py-2.5 bg-[#FFFFFF] border border-[#E5E5E5] rounded-xl text-xs text-[#2D2D2D] font-mono font-bold tracking-wider focus:outline-none focus:border-herbalGreen transition-colors uppercase"
                         >
                         <button id="coupon-apply-btn" type="button" class="px-4 py-2.5 bg-softGold/15 border border-softGold/30 text-[#9a7b24] font-outfit font-bold text-xs rounded-xl hover:bg-softGold/25 transition-all flex items-center gap-1.5 whitespace-nowrap">
                             <i class="fa-solid fa-tag text-[9px]"></i> Apply
@@ -348,7 +375,7 @@
                 </div>
                 
                 <div class="space-y-1">
-                    <h3 class="text-lg font-outfit font-bold text-darkGreen">Delivery & Contact Details</h3>
+                    <h3 class="text-lg font-outfit font-bold text-[#1A1A1A]">Delivery & Contact Details</h3>
                     <p class="text-xs text-organicBrown/65">Please provide your details for delivery tracking and updates.</p>
                 </div>
                 
@@ -376,39 +403,39 @@
                     {% csrf_token %}
                     <div>
                         <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Full Name *</label>
-                        <input type="text" id="checkout-name" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. Rahul Sharma" value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}">
+                        <input type="text" id="checkout-name" required class="w-full px-4 py-3 bg-[#FFFFFF] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-[#2D2D2D] font-medium transition-colors" placeholder="e.g. Rahul Sharma" value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}">
                         <span id="err-checkout-name" class="text-[10px] text-rose-500 hidden mt-1">Full name is required.</span>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Phone / WhatsApp Number *</label>
-                        <input type="text" id="checkout-phone" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. +91 9876543210" value="{% if request.user.is_authenticated %}{{ request.user.customer_profile.phone_number }}{% endif %}">
+                        <input type="text" id="checkout-phone" required class="w-full px-4 py-3 bg-[#FFFFFF] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-[#2D2D2D] font-medium transition-colors" placeholder="e.g. +91 9876543210" value="{% if request.user.is_authenticated %}{{ request.user.customer_profile.phone_number }}{% endif %}">
                         <span id="err-checkout-phone" class="text-[10px] text-rose-500 hidden mt-1">Active phone number is required.</span>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Street Address *</label>
-                        <input type="text" id="checkout-street" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. House No. 45, Ground Floor">
+                        <input type="text" id="checkout-street" required class="w-full px-4 py-3 bg-[#FFFFFF] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-[#2D2D2D] font-medium transition-colors" placeholder="e.g. House No. 45, Ground Floor">
                         <span id="err-checkout-street" class="text-[10px] text-rose-500 hidden mt-1">Street address is required.</span>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">Locality / Landmark *</label>
-                        <input type="text" id="checkout-locality" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. Near Shiv Temple">
+                        <input type="text" id="checkout-locality" required class="w-full px-4 py-3 bg-[#FFFFFF] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-[#2D2D2D] font-medium transition-colors" placeholder="e.g. Near Shiv Temple">
                         <span id="err-checkout-locality" class="text-[10px] text-rose-500 hidden mt-1">Locality is required.</span>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">City *</label>
-                            <input type="text" id="checkout-city" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. Udaipurwati">
+                            <input type="text" id="checkout-city" required class="w-full px-4 py-3 bg-[#FFFFFF] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-[#2D2D2D] font-medium transition-colors" placeholder="e.g. Udaipurwati">
                             <span id="err-checkout-city" class="text-[10px] text-rose-500 hidden mt-1">City is required.</span>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">State *</label>
-                            <input type="text" id="checkout-state" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. Rajasthan">
+                            <input type="text" id="checkout-state" required class="w-full px-4 py-3 bg-[#FFFFFF] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-[#2D2D2D] font-medium transition-colors" placeholder="e.g. Rajasthan">
                             <span id="err-checkout-state" class="text-[10px] text-rose-500 hidden mt-1">State is required.</span>
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-organicBrown/70 uppercase mb-1 font-outfit">PIN Code *</label>
-                        <input type="text" id="checkout-pincode" required class="w-full px-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-medium transition-colors" placeholder="e.g. 333307">
+                        <input type="text" id="checkout-pincode" required class="w-full px-4 py-3 bg-[#FFFFFF] border border-[#E5E5E5] rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-[#2D2D2D] font-medium transition-colors" placeholder="e.g. 333307">
                         <span id="err-checkout-pincode" class="text-[10px] text-rose-500 hidden mt-1">A valid 6-digit PIN code is required.</span>
                     </div>
                 </form>
@@ -635,47 +662,11 @@
             });
         }
 
-        // --- Theme Toggle System ---
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
-
-        const themeToggleBtnMobile = document.getElementById('theme-toggle-mobile');
-        const themeToggleDarkIconMobile = document.getElementById('theme-toggle-dark-icon-mobile');
-        const themeToggleLightIconMobile = document.getElementById('theme-toggle-light-icon-mobile');
-
-        function updateIcons() {
-            const isDark = document.documentElement.classList.contains('dark');
-            if (isDark) {
-                if (themeToggleDarkIcon) themeToggleDarkIcon.classList.add('hidden');
-                if (themeToggleLightIcon) themeToggleLightIcon.classList.remove('hidden');
-                if (themeToggleDarkIconMobile) themeToggleDarkIconMobile.classList.add('hidden');
-                if (themeToggleLightIconMobile) themeToggleLightIconMobile.classList.remove('hidden');
-            } else {
-                if (themeToggleDarkIcon) themeToggleDarkIcon.classList.remove('hidden');
-                if (themeToggleLightIcon) themeToggleLightIcon.classList.add('hidden');
-                if (themeToggleDarkIconMobile) themeToggleDarkIconMobile.classList.remove('hidden');
-                if (themeToggleLightIconMobile) themeToggleLightIconMobile.classList.add('hidden');
-            }
-        }
-
-        updateIcons();
-
-        function toggleTheme() {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('color-theme', 'light');
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('color-theme', 'dark');
-            }
-            updateIcons();
-        }
-
-        if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
-        if (themeToggleBtnMobile) themeToggleBtnMobile.addEventListener('click', toggleTheme);
+        // --- Theme locked to light mode only ---
 
         // --- Cart and Modal State Logic ---
+        // ── Auth guard flag (server-rendered, safe for JS runtime) ───────────
+        const isAuthenticated = {% if request.user.is_authenticated %}true{% else %}false{% endif %};
         let cart = JSON.parse(localStorage.getItem('kaanuro_cart')) || [];
 
         // Elements
@@ -920,6 +911,17 @@
         if (cartCheckoutBtn) {
             cartCheckoutBtn.addEventListener('click', () => {
                 if (cart.length === 0) return;
+
+                // ── Authentication Guard ─────────────────────────────────────
+                if (!isAuthenticated) {
+                    showAuthToast('Please log in to complete your checkout');
+                    setTimeout(() => {
+                        window.location.href = "{% url 'login' %}";
+                    }, 1600);
+                    return;
+                }
+                // ────────────────────────────────────────────────────────────
+
                 cartMainView.classList.add('hidden');
                 cartCheckoutView.classList.remove('hidden');
                 cartDrawerTitle.innerHTML = `<i class="fa-solid fa-shopping-cart mr-2 text-softGold"></i>Checkout`;
@@ -1283,6 +1285,7 @@
                     total_amount: currentTotalAmount,
                     utr_number: utrVal,
                     items: cart.map(item => ({
+                        id: item.id,
                         name: item.name,
                         quantity: item.quantity,
                         price: parseFloat(item.price)
@@ -1615,6 +1618,45 @@
             });
         }
 
+        // ── Auth Toast Helper ─────────────────────────────────────────────────
+        function showAuthToast(message) {
+            // Remove any existing toast
+            const existing = document.getElementById('kaanuro-auth-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'kaanuro-auth-toast';
+            toast.style.cssText = [
+                'position:fixed', 'bottom:24px', 'left:50%',
+                'transform:translateX(-50%) translateY(20px)',
+                'background:#19261C', 'color:#FBF9F6',
+                'padding:14px 22px', 'border-radius:12px',
+                'font-family:"Outfit",sans-serif', 'font-weight:600',
+                'font-size:13px', 'z-index:99999',
+                'display:flex', 'align-items:center', 'gap:10px',
+                'box-shadow:0 8px 32px rgba(0,0,0,0.35)',
+                'border:1px solid rgba(255,255,255,0.10)',
+                'opacity:0', 'transition:opacity 0.3s ease, transform 0.3s ease',
+                'white-space:nowrap'
+            ].join(';');
+            toast.innerHTML = `<i class="fa-solid fa-lock" style="color:#D4AF37;font-size:12px;"></i> ${message}`;
+            document.body.appendChild(toast);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateX(-50%) translateY(0)';
+            });
+
+            // Auto-dismiss after 2.5 s
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) translateY(20px)';
+                setTimeout(() => toast.remove(), 350);
+            }, 2500);
+        }
+        // ─────────────────────────────────────────────────────────────────────
+
         // Initialize UI on startup
         updateCartUI();
 
@@ -1686,6 +1728,84 @@
                 });
             });
         }
+    </script>
+
+    <!-- ── Global Password Visibility Toggle ───────────────────────────── -->
+    <script>
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            if (!input) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.querySelector('i').classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                this.querySelector('i').classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+    });
+    </script>
+
+    <!-- ── Global Wishlist Toggle Script ───────────────────────────────── -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        function getWishlistCsrf() {
+            const match = document.cookie.split(';').find(c => c.trim().startsWith('csrftoken='));
+            return match ? decodeURIComponent(match.trim().split('=')[1]) : '';
+        }
+
+        document.body.addEventListener('click', function(e) {
+            const button = e.target.closest('.toggle-wishlist');
+            if (!button) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            const productId = button.getAttribute('data-product-id');
+            if (!productId) return;
+
+            button.disabled = true;
+
+            fetch('{% url "wishlist_toggle" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getWishlistCsrf()
+                },
+                body: JSON.stringify({ product_id: productId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                button.disabled = false;
+                if (data.success) {
+                    const isAdded = data.added;
+                    const newCount = data.count;
+
+                    const counters = document.querySelectorAll('#wishlist-counter, #wishlist-counter-mobile');
+                    counters.forEach(cnt => {
+                        cnt.textContent = newCount;
+                    });
+
+                    const buttons = document.querySelectorAll(`.toggle-wishlist[data-product-id="${productId}"]`);
+                    buttons.forEach(btn => {
+                        const icon = btn.querySelector('i');
+                        if (icon) {
+                            if (isAdded) {
+                                icon.className = 'fa-solid fa-heart text-red-500';
+                            } else {
+                                icon.className = 'fa-regular fa-heart text-gray-700';
+                            }
+                        }
+                    });
+                }
+            })
+            .catch(err => {
+                button.disabled = false;
+                console.error('Error toggling wishlist:', err);
+            });
+        });
+    });
     </script>
     {% block extra_js %}{% endblock %}
 </body>

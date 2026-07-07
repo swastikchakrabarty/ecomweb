@@ -1,0 +1,58 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ doc.title }} — KaaNuRO Group{% endblock %}
+{% block meta_description %}{{ meta_description }}{% endblock %}
+
+{% block content %}
+<article class="bg-cream">
+
+    <!-- Breadcrumbs -->
+    <div class="bg-lightBeige border-b border-[#5C4033]/8 py-3">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 text-[11px] text-organicBrown/55 font-outfit flex-wrap">
+            {% for crumb in breadcrumbs %}
+                {% if crumb.url %}
+                    <a href="{{ crumb.url }}" class="hover:text-herbalGreen transition-colors">{{ crumb.label }}</a>
+                    <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                {% else %}
+                    <span class="text-darkGreen font-semibold truncate max-w-xs">{{ crumb.label }}</span>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Editorial Header Section -->
+    <header class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-4">
+        <div class="flex items-center gap-3 flex-wrap">
+            <span class="px-3 py-1 rounded-full bg-herbalGreen/10 text-herbalGreen text-[10px] font-bold font-outfit uppercase tracking-wider border border-herbalGreen/15">
+                <i class="fa-solid fa-shield-halved text-[8px] mr-1"></i> Legal Infrastructure
+            </span>
+            <span class="text-xs text-organicBrown/45 font-outfit">Last updated: {{ doc.last_updated|date:"d F Y" }}</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen leading-tight">
+            {{ doc.title }}
+        </h1>
+        <p class="text-sm text-organicBrown/60 font-light font-outfit italic">
+            This document sets forth the official conditions, policies, and parameters for KaaNuRO Group.
+        </p>
+    </header>
+
+    <!-- Document Content Area -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <div class="bg-white border border-lightBeige rounded-2xl p-6 sm:p-10 shadow-sm">
+            <div class="prose prose-base sm:prose-lg max-w-none text-organicBrown/80 leading-relaxed
+                        prose-headings:font-outfit prose-headings:text-darkGreen prose-headings:font-bold prose-headings:mt-6 prose-headings:mb-3
+                        prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg
+                        prose-p:mb-4
+                        prose-a:text-herbalGreen prose-a:underline hover:prose-a:text-darkGreen
+                        prose-strong:text-darkGreen prose-strong:font-bold
+                        prose-ul:list-disc prose-ul:pl-5 prose-ul:mb-4
+                        prose-ol:list-decimal prose-ol:pl-5 prose-ol:mb-4
+                        prose-li:mb-1
+                        prose-blockquote:border-l-4 prose-blockquote:border-softGold/50 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-organicBrown/60">
+                {{ rendered_content|safe }}
+            </div>
+        </div>
+    </div>
+
+</article>
+{% endblock %}

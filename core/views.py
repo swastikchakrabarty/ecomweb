@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 import random
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
@@ -10,9 +11,11 @@ from functools import wraps
 from django.conf import settings
 from django.contrib.auth import login, get_user_model
 from django.db.models import Q
+from django.utils import timezone
 
-from .models import Product, ContactMessage, User, ClothingItem, Blog, Employee, Order, OrderItem, CustomerProfile, Invoice, ProductReview, Address, WishlistItem, Coupon
-from .forms import ContactForm, ProductForm, LoginForm, ClothingItemForm, EmployeeCreationForm, CustomerProfileForm, ProductReviewForm, AddressForm
+from .models import Product, ContactMessage, User, Blog, Employee, Order, OrderItem, CustomerProfile, Invoice, ProductReview, Address, WishlistItem, Coupon, LegalDocument
+from .forms import ContactForm, ProductForm, LoginForm, EmployeeCreationForm, CustomerProfileForm, ProductReviewForm, AddressForm
+
 
 def staff_required(view_func):
     """Decorator to restrict access to Admins, Employees, or Superusers."""
@@ -57,81 +60,18 @@ def force_admin_login(request):
     
     return HttpResponse("Authentication completely bypassed! Go open kaanurogroup.com now.")
 def home_view(request):
-    # Stock-aware catalog: only show in-stock active products
-    products = Product.objects.filter(is_active=True, stock__gt=0).prefetch_related('additional_media')
-    for p in products:
-        p.ingredient_list = [i.strip() for i in p.ingredients.split(',') if i.strip()]
-        if '\n' in p.key_benefits:
-            p.benefit_list = [b.strip() for b in p.key_benefits.split('\n') if b.strip()]
-        else:
-            p.benefit_list = [b.strip() for b in p.key_benefits.split(',') if b.strip()]
-
     # --- Homepage Product Shelves (stock-aware, limited to 2 per shelf) ---
     best_sellers = Product.objects.filter(is_active=True, is_best_seller=True, stock__gt=0).prefetch_related('additional_media')[:2]
     new_arrivals = Product.objects.filter(is_active=True, is_new_arrival=True, stock__gt=0).prefetch_related('additional_media')[:2]
     trending     = Product.objects.filter(is_active=True, is_trending=True, stock__gt=0).prefetch_related('additional_media')[:2]
-            
-    # Gather distinct values for apparel filtering from active items
-    all_clothing = ClothingItem.objects.filter(is_active=True).prefetch_related('additional_media')
-    
-    # Categories
-    categories = ['female', 'male', 'kids']
-    
-    # Sizes
-    all_sizes = set()
-    for sizes_str in all_clothing.values_list('sizes', flat=True):
-        if sizes_str:
-            for s in sizes_str.split(','):
-                if s.strip():
-                    all_sizes.add(s.strip())
-    sizes = sorted(list(all_sizes))
-    
-    # Colors
-    all_colors = set()
-    for colors_str in all_clothing.values_list('colors', flat=True):
-        if colors_str:
-            for c in colors_str.split(','):
-                if c.strip():
-                    all_colors.add(c.strip())
-    colors = sorted(list(all_colors))
-    
-    # Fabrics
-    all_fabrics = set()
-    for f in all_clothing.values_list('fabric', flat=True):
-        if f and f.strip():
-            all_fabrics.add(f.strip())
-    fabrics = sorted(list(all_fabrics))
-    
-    # Extract query params
-    category_filter = request.GET.get('category', '')
-    size_filter = request.GET.get('size', '')
-    color_filter = request.GET.get('color', '')
-    fabric_filter = request.GET.get('fabric', '')
-    price_filter = request.GET.get('price', '')
-    
-    # Apply filtering
-    clothing_items = all_clothing
-    if category_filter:
-        clothing_items = clothing_items.filter(category=category_filter)
-    if size_filter:
-        clothing_items = clothing_items.filter(sizes__icontains=size_filter)
-    if color_filter:
-        clothing_items = clothing_items.filter(colors__icontains=color_filter)
-    if fabric_filter:
-        clothing_items = clothing_items.filter(fabric__iexact=fabric_filter)
-    if price_filter:
-        try:
-            clothing_items = clothing_items.filter(price__lte=float(price_filter))
-        except ValueError:
-            pass
-            
+
     # Fetch Blogs
     blogs = Blog.objects.all().order_by('-created_at')
-            
+
     total_products = Product.objects.count()  # Displays dynamically
     certificates_count = 12  # Metric highlights
     years_experience = 15    # Metric highlights
-    
+
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -145,23 +85,12 @@ def home_view(request):
                 return JsonResponse({'success': False, 'errors': form.errors})
     else:
         form = ContactForm()
-        
+
     context = {
-        'products': products,
         'best_sellers': best_sellers,
         'new_arrivals': new_arrivals,
         'trending': trending,
-        'clothing_items': clothing_items,
         'blogs': blogs,
-        'categories': categories,
-        'sizes': sizes,
-        'colors': colors,
-        'fabrics': fabrics,
-        'selected_category': category_filter,
-        'selected_size': size_filter,
-        'selected_color': color_filter,
-        'selected_fabric': fabric_filter,
-        'selected_price': price_filter,
         'total_products': total_products,
         'certificates_count': certificates_count,
         'years_experience': years_experience,
@@ -172,6 +101,7 @@ def home_view(request):
     return render(request, 'core/home.html', context)
 
 
+
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -180,6 +110,10 @@ def login_view(request):
         form = LoginForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
+            # Explicitly pin ModelBackend so staff/superuser session tokens
+            # are validated correctly regardless of AUTHENTICATION_BACKENDS order.
+            if not hasattr(user, 'backend'):
+                user.backend = 'django.contrib.auth.backends.ModelBackend'
             auth_login(request, user)
             messages.success(request, f'Welcome back, {user.username}!')
             return redirect('dashboard')
@@ -198,18 +132,20 @@ def product_detail_view(request, slug):
     product = get_object_or_404(Product, slug=slug, is_active=True)
     pk = product.pk  # keep for internal session logic
 
+    # --- Phase 6: Review Guard (delivered orders only) ---
+    # Evaluated once here; reused for both the POST guard and the context flag.
+    can_review = (
+        request.user.is_authenticated and
+        Order.objects.filter(
+            user=request.user,
+            items__product_name=product.name,
+            status='delivered'
+        ).exists()
+    )
+
     # --- Review Submission (POST) ---
     if request.method == 'POST':
-        # Phase 6: Only delivered-order users may submit reviews
-        can_submit = (
-            request.user.is_authenticated and
-            Order.objects.filter(
-                user=request.user,
-                items__product_name=product.name,
-                status='delivered'
-            ).exists()
-        )
-        if not can_submit:
+        if not can_review:
             messages.error(request, 'Reviews are restricted to verified purchasers who have received this product.')
             return redirect('product_detail', slug=product.slug)
         review_form = ProductReviewForm(request.POST)
@@ -269,15 +205,7 @@ def product_detail_view(request, slug):
         {'label': product.name, 'url': None},
     ]
 
-    # --- Phase 6: Review Guard (delivered orders only) ---
-    can_review = (
-        request.user.is_authenticated and
-        Order.objects.filter(
-            user=request.user,
-            items__product_name=product.name,
-            status='delivered'
-        ).exists()
-    )
+    # --- Phase 6: Review Guard context flag (already resolved above, no extra query) ---
 
     context = {
         'product': product,
@@ -300,6 +228,7 @@ def product_detail_view(request, slug):
     return render(request, 'core/product_detail.html', context)
 
 
+@never_cache
 @login_required
 def dashboard_view(request):
     user = request.user
@@ -307,16 +236,13 @@ def dashboard_view(request):
     if user.role in ['admin', 'employee'] or user.is_superuser:
         contact_messages = ContactMessage.objects.all().order_by('-created_at')
         products = Product.objects.all().prefetch_related('additional_media').order_by('name')
-        clothing_items = ClothingItem.objects.all().prefetch_related('additional_media').order_by('name')
         orders = Order.objects.prefetch_related('items').all().order_by('-created_at')
-        
+
         context = {
             'contact_messages': contact_messages,
             'products': products,
-            'clothing_items': clothing_items,
             'orders': orders,
             'total_products': Product.objects.count(),
-            'total_clothing_items': ClothingItem.objects.count(),
             'total_messages': ContactMessage.objects.count(),
             'total_users': User.objects.count(),
             'total_orders': Order.objects.count(),
@@ -340,7 +266,6 @@ def dashboard_view(request):
 
     context = {
         'products': Product.objects.filter(is_active=True).prefetch_related('additional_media'),
-        'clothing_items': ClothingItem.objects.filter(is_active=True).prefetch_related('additional_media'),
         'profile': profile,
         'profile_form': CustomerProfileForm(instance=profile),
         'addresses': Address.objects.filter(user=request.user),
@@ -391,44 +316,6 @@ def product_delete_view(request, pk):
         return redirect('dashboard')
     return render(request, 'core/product_confirm_delete.html', {'product': product})
 
-@login_required
-@staff_required
-def clothing_create_view(request):
-    if request.method == 'POST':
-        form = ClothingItemForm(request.POST, request.FILES)
-        if form.is_valid():
-            item = form.save()
-            messages.success(request, f'Clothing item "{item.name}" created successfully!')
-            return redirect('dashboard')
-    else:
-        form = ClothingItemForm()
-    return render(request, 'core/clothing_form.html', {'form': form, 'title': 'Add Clothing Item'})
-
-@login_required
-@staff_required
-def clothing_edit_view(request, pk):
-    item = get_object_or_404(ClothingItem, pk=pk)
-    if request.method == 'POST':
-        form = ClothingItemForm(request.POST, request.FILES, instance=item)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f'Clothing item "{item.name}" updated successfully!')
-            return redirect('dashboard')
-    else:
-        form = ClothingItemForm(instance=item)
-    return render(request, 'core/clothing_form.html', {'form': form, 'title': f'Edit Clothing Item: {item.name}'})
-
-@login_required
-@staff_required
-def clothing_delete_view(request, pk):
-    item = get_object_or_404(ClothingItem, pk=pk)
-    if request.method == 'POST':
-        item_name = item.name
-        item.delete()
-        messages.success(request, f'Clothing item "{item_name}" deleted successfully.')
-        return redirect('dashboard')
-    return render(request, 'core/clothing_confirm_delete.html', {'item': item})
-
 
 @login_required
 def delete_employee(request, pk):
@@ -477,6 +364,7 @@ def employee_create_view(request):
 
 
 
+@never_cache
 @login_required
 def update_profile_view(request):
     """Handles name, email, profile image, and default_address updates for regular users."""
@@ -521,19 +409,79 @@ from django.db import transaction
 
 @require_POST
 def checkout_order_create_view(request):
+    # ── Security Guard: Block anonymous order submissions ──────────────────────
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {'success': False, 'message': 'Authentication required. Please log in to complete your order.'},
+            status=403
+        )
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
         return JsonResponse({'success': False, 'message': 'Invalid JSON data.'}, status=400)
-    
-    order_id_str = data.get('order_id')
-    customer_name = data.get('customer_name')
-    phone_number = data.get('phone_number')
+
+    order_id_str   = data.get('order_id')
+    customer_name  = data.get('customer_name')
+    phone_number   = data.get('phone_number')
     shipping_address = data.get('shipping_address')
-    total_amount = data.get('total_amount')
-    utr_number = data.get('utr_number')
-    items = data.get('items', [])
-    
+    utr_number     = data.get('utr_number')
+    items          = data.get('items', [])
+
+    # ────────────────────────────────────────────────────────────
+    # SECURITY: Server-side price resolution — client-submitted prices are
+    # intentionally discarded. Every line item is re-priced from the live DB.
+    # ────────────────────────────────────────────────────────────
+    from decimal import Decimal, InvalidOperation
+
+    if not items:
+        return JsonResponse({'success': False, 'message': 'Cart is empty.'}, status=400)
+
+    resolved_items = []   # list of dicts with authoritative server prices
+    server_total   = Decimal('0.00')
+
+    for item in items:
+        raw_id   = str(item.get('id', '')).strip()   # e.g. "prod_7" or "cloth_3"
+        quantity = item.get('quantity', 1)
+
+        try:
+            quantity = int(quantity)
+            if quantity < 1:
+                raise ValueError
+        except (ValueError, TypeError):
+            return JsonResponse(
+                {'success': False, 'message': f'Invalid quantity for item "{item.get("name")}".'},
+                status=400
+            )
+
+        # Resolve canonical price from DB — reject if item cannot be found
+        if raw_id.startswith('prod_'):
+            try:
+                numeric_id = int(raw_id.split('prod_')[1])
+                product_obj = Product.objects.get(pk=numeric_id, is_active=True)
+            except (Product.DoesNotExist, ValueError, IndexError):
+                return JsonResponse(
+                    {'success': False, 'message': f'Product not found or no longer available: "{item.get("name")}".'},
+                    status=400
+                )
+            authoritative_price = product_obj.current_price  # ✔ respects discount_percentage
+            item_name           = product_obj.name
+
+        else:
+            # Unknown/missing item ID — reject the entire payload
+            return JsonResponse(
+                {'success': False, 'message': f'Unresolvable item identifier "{raw_id}". Order rejected.'},
+                status=400
+            )
+
+        line_total    = authoritative_price * Decimal(quantity)
+        server_total += line_total
+        resolved_items.append({
+            'name':     item_name,
+            'quantity': quantity,
+            'price':    authoritative_price,
+        })
+
+    # Phone: always prefer the authenticated user's verified profile phone
     if request.user.is_authenticated:
         try:
             phone_number = request.user.customer_profile.phone_number
@@ -543,13 +491,10 @@ def checkout_order_create_view(request):
     if phone_number:
         phone_number = ''.join(filter(str.isdigit, str(phone_number)))[-10:]
 
-    # Validation
-    if not (order_id_str and customer_name and phone_number and shipping_address and total_amount and utr_number):
+    # Core field validation (total_amount from client is discarded; server_total is used)
+    if not (order_id_str and customer_name and phone_number and shipping_address and utr_number):
         return JsonResponse({'success': False, 'message': 'Missing mandatory fields.'}, status=400)
-    
-    if not items:
-        return JsonResponse({'success': False, 'message': 'Cart is empty.'}, status=400)
-        
+
     try:
         with transaction.atomic():
             order = Order.objects.create(
@@ -557,32 +502,32 @@ def checkout_order_create_view(request):
                 customer_name=customer_name,
                 phone_number=phone_number,
                 shipping_address=shipping_address,
-                total_amount=total_amount,
+                total_amount=server_total,   # ✔ authoritative server-computed total
                 utr_number=utr_number,
                 status='confirmed',
                 user=request.user if request.user.is_authenticated else None
             )
-            for item in items:
+            for resolved in resolved_items:
                 OrderItem.objects.create(
                     order=order,
-                    product_name=item.get('name'),
-                    quantity=item.get('quantity', 1),
-                    price_at_purchase=item.get('price')
+                    product_name=resolved['name'],
+                    quantity=resolved['quantity'],
+                    price_at_purchase=resolved['price'],   # ✔ server-verified price
                 )
-            
+
             # --- AUTOMATED INVOICE GENERATION ---
             import random
             from django.utils import timezone
             from django.core.files.base import ContentFile
             from .utils import generate_pdf_bytes, send_order_confirmation_sms
-            
+
             now = timezone.now()
             invoice_num = f"INV-{now.strftime('%Y%m%d')}-{random.randint(1000, 9999)}"
             invoice = Invoice.objects.create(
                 invoice_number=invoice_num,
                 order=order
             )
-            
+
             receipt_content = f"""KaaNuRO Group - Invoice / Receipt
 =================================
 Invoice Serial: {invoice_num}
@@ -598,11 +543,11 @@ Shipping Address: {shipping_address}
 Purchase Summary:
 -----------------
 """
-            for item in items:
-                receipt_content += f"- {item.get('name')} x {item.get('quantity', 1)} @ ₹{item.get('price')} each\n"
-                
+            for resolved in resolved_items:
+                receipt_content += f"- {resolved['name']} x {resolved['quantity']} @ ₹{resolved['price']} each\n"
+
             receipt_content += f"""-----------------
-Total Paid Amount: ₹{total_amount}
+Total Paid Amount: ₹{server_total}
 Transaction Reference / UTR: {utr_number}
 Fulfillment Status: Confirmed
 
@@ -612,7 +557,7 @@ All products are sourced and packed at Udaipurwati, Jhunjhunu, Rajasthan.
             pdf_data = generate_pdf_bytes(f"Invoice / Receipt: {invoice_num}", receipt_content)
             invoice.pdf_file.save(f"INV-{order_id_str}.pdf", ContentFile(pdf_data), save=True)
 
-            # --- LIVE ORDER CONFIRMATION SMS (fires the instant status becomes 'confirmed') ---
+            # --- LIVE ORDER CONFIRMATION SMS ---
             send_order_confirmation_sms(
                 phone_number=phone_number,
                 customer_name=customer_name,
@@ -643,9 +588,17 @@ def order_update_status_view(request, pk):
 from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
 
+@never_cache
 @login_required
 def download_invoice_view(request, order_pk):
     order = get_object_or_404(Order, pk=order_pk)
+
+    # ── IDOR Guard: Explicit object-level ownership assertion ───────────────
+    # Staff, admins, and superusers bypass this check.
+    # All other authenticated users must own the order (via FK or phone match).
+    if order.user != request.user and not (request.user.role in ['admin', 'employee'] or request.user.is_staff or request.user.is_superuser):
+        raise PermissionDenied("You do not have permission to view this order.")
+    # ────────────────────────────────────────────────────────────
 
     # Access controls:
     # 1. Admin / Employee / Superuser can view any invoice
@@ -787,10 +740,9 @@ def otp_verify_view(request):
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ── Wishlist Toggle (AJAX POST) ──────────────────────────────────────────────
-@login_required
 @require_POST
-def wishlist_toggle_view(request):
-    """Toggle a product in/out of the user's wishlist. Returns JSON."""
+def toggle_wishlist_view(request):
+    """Toggle a product in/out of the user's wishlist session storage. Returns JSON."""
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
@@ -801,26 +753,54 @@ def wishlist_toggle_view(request):
         return JsonResponse({'success': False, 'message': 'product_id is required.'}, status=400)
 
     product = get_object_or_404(Product, pk=product_id, is_active=True)
-    item, created = WishlistItem.objects.get_or_create(user=request.user, product=product)
-    if not created:
-        item.delete()
-        added = False
-    else:
-        added = True
+    wishlist = request.session.get('wishlist', [])
+    product_id_str = str(product.id)
 
-    count = WishlistItem.objects.filter(user=request.user).count()
-    return JsonResponse({'success': True, 'added': added, 'count': count})
+    if product_id_str in wishlist:
+        wishlist.remove(product_id_str)
+        added = False
+        status_str = 'removed'
+    else:
+        wishlist.append(product_id_str)
+        added = True
+        status_str = 'added'
+
+    request.session['wishlist'] = wishlist
+    request.session.modified = True
+
+    return JsonResponse({
+        'status': 'success',
+        'success': True,
+        'added': added,
+        'count': len(wishlist)
+    })
 
 
 # ── Wishlist Page (GET) ──────────────────────────────────────────────────────
-@login_required
+@never_cache
 def wishlist_view(request):
-    """Renders the user's saved wishlist products."""
-    wishlist_items = WishlistItem.objects.filter(user=request.user).select_related('product')
+    """Renders the user's saved wishlist products from session."""
+    wishlist_ids = request.session.get('wishlist', [])
+    active_products = Product.objects.filter(id__in=wishlist_ids, is_active=True)
+    product_map = {str(p.id): p for p in active_products}
+
+    # Wrapper class to maintain template field-access compatibility
+    class WishlistSessionItem:
+        def __init__(self, product):
+            self.product = product
+            self.added_at = None
+
+    wishlist_items = []
+    for pid in wishlist_ids:
+        pid_str = str(pid)
+        if pid_str in product_map:
+            wishlist_items.append(WishlistSessionItem(product_map[pid_str]))
+
     return render(request, 'core/wishlist.html', {'wishlist_items': wishlist_items})
 
 
 # ── Address Add (POST) ───────────────────────────────────────────────────────
+@never_cache
 @login_required
 @require_POST
 def address_add_view(request):
@@ -845,6 +825,7 @@ def address_add_view(request):
 
 
 # ── Address Delete (POST) ────────────────────────────────────────────────────
+@never_cache
 @login_required
 @require_POST
 def address_delete_view(request, pk):
@@ -862,6 +843,7 @@ def address_delete_view(request, pk):
 
 
 # ── Address Set Default (POST) ───────────────────────────────────────────────
+@never_cache
 @login_required
 @require_POST
 def address_set_default_view(request, pk):
@@ -875,6 +857,7 @@ def address_set_default_view(request, pk):
 
 
 # ── Order Cancel / Return Request (POST) ────────────────────────────────────
+@never_cache
 @login_required
 @require_POST
 def order_cancel_return_view(request, pk):
@@ -917,23 +900,45 @@ def order_cancel_return_view(request, pk):
 # ── Coupon Validation (AJAX POST) ────────────────────────────────────────────
 @require_POST
 def coupon_validate_view(request):
-    """Validates a coupon code and returns the discount amount."""
+    """Validates a coupon code against: active flag, optional start/end date window,
+    and minimum order value threshold. Case-insensitive; strips all whitespace."""
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
         return JsonResponse({'success': False, 'message': 'Invalid JSON.'}, status=400)
 
-    code = data.get('code', '').strip().upper()
-    cart_total = data.get('cart_total', 0)
+    # ── Normalise: strip whitespace + enforce uppercase ───────────────────────
+    coupon_code = data.get('code', '').strip().upper()
+    cart_total  = data.get('cart_total', 0)
 
-    if not code:
+    if not coupon_code:
         return JsonResponse({'success': False, 'message': 'Please enter a coupon code.'}, status=400)
 
-    try:
-        coupon = Coupon.objects.get(code=code, is_active=True)
-    except Coupon.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'This coupon code is invalid or expired.'}, status=404)
+    # ── Timezone-aware window evaluation (2026 billing year) ─────────────────
+    now = timezone.now()
 
+    # Base filter: case-insensitive code match + active flag
+    qs = Coupon.objects.filter(
+        code__iexact=coupon_code,
+        is_active=True,
+    )
+    # Apply start_date guard only when the field is populated
+    qs = qs.filter(
+        Q(start_date__isnull=True) | Q(start_date__lte=now)
+    )
+    # Apply end_date guard only when the field is populated
+    qs = qs.filter(
+        Q(end_date__isnull=True) | Q(end_date__gte=now)
+    )
+    coupon = qs.first()
+
+    if coupon is None:
+        return JsonResponse(
+            {'success': False, 'message': 'This coupon code is invalid or expired.'},
+            status=404
+        )
+
+    # ── Minimum order value check ────────────────────────────────────
     try:
         cart_total_decimal = float(cart_total)
     except (ValueError, TypeError):
@@ -1026,7 +1031,7 @@ def blog_list_view(request):
     context = {
         'posts': posts,
         'meta_title': 'Wellness Blog — KaaNuRO Group',
-        'meta_description': 'Explore herbal wellness tips, Ayurvedic remedies, and natural health insights from the KaaNuRO Group research team.',
+        'meta_description': 'Explore herbal wellness tips, Ayurvedic remedies, sleep optimization, and hair growth insights from the KaaNuRO Group research team.',
         'breadcrumbs': [
             {'label': 'Home', 'url': '/'},
             {'label': 'Blog', 'url': None},
@@ -1131,10 +1136,43 @@ def product_catalog_view(request):
         'search_fallback': search_fallback,
         'corrected_query': corrected_query,
         'meta_title': seo_title,
-        'meta_description': 'Browse the full KaaNuRO natural wellness product catalog. Herbal teas, Ayurvedic remedies, and organic supplements.',
+        'meta_description': 'Browse the full KaaNuRO natural wellness product catalog. Discover premium formulations for hair growth, sleep optimization, and fat loss.',
         'breadcrumbs': [
             {'label': 'Home', 'url': '/'},
             {'label': 'Products', 'url': None},
         ],
     }
     return render(request, 'core/products.html', context)
+
+
+def legal_document_view(request, doc_type):
+    db_type = 'PRIVACY_POLICY' if doc_type == 'privacy-policy' else 'TERMS_OF_SERVICE'
+    
+    doc = LegalDocument.objects.filter(doc_type=db_type).first()
+    if not doc:
+        default_title = "Privacy Policy" if db_type == 'PRIVACY_POLICY' else "Terms of Service"
+        doc = LegalDocument.objects.create(
+            doc_type=db_type,
+            title=default_title,
+            content=f"<h1>{default_title}</h1>\n<p>Welcome to our {default_title}. Content is currently being drafted by our administrative team. Please check back soon or edit from the Django admin panel.</p>"
+        )
+    
+    rendered_content = doc.content
+    try:
+        import markdown
+        rendered_content = markdown.markdown(doc.content, extensions=['extra', 'nl2br'])
+    except Exception:
+        pass
+        
+    context = {
+        'doc': doc,
+        'rendered_content': rendered_content,
+        'meta_title': f"{doc.title} — KaaNuRO Group",
+        'meta_description': f"Read the official and updated {doc.title} document for the KaaNuRO Group platform.",
+        'breadcrumbs': [
+            {'label': 'Home', 'url': '/'},
+            {'label': doc.title, 'url': None},
+        ]
+    }
+    return render(request, 'core/legal_document.html', context)
+

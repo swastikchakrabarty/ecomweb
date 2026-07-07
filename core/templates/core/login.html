@@ -18,7 +18,7 @@
                 <p class="text-xs text-organicBrown/70 font-light">Enter your credentials to access the KaaNuRO dashboard</p>
             </div>
 
-            <form method="POST" class="space-y-6">
+            <form method="POST" action="{% url 'login' %}" class="space-y-6">
                 {% csrf_token %}
                 
                 {% if form.non_field_errors %}
@@ -55,9 +55,12 @@
                         <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-organicBrown/45 pointer-events-none">
                             <i class="fa-solid fa-key text-sm"></i>
                         </span>
-                        <div class="pl-10 relative">
+                        <div class="pl-10 pr-10 relative">
                             {{ form.password }}
                         </div>
+                        <button type="button" class="toggle-password absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-auto cursor-pointer text-gray-400 hover:text-gray-600 transition-colors">
+                            <i class="fas fa-eye"></i>
+                        </button>
                     </div>
                     {% if form.password.errors %}
                         <p class="text-rose-600 text-xs mt-1">{{ form.password.errors.0 }}</p>

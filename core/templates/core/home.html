@@ -1,7 +1,7 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}KaaNuRO Group - Natural Wellness & Heart Care{% endblock %}
+{% block title %}KaaNuRO Group - Natural Beauty & Health Optimization{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
@@ -15,13 +15,13 @@
                     <i class="fa-solid fa-leaf mr-1.5"></i> 100% Organic & Pure
                 </span>
                 <h1 class="text-4xl sm:text-5xl lg:text-6xl font-outfit font-extrabold text-cream leading-tight">
-                    Empower Your <span class="text-softGold">Heart First</span>, and Let the Natural Glow Follow Gracefully
+                    Empower Your <span class="text-softGold">Routine</span> with Targeted Herbal Remedies for Hair, Sleep, and Fat Loss
                 </h1>
                 <p class="text-cream/80 text-lg sm:text-xl font-light leading-relaxed max-w-2xl">
-                    Discover hand-selected herbal blends and wellness formulas crafted in Udaipurwati, Jhunjhunu, Rajasthan. Pure health, simplified.
+                    Discover clean organic ingredients designed to accelerate hair vitality, deeply restore circadian sleep metrics, and support active fat loss naturally. Sourced directly from Udaipurwati, Rajasthan.
                 </p>
                 <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="#products" class="px-8 py-4 bg-softGold text-darkGreen dark:text-cream font-outfit font-bold rounded-xl hover:bg-cream hover:text-darkGreen transition-all text-center shadow-lg shadow-softGold/20 transform hover:-translate-y-0.5">
+                    <a href="{% url 'product_catalog' %}" class="px-8 py-4 bg-softGold text-darkGreen dark:text-cream font-outfit font-bold rounded-xl hover:bg-cream hover:text-darkGreen transition-all text-center shadow-lg shadow-softGold/20 transform hover:-translate-y-0.5">
                         Shop Products <i class="fa-solid fa-chevron-right ml-2 text-sm"></i>
                     </a>
                     <a href="#about" class="px-8 py-4 border border-cream/35 text-cream font-outfit font-semibold rounded-xl hover:bg-cream/10 transition-all text-center">
@@ -36,14 +36,14 @@
                 <div class="relative bg-herbalGreen/20 border border-cream/15 rounded-2xl p-8 backdrop-blur-md space-y-6">
                     <div class="flex justify-between items-start">
                         <div class="w-12 h-12 bg-softGold/10 rounded-lg flex items-center justify-center border border-softGold/35">
-                            <i class="fa-solid fa-heart-pulse text-softGold text-xl"></i>
+                            <i class="fa-solid fa-spa text-softGold text-xl"></i>
                         </div>
                         <span class="text-xs text-cream/55 font-light">Trusted Rajasthan Quality</span>
                     </div>
                     <div class="space-y-2">
                         <h3 class="text-xl font-outfit font-bold text-cream">The KaaNuRO Promise</h3>
                         <p class="text-sm text-cream/75 leading-relaxed font-light">
-                            Traditional Rajasthani herbal remedies backed by modern organic validation. We refine local wellness secrets to optimize your cardiovascular health and elevate your skin's vitality.
+                            Traditional Rajasthani herbal remedies backed by modern organic validation. We refine local wellness secrets to accelerate hair vitality, deeply restore circadian sleep metrics, and support active fat loss naturally.
                         </p>
                     </div>
                     <div class="pt-4 border-t border-cream/10 flex items-center justify-between">
@@ -114,15 +114,15 @@
             </span>
             <h2 class="text-2xl sm:text-3xl font-outfit font-extrabold text-darkGreen">Explore Our Collections</h2>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             <!-- Wellness Teas -->
             <a href="#products" id="cat-wellness-teas"
                class="group relative bg-cream border border-softGold/20 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-center hover:border-softGold hover:shadow-lg hover:shadow-softGold/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-br from-softGold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="w-16 h-16 rounded-2xl bg-softGold/10 border border-softGold/20 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">🍵</div>
+                <div class="w-16 h-16 rounded-2xl bg-softGold/10 border border-softGold/20 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">🌱</div>
                 <div>
-                    <p class="font-outfit font-bold text-darkGreen text-sm">Wellness Teas</p>
-                    <p class="text-[10px] text-organicBrown/60 font-light mt-0.5">Herbal blends &amp; brews</p>
+                    <p class="font-outfit font-bold text-darkGreen text-sm">Hair Growth</p>
+                    <p class="text-[10px] text-organicBrown/60 font-light mt-0.5">Scalp &amp; follicle density</p>
                 </div>
                 <span class="text-[9px] font-bold text-softGold uppercase tracking-wider font-outfit flex items-center gap-1">Shop Now <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
             </a>
@@ -130,10 +130,10 @@
             <a href="#products" id="cat-heart-care"
                class="group relative bg-cream border border-herbalGreen/20 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-center hover:border-herbalGreen hover:shadow-lg hover:shadow-herbalGreen/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-br from-herbalGreen/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="w-16 h-16 rounded-2xl bg-herbalGreen/10 border border-herbalGreen/20 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">❤️</div>
+                <div class="w-16 h-16 rounded-2xl bg-herbalGreen/10 border border-herbalGreen/20 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">🌙</div>
                 <div>
-                    <p class="font-outfit font-bold text-darkGreen text-sm">Heart Care</p>
-                    <p class="text-[10px] text-organicBrown/60 font-light mt-0.5">Cardio wellness range</p>
+                    <p class="font-outfit font-bold text-darkGreen text-sm">Sleep Optimization</p>
+                    <p class="text-[10px] text-organicBrown/60 font-light mt-0.5">REM &amp; circadian rest</p>
                 </div>
                 <span class="text-[9px] font-bold text-herbalGreen uppercase tracking-wider font-outfit flex items-center gap-1">Shop Now <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
             </a>
@@ -141,23 +141,12 @@
             <a href="#products" id="cat-skin-beauty"
                class="group relative bg-cream border border-softGold/20 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-center hover:border-softGold hover:shadow-lg hover:shadow-softGold/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-br from-softGold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="w-16 h-16 rounded-2xl bg-softGold/10 border border-softGold/20 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">✨</div>
+                <div class="w-16 h-16 rounded-2xl bg-softGold/10 border border-softGold/20 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">🔥</div>
                 <div>
-                    <p class="font-outfit font-bold text-darkGreen text-sm">Skin Beauty</p>
-                    <p class="text-[10px] text-organicBrown/60 font-light mt-0.5">Natural glow formulas</p>
+                    <p class="font-outfit font-bold text-darkGreen text-sm">Fat Loss Support</p>
+                    <p class="text-[10px] text-organicBrown/60 font-light mt-0.5">Active metabolic accelerators</p>
                 </div>
                 <span class="text-[9px] font-bold text-softGold uppercase tracking-wider font-outfit flex items-center gap-1">Shop Now <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
-            </a>
-            <!-- Organic Apparel -->
-            <a href="#clothing" id="cat-organic-apparel"
-               class="group relative bg-cream border border-darkGreen/15 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-center hover:border-darkGreen hover:shadow-lg hover:shadow-darkGreen/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-darkGreen/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="w-16 h-16 rounded-2xl bg-darkGreen/8 border border-darkGreen/15 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">👕</div>
-                <div>
-                    <p class="font-outfit font-bold text-darkGreen text-sm">Organic Apparel</p>
-                    <p class="text-[10px] text-organicBrown/60 font-light mt-0.5">Conscious clothing line</p>
-                </div>
-                <span class="text-[9px] font-bold text-darkGreen uppercase tracking-wider font-outfit flex items-center gap-1">Shop Now <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
             </a>
         </div>
     </div>
@@ -368,7 +357,7 @@
                 Deeply Rooted in Purity, Sourced Directly from Nature
             </h2>
             <p class="text-organicBrown/80 text-lg leading-relaxed font-light">
-                KaaNuRO Group is a premier herbal wellness enterprise based in Udaipurwati, Rajasthan. We operate with a singular mission: to provide high-efficacy organic formulations that protect your cardiovascular health and naturally nurture your skin.
+                KaaNuRO Group is a premier herbal wellness enterprise based in Udaipurwati, Rajasthan. We operate with a singular mission: to provide high-efficacy organic formulations designed to accelerate hair vitality, deeply restore circadian sleep metrics, and support active fat loss naturally.
             </p>
         </div>
         
@@ -394,23 +383,23 @@
                 </div>
             </div>
 
-            <!-- Card 2: Heart First Philosophy -->
+            <!-- Card 2: Targeted Wellness Philosophy -->
             <div class="bg-cream border border-softGold/25 rounded-2xl p-8 flex flex-col justify-between aspect-square hover:-translate-y-2 hover:shadow-xl hover:border-herbalGreen/30 transition-all duration-300 group">
                 <div class="flex justify-between items-start">
                     <span class="text-[10px] font-bold bg-[#D4AF37]/10 text-[#D4AF37] px-2.5 py-1 rounded-full uppercase tracking-wider font-outfit">PHILOSOPHY</span>
                     <div class="w-10 h-10 rounded-xl bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-heart-pulse"></i>
+                        <i class="fa-solid fa-spa"></i>
                     </div>
                 </div>
                 <div class="space-y-3">
-                    <h3 class="text-xl font-outfit font-bold text-darkGreen leading-tight">Heart-First Care</h3>
+                    <h3 class="text-xl font-outfit font-bold text-darkGreen leading-tight">Targeted Wellness</h3>
                     <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
-                        We target cardiac vitality as the baseline of overall life energy and natural skin glow. Purity that heals you from within.
+                        We focus on clean organic formulations tailored specifically to restore deep circadian sleep, enhance hair follicle density, and support natural metabolic thermogenesis.
                     </p>
                 </div>
                 <div class="pt-4 border-t border-[#5C4033]/10 text-xs font-semibold text-darkGreen/90 flex items-center space-x-2">
                     <i class="fa-solid fa-leaf text-softGold"></i>
-                    <span>Internal to External Radiance</span>
+                    <span>Science-Backed Botanicals</span>
                 </div>
             </div>
 
@@ -438,7 +427,7 @@
         <!-- Blockquote Quote -->
         <div class="max-w-2xl mx-auto text-center pt-4">
             <blockquote class="italic text-sm text-[#5C4033]/85 bg-[#F2EBE5]/50 border-l-4 border-softGold py-4 px-6 rounded-r-2xl">
-                "Natural glow is not painted; it is cultivated from within by feeding the heart pure, life-affirming elements."
+                "True vitality is not superficial; it is cultivated from within by nourishing the hair, restoring the circadian cycle, and accelerating natural metabolism."
             </blockquote>
         </div>
     </div>
@@ -458,7 +447,7 @@
             <a href="{% url 'product_catalog' %}?shelf=best_sellers" class="flex items-center gap-1.5 text-xs font-bold text-herbalGreen font-outfit hover:text-darkGreen transition-colors">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for product in best_sellers %}
+            {% for product in best_sellers|slice:':2' %}
             <div class="bg-lightBeige border border-lightBeige rounded-2xl overflow-hidden flex flex-col p-5 hover:shadow-lg hover:border-softGold/40 transition-all duration-300 cursor-pointer product-card-trigger"
                  data-id="prod_{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.price }}"
                  data-image="{% if product.image %}{{ product.image.url }}{% endif %}"
@@ -469,7 +458,15 @@
                     <span class="text-[9px] font-bold bg-softGold/10 text-softGold border border-softGold/20 px-2 py-0.5 rounded-md uppercase tracking-wider font-outfit">{{ product.subtitle_tagline|default:"Best Seller" }}</span>
                     <span class="text-[9px] font-bold text-softGold font-outfit flex items-center gap-1"><i class="fa-solid fa-fire text-[8px]"></i> Top Pick</span>
                 </div>
-                <div class="w-full h-28 flex items-center justify-center overflow-hidden bg-cream rounded-xl border border-lightBeige mb-3">
+                <div class="w-full h-28 flex items-center justify-center overflow-hidden bg-cream rounded-xl border border-lightBeige mb-3 relative">
+                    <!-- Heart Button Overlay -->
+                    <button type="button" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 shadow flex items-center justify-center text-gray-700 hover:text-red-500 transition-colors z-20 toggle-wishlist" data-product-id="{{ product.id }}">
+                        {% if product.id|stringformat:"s" in request.session.wishlist %}
+                            <i class="fa-solid fa-heart text-red-500"></i>
+                        {% else %}
+                            <i class="fa-regular fa-heart text-gray-700"></i>
+                        {% endif %}
+                    </button>
                     {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-cover h-full w-full rounded-lg">
                     {% else %}<i class="fa-solid fa-leaf text-4xl text-herbalGreen/25"></i>{% endif %}
                 </div>
@@ -483,6 +480,20 @@
             {% empty %}
             <p class="{{ shelf_empty_class }}">No best sellers tagged yet. Mark products as Best Seller in the admin panel.</p>
             {% endfor %}
+            <!-- View All Best Sellers — 3rd Dynamic Slot -->
+            {% if best_sellers %}
+            <a href="{% url 'product_catalog' %}?shelf=best_sellers"
+               class="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-softGold/30 p-5 hover:border-softGold/70 hover:shadow-md transition-all duration-300 group"
+               style="background-color: #F3F4F6;">
+                <div class="w-14 h-14 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                    <i class="fa-solid fa-arrow-right text-[#1A5A32] text-lg"></i>
+                </div>
+                <div class="text-center space-y-1">
+                    <p class="text-sm font-outfit font-bold text-[#1A5A32]">View All Best Sellers</p>
+                    <p class="text-[10px] text-[#2D2D2D]/50 font-light">Explore the full collection</p>
+                </div>
+            </a>
+            {% endif %}
         </div>
         <div class="mt-8 text-right">
             <a href="{% url 'product_catalog' %}?shelf=best_sellers" class="inline-flex items-center gap-2 px-6 py-2.5 border border-herbalGreen/30 text-herbalGreen font-outfit font-bold text-xs rounded-xl hover:bg-herbalGreen hover:text-cream transition-all">
@@ -503,7 +514,7 @@
             <a href="{% url 'product_catalog' %}?shelf=new_arrivals" class="flex items-center gap-1.5 text-xs font-bold text-herbalGreen font-outfit hover:text-darkGreen transition-colors">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for product in new_arrivals %}
+            {% for product in new_arrivals|slice:':2' %}
             <div class="bg-cream border border-lightBeige rounded-2xl overflow-hidden flex flex-col p-5 hover:shadow-lg hover:border-herbalGreen/40 transition-all duration-300 cursor-pointer product-card-trigger"
                  data-id="prod_{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.price }}"
                  data-image="{% if product.image %}{{ product.image.url }}{% endif %}"
@@ -514,7 +525,15 @@
                     <span class="text-[9px] font-bold bg-herbalGreen/10 text-herbalGreen border border-herbalGreen/20 px-2 py-0.5 rounded-md uppercase tracking-wider font-outfit">{{ product.subtitle_tagline|default:"New" }}</span>
                     <span class="text-[9px] font-bold text-herbalGreen font-outfit flex items-center gap-1"><i class="fa-solid fa-star text-[8px]"></i> New</span>
                 </div>
-                <div class="w-full h-28 flex items-center justify-center overflow-hidden bg-lightBeige/30 rounded-xl border border-lightBeige mb-3">
+                <div class="w-full h-28 flex items-center justify-center overflow-hidden bg-lightBeige/30 rounded-xl border border-lightBeige mb-3 relative">
+                    <!-- Heart Button Overlay -->
+                    <button type="button" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 shadow flex items-center justify-center text-gray-700 hover:text-red-500 transition-colors z-20 toggle-wishlist" data-product-id="{{ product.id }}">
+                        {% if product.id|stringformat:"s" in request.session.wishlist %}
+                            <i class="fa-solid fa-heart text-red-500"></i>
+                        {% else %}
+                            <i class="fa-regular fa-heart text-gray-700"></i>
+                        {% endif %}
+                    </button>
                     {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-cover h-full w-full rounded-lg">
                     {% else %}<i class="fa-solid fa-leaf text-4xl text-herbalGreen/25"></i>{% endif %}
                 </div>
@@ -528,6 +547,20 @@
             {% empty %}
             <p class="{{ shelf_empty_class }}">No new arrivals tagged yet. Mark products as New Arrival in the admin panel.</p>
             {% endfor %}
+            <!-- View All New Arrivals — 3rd Dynamic Slot -->
+            {% if new_arrivals %}
+            <a href="{% url 'product_catalog' %}?shelf=new_arrivals"
+               class="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-herbalGreen/30 p-5 hover:border-herbalGreen/70 hover:shadow-md transition-all duration-300 group"
+               style="background-color: #F3F4F6;">
+                <div class="w-14 h-14 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                    <i class="fa-solid fa-arrow-right text-[#1A5A32] text-lg"></i>
+                </div>
+                <div class="text-center space-y-1">
+                    <p class="text-sm font-outfit font-bold text-[#1A5A32]">View All New Arrivals</p>
+                    <p class="text-[10px] text-[#2D2D2D]/50 font-light">Explore the full collection</p>
+                </div>
+            </a>
+            {% endif %}
         </div>
         <div class="mt-8 text-right">
             <a href="{% url 'product_catalog' %}?shelf=new_arrivals" class="inline-flex items-center gap-2 px-6 py-2.5 border border-herbalGreen/30 text-herbalGreen font-outfit font-bold text-xs rounded-xl hover:bg-herbalGreen hover:text-cream transition-all">
@@ -548,7 +581,7 @@
             <a href="{% url 'product_catalog' %}?shelf=trending" class="flex items-center gap-1.5 text-xs font-bold text-herbalGreen font-outfit hover:text-darkGreen transition-colors">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for product in trending %}
+            {% for product in trending|slice:':2' %}
             <div class="bg-lightBeige border border-lightBeige rounded-2xl overflow-hidden flex flex-col p-5 hover:shadow-lg hover:border-[#D4AF37]/40 transition-all duration-300 cursor-pointer product-card-trigger"
                  data-id="prod_{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.price }}"
                  data-image="{% if product.image %}{{ product.image.url }}{% endif %}"
@@ -559,7 +592,15 @@
                     <span class="text-[9px] font-bold bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 px-2 py-0.5 rounded-md uppercase tracking-wider font-outfit">{{ product.subtitle_tagline|default:"Trending" }}</span>
                     <span class="text-[9px] font-bold text-[#D4AF37] font-outfit flex items-center gap-1"><i class="fa-solid fa-chart-line text-[8px]"></i> Hot</span>
                 </div>
-                <div class="w-full h-28 flex items-center justify-center overflow-hidden bg-cream rounded-xl border border-lightBeige mb-3">
+                <div class="w-full h-28 flex items-center justify-center overflow-hidden bg-cream rounded-xl border border-lightBeige mb-3 relative">
+                    <!-- Heart Button Overlay -->
+                    <button type="button" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 shadow flex items-center justify-center text-gray-700 hover:text-red-500 transition-colors z-20 toggle-wishlist" data-product-id="{{ product.id }}">
+                        {% if product.id|stringformat:"s" in request.session.wishlist %}
+                            <i class="fa-solid fa-heart text-red-500"></i>
+                        {% else %}
+                            <i class="fa-regular fa-heart text-gray-700"></i>
+                        {% endif %}
+                    </button>
                     {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-cover h-full w-full rounded-lg">
                     {% else %}<i class="fa-solid fa-leaf text-4xl text-herbalGreen/25"></i>{% endif %}
                 </div>
@@ -573,6 +614,20 @@
             {% empty %}
             <p class="{{ shelf_empty_class }}">No trending products tagged yet. Mark products as Trending in the admin panel.</p>
             {% endfor %}
+            <!-- View All Trending — 3rd Dynamic Slot -->
+            {% if trending %}
+            <a href="{% url 'product_catalog' %}?shelf=trending"
+               class="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-[#D4AF37]/30 p-5 hover:border-[#D4AF37]/70 hover:shadow-md transition-all duration-300 group"
+               style="background-color: #F3F4F6;">
+                <div class="w-14 h-14 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                    <i class="fa-solid fa-arrow-right text-[#1A5A32] text-lg"></i>
+                </div>
+                <div class="text-center space-y-1">
+                    <p class="text-sm font-outfit font-bold text-[#1A5A32]">View All Trending</p>
+                    <p class="text-[10px] text-[#2D2D2D]/50 font-light">Explore the full collection</p>
+                </div>
+            </a>
+            {% endif %}
         </div>
         <div class="mt-8 text-right">
             <a href="{% url 'product_catalog' %}?shelf=trending" class="inline-flex items-center gap-2 px-6 py-2.5 border border-[#D4AF37]/30 text-[#D4AF37] font-outfit font-bold text-xs rounded-xl hover:bg-[#D4AF37] hover:text-cream transition-all">
@@ -583,89 +638,6 @@
 </section>
 <!-- ═══════════════════════ END PRODUCT SHELVES ═══════════════ -->
 
-<!-- Our Products Section -->
-<section id="products" class="py-24 bg-lightBeige">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-            <span class="text-xs font-bold uppercase tracking-wider text-herbalGreen font-outfit">Dynamic Catalog</span>
-            <h2 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen">
-                Discover Our Natural Remedies
-            </h2>
-            <p class="text-organicBrown/70 text-sm font-light">
-                Carefully prepared blends designed to support heart health, nourish skin, and bring balance to your busy life.
-            </p>
-        </div>
-
-        <!-- Products Grid (Unified Layout - aspect-square) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {% for product in products %}
-            <!-- Product Card -->
-            <div class="bg-cream border border-lightBeige rounded-2xl overflow-hidden aspect-square flex flex-col justify-between p-6 hover:shadow-lg hover:border-softGold/50 transition-all duration-300 cursor-pointer product-card-trigger"
-                 data-id="prod_{{ product.id }}"
-                 data-name="{{ product.name }}"
-                 data-price="{{ product.price }}"
-                 data-image="{% if product.image %}{{ product.image.url }}{% endif %}"
-                 data-media="{{ product.media_list_json }}"
-                 data-description="{{ product.description|escapejs }}"
-                 data-stock="{% if product.id|divisibleby:3 %}Low Stock{% else %}In Stock{% endif %}"
-                 data-type="ayurveda"
-                 data-subtitle="{{ product.subtitle_tagline|escapejs }}"
-                 data-quantity="{{ product.total_quantity_info|default:'100g'|escapejs }}">
-                <!-- Top Section: Category/Tagline & Quantity -->
-                <div class="space-y-3">
-                    <div class="flex justify-between items-start">
-                        {% if product.subtitle_tagline %}
-                        <span class="text-[9px] font-bold bg-softGold/10 text-softGold border border-softGold/20 px-2 py-0.5 rounded-md uppercase tracking-wider font-outfit">
-                            {{ product.subtitle_tagline }}
-                        </span>
-                        {% endif %}
-                        <span class="text-[9px] text-organicBrown/50 font-medium font-mono">
-                            {{ product.total_quantity_info|default:"100g" }}
-                        </span>
-                    </div>
-
-                    <div class="w-full h-24 flex items-center justify-center overflow-hidden bg-lightBeige/30 rounded-xl border border-lightBeige">
-                        {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-cover h-full w-full rounded-lg">
-                        {% else %}
-                        <svg class="w-16 h-16 text-herbalGreen" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M100 85 C140 55, 150 25, 100 15 C50 25, 60 55, 100 85 Z" fill="currentColor" fill-opacity="0.12" stroke="#D4AF37" stroke-width="1"/>
-                        </svg>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Middle Section: Product Name and Description Snippet -->
-                <div class="space-y-2 flex-grow flex flex-col justify-center">
-                    <h3 class="text-base font-outfit font-bold text-darkGreen leading-tight truncate">
-                        {{ product.name }}
-                    </h3>
-                    <p class="text-[11px] text-organicBrown/70 font-light line-clamp-2 leading-relaxed">
-                        {{ product.description }}
-                    </p>
-                </div>
-
-                <!-- Bottom Section: Pricing / CTA -->
-                <div class="pt-4 border-t border-lightBeige flex justify-between items-center">
-                    <span class="text-xs font-mono font-bold text-herbalGreen">₹{{ product.price }}</span>
-                    <span class="px-3.5 py-1.5 bg-darkGreen text-cream text-[10px] font-outfit font-bold rounded-lg hover:bg-herbalGreen transition-all uppercase tracking-wider select-none">
-                        View Details
-                    </span>
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-span-full bg-cream border border-lightBeige rounded-2xl p-12 text-center space-y-4">
-                <i class="fa-solid fa-leaf text-5xl text-herbalGreen/30"></i>
-                <h3 class="text-xl font-outfit font-bold text-darkGreen">No products added yet</h3>
-                <p class="text-sm text-organicBrown/60 font-light max-w-md mx-auto">
-                    We are currently setting up our inventory. Contact our wellness associates to learn more about our upcoming releases.
-                </p>
-                <a href="#contact" class="inline-block px-6 py-2.5 bg-darkGreen text-cream font-outfit font-bold rounded-lg text-xs">Send Inquiry</a>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
 
 <!-- Features Breakdown Grid (Value Props) -->
 <section class="py-24 bg-cream border-t border-[#5C4033]/5">
@@ -674,185 +646,35 @@
             <!-- Feature 1 -->
             <div class="bg-lightBeige border border-organicBrown/5 p-8 rounded-2xl space-y-4 transition-transform hover:-translate-y-1">
                 <div class="w-12 h-12 bg-softGold/10 rounded-xl flex items-center justify-center border border-softGold/25">
-                    <i class="fa-solid fa-heart-pulse text-softGold text-xl"></i>
+                    <i class="fa-solid fa-crown text-softGold text-xl"></i>
                 </div>
-                <h3 class="text-xl font-outfit font-bold text-darkGreen">Heart Health</h3>
+                <h3 class="text-xl font-outfit font-bold text-darkGreen">Hair Vitality</h3>
                 <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
-                    Our cardiotonic blends focus on standard circulation support, arterial health, and cardiovascular longevity using time-tested organic properties.
+                    Formulated with scalp-nourishing, DHT-blocking botanicals to accelerate hair vitality and increase follicle density.
                 </p>
             </div>
             
             <!-- Feature 2 -->
             <div class="bg-lightBeige border border-organicBrown/5 p-8 rounded-2xl space-y-4 transition-transform hover:-translate-y-1">
                 <div class="w-12 h-12 bg-softGold/10 rounded-xl flex items-center justify-center border border-softGold/25">
-                    <i class="fa-solid fa-wand-magic-sparkles text-softGold text-xl"></i>
+                    <i class="fa-solid fa-moon text-softGold text-xl"></i>
                 </div>
-                <h3 class="text-xl font-outfit font-bold text-darkGreen">Skin Beauty</h3>
+                <h3 class="text-xl font-outfit font-bold text-darkGreen">Sleep Optimization</h3>
                 <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
-                    Purify internal systems to promote external radiance. High antioxidant concentrations defend against premature aging and bring out your natural glow.
+                    Promote deep REM sleep extension, morning clarity, and stress reduction using non-habit-forming calming Ayurvedic roots.
                 </p>
             </div>
             
             <!-- Feature 3 -->
             <div class="bg-lightBeige border border-organicBrown/5 p-8 rounded-2xl space-y-4 transition-transform hover:-translate-y-1">
                 <div class="w-12 h-12 bg-softGold/10 rounded-xl flex items-center justify-center border border-softGold/25">
-                    <i class="fa-solid fa-spa text-softGold text-xl"></i>
+                    <i class="fa-solid fa-fire text-softGold text-xl"></i>
                 </div>
-                <h3 class="text-xl font-outfit font-bold text-darkGreen">Peace of Mind</h3>
+                <h3 class="text-xl font-outfit font-bold text-darkGreen">Fat Loss Support</h3>
                 <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
-                    A holistic approach that promotes neural calming, stress resilience, and deep, restful sleep. True health begins with a quiet, balanced mind.
+                    Accelerate natural thermogenesis, regulate appetite, and support a cellular cleanse with antioxidant-rich metabolic catalysts.
                 </p>
             </div>
-        </div>
-    </div>
-</section>
-
-<!-- Organic Apparel Collection Section -->
-<section id="clothing" class="py-24 bg-cream border-t border-[#5C4033]/10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        <!-- Header -->
-        <div class="text-center max-w-3xl mx-auto space-y-4">
-            <span class="text-xs font-bold uppercase tracking-wider text-herbalGreen font-outfit">Pure & Conscious</span>
-            <h2 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen">
-                Organic Apparel Collection
-            </h2>
-            <p class="text-organicBrown/70 text-sm font-light">
-                Naturally dyed, sustainably harvested fabrics designed for comfort and everyday wellness. Handcrafted with traditional Rajasthan methods.
-            </p>
-        </div>
-
-        <!-- Filtration Bar (Flat Layout) -->
-        <div class="border-b border-lightBeige pb-6 max-w-5xl mx-auto">
-            <form method="GET" action="#clothing" id="clothing-filter-form" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 items-end">
-                <!-- Category -->
-                <div class="space-y-1.5">
-                    <label class="block text-[10px] font-semibold text-organicBrown uppercase tracking-wider font-outfit">Category</label>
-                    <select name="category" onchange="document.getElementById('clothing-filter-form').submit();" class="w-full px-3 py-2 bg-cream border border-lightBeige rounded-lg text-xs font-medium text-darkGreen focus:outline-none focus:ring-1 focus:ring-herbalGreen">
-                        <option value="">All Categories</option>
-                        {% for cat in categories %}
-                        <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat|title }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- Size -->
-                <div class="space-y-1.5">
-                    <label class="block text-[10px] font-semibold text-organicBrown uppercase tracking-wider font-outfit">Size</label>
-                    <select name="size" onchange="document.getElementById('clothing-filter-form').submit();" class="w-full px-3 py-2 bg-cream border border-lightBeige rounded-lg text-xs font-medium text-darkGreen focus:outline-none focus:ring-1 focus:ring-herbalGreen">
-                        <option value="">All Sizes</option>
-                        {% for sz in sizes %}
-                        <option value="{{ sz }}" {% if selected_size == sz %}selected{% endif %}>{{ sz }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- Color -->
-                <div class="space-y-1.5">
-                    <label class="block text-[10px] font-semibold text-organicBrown uppercase tracking-wider font-outfit">Colour</label>
-                    <select name="color" onchange="document.getElementById('clothing-filter-form').submit();" class="w-full px-3 py-2 bg-cream border border-lightBeige rounded-lg text-xs font-medium text-darkGreen focus:outline-none focus:ring-1 focus:ring-herbalGreen">
-                        <option value="">All Colours</option>
-                        {% for col in colors %}
-                        <option value="{{ col }}" {% if selected_color == col %}selected{% endif %}>{{ col }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- Fabric -->
-                <div class="space-y-1.5">
-                    <label class="block text-[10px] font-semibold text-organicBrown uppercase tracking-wider font-outfit">Fabric</label>
-                    <select name="fabric" onchange="document.getElementById('clothing-filter-form').submit();" class="w-full px-3 py-2 bg-cream border border-lightBeige rounded-lg text-xs font-medium text-darkGreen focus:outline-none focus:ring-1 focus:ring-herbalGreen">
-                        <option value="">All Fabrics</option>
-                        {% for fb in fabrics %}
-                        <option value="{{ fb }}" {% if selected_fabric == fb %}selected{% endif %}>{{ fb }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- Price -->
-                <div class="space-y-1.5">
-                    <label class="block text-[10px] font-semibold text-organicBrown uppercase tracking-wider font-outfit">Max Price</label>
-                    <select name="price" onchange="document.getElementById('clothing-filter-form').submit();" class="w-full px-3 py-2 bg-cream border border-lightBeige rounded-lg text-xs font-medium text-darkGreen focus:outline-none focus:ring-1 focus:ring-herbalGreen">
-                        <option value="">Any Price</option>
-                        <option value="1000" {% if selected_price == "1000" %}selected{% endif %}>Under ₹1000</option>
-                        <option value="1500" {% if selected_price == "1500" %}selected{% endif %}>Under ₹1500</option>
-                        <option value="2000" {% if selected_price == "2000" %}selected{% endif %}>Under ₹2000</option>
-                    </select>
-                </div>
-
-                <!-- Reset / Submit -->
-                <div class="flex space-x-2">
-                    <a href="{% url 'home' %}#clothing" class="w-full py-2 bg-cream text-organicBrown border border-lightBeige rounded-lg hover:bg-lightBeige transition-colors text-xs font-bold font-outfit text-center flex items-center justify-center">
-                        Clear
-                    </a>
-                </div>
-            </form>
-        </div>
-
-        <!-- Apparel Items Grid (Aspect Square) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {% for item in clothing_items %}
-            <!-- Clothing Card (Aspect Square) -->
-            <div class="bg-cream border border-lightBeige rounded-2xl overflow-hidden aspect-square flex flex-col justify-between p-6 hover:shadow-lg hover:border-softGold/50 transition-all duration-300 cursor-pointer product-card-trigger"
-                 data-id="cloth_{{ item.id }}"
-                 data-name="{{ item.name }}"
-                 data-price="{{ item.price }}"
-                 data-image="{% if item.image %}{{ item.image.url }}{% endif %}"
-                 data-media="{{ item.media_list_json }}"
-                 data-description="Premium organic apparel item handcrafted in Rajasthan. Category: {{ item.get_category_display }}. Fabric: {{ item.fabric }}. Sizes: {{ item.sizes }}. Colors: {{ item.colors }}."
-                 data-stock="{% if item.id|divisibleby:2 %}Low Stock{% else %}In Stock{% endif %}"
-                 data-type="clothing"
-                 data-subtitle="{{ item.fabric|escapejs }}"
-                 data-quantity="1 Unit">
-                <!-- Top Section: Category/Fabric & Image -->
-                <div class="space-y-3">
-                    <div class="flex justify-between items-start">
-                        <span class="text-[9px] font-bold bg-herbalGreen/10 text-herbalGreen border border-herbalGreen/20 px-2 py-0.5 rounded-md uppercase tracking-wider font-outfit">
-                            {{ item.get_category_display }}
-                        </span>
-                        <span class="text-[9px] font-medium text-organicBrown/50 font-outfit uppercase">
-                            {{ item.fabric }}
-                        </span>
-                    </div>
-
-                    <div class="w-full h-24 flex items-center justify-center overflow-hidden bg-lightBeige/30 rounded-xl border border-lightBeige">
-                        {% if item.image %}
-                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="object-cover h-full w-full rounded-lg">
-                        {% else %}
-                        <i class="fa-solid fa-shirt text-3xl text-herbalGreen/30"></i>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Middle Section: Clothing Name & Info -->
-                <div class="space-y-1 flex-grow flex flex-col justify-center">
-                    <h3 class="text-base font-outfit font-bold text-darkGreen truncate">
-                        {{ item.name }}
-                    </h3>
-                    <div class="flex flex-wrap gap-1 text-[9px] text-organicBrown/60">
-                        <span>Sizes: {{ item.sizes }}</span>
-                        <span class="text-organicBrown/30">•</span>
-                        <span>Colors: {{ item.colors }}</span>
-                    </div>
-                </div>
-
-                <!-- Bottom Section: Pricing / CTA -->
-                <div class="pt-4 border-t border-lightBeige flex justify-between items-center">
-                    <span class="text-xs font-mono font-bold text-herbalGreen">₹{{ item.price }}</span>
-                    <span class="px-3.5 py-1.5 bg-darkGreen text-cream text-[10px] font-outfit font-bold rounded-lg hover:bg-herbalGreen transition-all uppercase tracking-wider select-none">
-                        Order
-                    </span>
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-span-full bg-lightBeige border border-lightBeige rounded-2xl p-12 text-center space-y-4">
-                <i class="fa-solid fa-shirt text-5xl text-herbalGreen/30"></i>
-                <h3 class="text-xl font-outfit font-bold text-darkGreen">No apparel matching search filters</h3>
-                <p class="text-sm text-organicBrown/60 font-light max-w-md mx-auto">
-                    Try adjusting your category, sizes, colours, or fabric filters above to find matching items.
-                </p>
-                <a href="{% url 'home' %}#clothing" class="inline-block px-6 py-2.5 bg-darkGreen text-cream font-outfit font-bold rounded-lg text-xs">Reset All Filters</a>
-            </div>
-            {% endfor %}
         </div>
     </div>
 </section>
@@ -867,7 +689,7 @@
                 Wellness Wisdom & Insights
             </h2>
             <p class="text-organicBrown/70 text-sm font-light">
-                Discover the science and traditions behind herbal formulas, heart longevity, and natural skin health from our wellness experts.
+                Discover the science and traditions behind herbal formulas, sleep optimization, hair vitality, and active metabolic support from our wellness experts.
             </p>
         </div>
 
@@ -875,8 +697,13 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {% for post in blogs %}
             <!-- Blog Card (Aspect Square) -->
-            <div class="bg-cream border border-lightBeige rounded-2xl overflow-hidden aspect-square flex flex-col justify-between p-6 hover:shadow-lg hover:border-softGold/50 transition-all duration-300">
-                <div class="w-full h-full flex flex-col justify-between">
+            <div class="bg-cream border border-lightBeige rounded-2xl overflow-hidden aspect-square flex flex-col justify-between p-6 hover:shadow-lg hover:border-softGold/50 transition-all duration-300 cursor-pointer blog-card-trigger"
+                 data-title="{{ post.title }}"
+                 data-date="{{ post.created_at|date:'M d, Y' }}"
+                 data-author="By {{ post.author }}"
+                 data-image="{% if post.image %}{{ post.image.url }}{% elif post.featured_image %}{{ post.featured_image.url }}{% endif %}"
+                 data-content="{{ post.content }}">
+                <div class="w-full h-full flex flex-col justify-between pointer-events-none">
                     <!-- Top Section: Date & Author & Title -->
                     <div class="space-y-3">
                         <div class="flex justify-between items-center text-[10px] text-organicBrown/50 font-bold tracking-wider font-outfit uppercase">
@@ -898,9 +725,9 @@
                     <!-- Bottom Section: Read CTA / Action -->
                     <div class="pt-4 border-t border-lightBeige flex justify-between items-center">
                         <span class="text-[9px] text-organicBrown/40 uppercase tracking-widest font-semibold font-outfit">KaaNuRO Editorial</span>
-                        <a href="#contact" class="px-3.5 py-1.5 bg-darkGreen text-cream text-[10px] font-outfit font-bold rounded-lg hover:bg-herbalGreen transition-all uppercase tracking-wider">
+                        <span class="px-3.5 py-1.5 bg-darkGreen text-cream text-[10px] font-outfit font-bold rounded-lg hover:bg-herbalGreen transition-all uppercase tracking-wider select-none">
                             Read Wisdom
-                        </a>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -933,7 +760,7 @@
                 <div class="flex items-center gap-1 text-softGold text-xs">
                     <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                 </div>
-                <p class="text-xs text-organicBrown/80 font-light leading-relaxed flex-grow">"The Herbal Heart Tea has genuinely changed my mornings. My cardiologist noticed improvement in just 2 months. Absolutely pure taste."</p>
+                <p class="text-xs text-organicBrown/80 font-light leading-relaxed flex-grow">"The Kesh Vitality Formulation has genuinely changed my morning routine. My hair fall stopped and follicle density improved in just 2 months. Absolutely pure taste."</p>
                 <div class="flex items-center gap-3 pt-3 border-t border-[#5C4033]/8">
                     <div class="w-9 h-9 rounded-full bg-herbalGreen/15 border border-herbalGreen/20 flex items-center justify-center text-sm font-bold text-herbalGreen flex-shrink-0">R</div>
                     <div>
@@ -947,7 +774,7 @@
                 <div class="flex items-center gap-1 text-softGold text-xs">
                     <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                 </div>
-                <p class="text-xs text-organicBrown/80 font-light leading-relaxed flex-grow">"Ordered the Skin Glow blend and the organic kurta set — both are exceptional. The fabric is so soft and my skin has been glowing since week one!"</p>
+                <p class="text-xs text-organicBrown/80 font-light leading-relaxed flex-grow">"Ordered the Veda Lean fat loss blend and the Nidra Deep Sleep blend — both exceeded expectations. I sleep soundly and wake up with elevated metabolic energy!"</p>
                 <div class="flex items-center gap-3 pt-3 border-t border-[#5C4033]/8">
                     <div class="w-9 h-9 rounded-full bg-softGold/15 border border-softGold/20 flex items-center justify-center text-sm font-bold text-[#9a7b24] flex-shrink-0">P</div>
                     <div>
@@ -961,7 +788,7 @@
                 <div class="flex items-center gap-1 text-softGold text-xs">
                     <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
                 </div>
-                <p class="text-xs text-organicBrown/80 font-light leading-relaxed flex-grow">"Fast delivery to Mumbai — received in 4 days. The Arjuna Cardio blend is exactly what my ayurvedic doctor recommended. Reordering again soon."</p>
+                <p class="text-xs text-organicBrown/80 font-light leading-relaxed flex-grow">"Fast delivery to Mumbai — received in 4 days. The Kesh Vitality Formulation is exactly what my hair stylist recommended. Reordering again soon."</p>
                 <div class="flex items-center gap-3 pt-3 border-t border-[#5C4033]/8">
                     <div class="w-9 h-9 rounded-full bg-darkGreen/10 border border-darkGreen/15 flex items-center justify-center text-sm font-bold text-darkGreen flex-shrink-0">M</div>
                     <div>
@@ -1137,6 +964,47 @@
         </div>
     </div>
 </section>
+{% endwith %}
+<!-- ═══════════════════════ END PRODUCT SHELVES ═══════════════ -->
+
+<!-- Blog Article Modal Overlay -->
+<div id="blog-modal-overlay" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+    <!-- Content Card -->
+    <div id="blog-modal-card" class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col relative transform scale-95 opacity-0 transition-all duration-300 ease-out border border-[#E5E5E5] shadow-2xl">
+        <!-- Close Button -->
+        <button id="blog-modal-close" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md text-[#2D2D2D] hover:bg-[#F9F9F9] transition-colors shadow-sm flex items-center justify-center text-xl font-bold font-sans" aria-label="Close article">
+            &times;
+        </button>
+        
+        <!-- Scrollable content area -->
+        <div class="overflow-y-auto flex-grow p-6 md:p-8 space-y-6">
+            <!-- Image Header -->
+            <div id="blog-modal-image-wrapper" class="w-full h-64 md:h-80 rounded-xl overflow-hidden bg-[#F9F9F9] border border-[#E5E5E5] flex items-center justify-center hidden mb-4">
+                <img id="blog-modal-image" src="" alt="" class="w-full h-full object-cover">
+            </div>
+            
+            <!-- Headers -->
+            <div class="space-y-2">
+                <div class="flex items-center space-x-3 text-xs text-[#2D2D2D]/60 font-semibold font-outfit uppercase">
+                    <span id="blog-modal-date">Date</span>
+                    <span>&bull;</span>
+                    <span id="blog-modal-author">Author</span>
+                </div>
+                <h2 id="blog-modal-title" class="text-2xl md:text-3xl font-outfit font-extrabold text-[#1A1A1A] leading-tight">
+                    Article Title
+                </h2>
+            </div>
+            
+            <!-- Divider -->
+            <hr class="border-[#E5E5E5]">
+            
+            <!-- Body paragraph content -->
+            <div id="blog-modal-content" class="text-sm md:text-base text-[#2D2D2D] leading-relaxed font-sans space-y-4">
+                <!-- Dynamic paragraphs populated here -->
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -1248,6 +1116,101 @@
                 feedback.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1.5"></i> Something went wrong. Please try again later.';
                 console.error("AJAX error: ", error);
             });
+        });
+    }
+</script>
+
+<script>
+    // Blog Modal Interactivity
+    function openBlogModal(title, date, author, imageUrl, content) {
+        const overlay = document.getElementById('blog-modal-overlay');
+        const card = document.getElementById('blog-modal-card');
+        
+        // Set content
+        document.getElementById('blog-modal-title').textContent = title;
+        document.getElementById('blog-modal-date').textContent = date;
+        document.getElementById('blog-modal-author').textContent = author;
+        
+        // Set image
+        const imgWrapper = document.getElementById('blog-modal-image-wrapper');
+        const img = document.getElementById('blog-modal-image');
+        if (imageUrl) {
+            img.src = imageUrl;
+            img.alt = title;
+            imgWrapper.classList.remove('hidden');
+        } else {
+            imgWrapper.classList.add('hidden');
+            img.src = '';
+        }
+        
+        // Set body content (split by newlines to form paragraphs)
+        const contentContainer = document.getElementById('blog-modal-content');
+        contentContainer.innerHTML = '';
+        const paragraphs = content.split('\n').filter(p => p.trim() !== '');
+        paragraphs.forEach(p => {
+            const pElem = document.createElement('p');
+            pElem.className = 'text-[#2D2D2D] mb-4';
+            pElem.textContent = p;
+            contentContainer.appendChild(pElem);
+        });
+        
+        // Show modal container
+        overlay.classList.remove('hidden');
+        
+        // Force browser reflow to trigger CSS animations
+        void overlay.offsetWidth;
+        
+        // Add active classes
+        overlay.classList.remove('opacity-0');
+        overlay.classList.add('opacity-100');
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+        
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function closeBlogModal() {
+        const overlay = document.getElementById('blog-modal-overlay');
+        const card = document.getElementById('blog-modal-card');
+        
+        overlay.classList.remove('opacity-100');
+        overlay.classList.add('opacity-0');
+        card.classList.remove('scale-100', 'opacity-100');
+        card.classList.add('scale-95', 'opacity-0');
+        
+        document.body.classList.remove('overflow-hidden');
+        
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+        }, 300); // Match transition-opacity duration-300
+    }
+
+    // Bind triggers to blog grid cards
+    document.querySelectorAll('.blog-card-trigger').forEach(card => {
+        card.addEventListener('click', () => {
+            const title = card.getAttribute('data-title');
+            const date = card.getAttribute('data-date');
+            const author = card.getAttribute('data-author');
+            const imageUrl = card.getAttribute('data-image');
+            const content = card.getAttribute('data-content');
+            
+            openBlogModal(title, date, author, imageUrl, content);
+        });
+    });
+
+    // Close button event
+    const blogCloseBtn = document.getElementById('blog-modal-close');
+    if (blogCloseBtn) {
+        blogCloseBtn.addEventListener('click', closeBlogModal);
+    }
+
+    // Overlay click event (outside the modal card)
+    const blogOverlay = document.getElementById('blog-modal-overlay');
+    if (blogOverlay) {
+        blogOverlay.addEventListener('click', (e) => {
+            if (e.target === blogOverlay) {
+                closeBlogModal();
+            }
         });
     }
 </script>

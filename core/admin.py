@@ -5,16 +5,17 @@ Phase 5: Polished, scannable, and operationally efficient admin grid views.
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 from .models import (
     User, Employee,
     Product, ProductMedia, ProductReview,
-    ClothingItem,
     ContactMessage,
     Blog,
     Order, OrderItem,
     CustomerProfile, Invoice,
     Address, WishlistItem, Coupon,
+    LegalDocument,
 )
 
 
@@ -28,12 +29,6 @@ class ProductMediaInline(admin.TabularInline):
     fk_name = 'product'
     fields = ('media_type', 'file', 'embed_url')
 
-
-class ClothingItemMediaInline(admin.TabularInline):
-    model = ProductMedia
-    extra = 1
-    fk_name = 'clothing_item'
-    fields = ('media_type', 'file', 'embed_url')
 
 
 class ProductReviewInline(admin.TabularInline):
@@ -82,10 +77,10 @@ class ProductAdmin(admin.ModelAdmin):
 
     # Phase 5: Enhanced grid columns
     list_display = (
-        'name', 'price', 'stock', 'stock_status_badge',
+        'name', 'price', 'discount_percentage', 'current_price_display', 'stock', 'stock_status_badge',
         'is_best_seller', 'is_new_arrival', 'is_trending', 'is_active', 'slug',
     )
-    list_editable = ('price', 'stock', 'is_best_seller', 'is_new_arrival', 'is_trending', 'is_active')
+    list_editable = ('price', 'discount_percentage', 'stock', 'is_best_seller', 'is_new_arrival', 'is_trending', 'is_active')
     list_filter = ('is_active', 'is_best_seller', 'is_new_arrival', 'is_trending')
     search_fields = ('name', 'description', 'slug', 'subtitle_tagline')
     prepopulated_fields = {'slug': ('name',)}
@@ -96,7 +91,7 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('name', 'slug', 'subtitle_tagline', 'description', 'total_quantity_info')
         }),
         ('Pricing & Inventory', {
-            'fields': ('price', 'stock', 'is_active')
+            'fields': ('price', 'discount_percentage', 'stock', 'is_active')
         }),
         ('Homepage Shelves', {
             'fields': ('is_best_seller', 'is_new_arrival', 'is_trending'),
@@ -118,7 +113,7 @@ class ProductAdmin(admin.ModelAdmin):
     @admin.display(description='Stock Status')
     def stock_status_badge(self, obj):
         if obj.stock == 0:
-            return format_html(
+            return mark_safe(
                 '<span style="color:#dc2626;font-weight:bold;font-size:11px;">● Out of Stock</span>'
             )
         elif obj.stock <= 10:
@@ -131,10 +126,20 @@ class ProductAdmin(admin.ModelAdmin):
             obj.stock
         )
 
+    @admin.display(description='Active Price (₹)')
+    def current_price_display(self, obj):
+        if obj.discount_percentage > 0:
+            return format_html(
+                '<span style="color:#16a34a;font-weight:bold;">₹{}</span> '
+                '<span style="color:#dc2626;font-size:10px;text-decoration:line-through;">₹{}</span>',
+                obj.current_price, obj.price
+            )
+        return format_html('<span style="color:#6b7280;">₹{}</span>', obj.price)
+
 
 @admin.register(ProductMedia)
 class ProductMediaAdmin(admin.ModelAdmin):
-    list_display = ('media_type', 'product', 'clothing_item')
+    list_display = ('media_type', 'product')
     list_filter = ('media_type',)
 
 
@@ -156,18 +161,6 @@ class ProductReviewAdmin(admin.ModelAdmin):
             filled, empty
         )
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# CLOTHING ITEM
-# ─────────────────────────────────────────────────────────────────────────────
-
-@admin.register(ClothingItem)
-class ClothingItemAdmin(admin.ModelAdmin):
-    inlines = [ClothingItemMediaInline]
-    list_display = ('name', 'category', 'price', 'is_active')
-    search_fields = ('name', 'fabric', 'description')
-    list_filter = ('category', 'is_active')
-    list_editable = ('price', 'is_active')
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -330,3 +323,11 @@ class InvoiceAdmin(admin.ModelAdmin):
     search_fields = ('invoice_number', 'order__customer_name')
     readonly_fields = ('issued_at',)
     ordering = ('-issued_at',)
+
+
+@admin.register(LegalDocument)
+class LegalDocumentAdmin(admin.ModelAdmin):
+    list_display = ('title', 'doc_type', 'last_updated')
+    list_filter = ('doc_type',)
+    search_fields = ('title', 'content')
+

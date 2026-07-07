@@ -43,7 +43,7 @@
         <input type="text"
                name="q"
                value="{{ q }}"
-               placeholder="Search products… (e.g. 'heart tea', 'skin care')"
+               placeholder="Search products… (e.g. 'hair elixir', 'sleep blend')"
                class="w-full pl-11 pr-4 py-4 text-[#2D2D2D] bg-white border-2 border-[#E5E5E5] rounded-2xl
                       focus:outline-none focus:border-[#1A5A32] focus:ring-2 focus:ring-[#1A5A32]/10
                       font-sans text-sm placeholder:text-[#2D2D2D]/35 shadow-sm transition-all">
@@ -118,6 +118,15 @@
 
         <!-- Product Image -->
         <div class="w-full h-44 bg-[#F9F9F9] overflow-hidden flex items-center justify-center relative">
+          <!-- Heart Button Overlay -->
+          <button type="button" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/95 shadow-md flex items-center justify-center text-gray-700 hover:text-red-500 transition-colors z-20 toggle-wishlist" data-product-id="{{ product.id }}">
+              {% if product.id|stringformat:"s" in request.session.wishlist %}
+                  <i class="fa-solid fa-heart text-red-500"></i>
+              {% else %}
+                  <i class="fa-regular fa-heart text-gray-700"></i>
+              {% endif %}
+          </button>
+
           {% if product.is_best_seller %}
           <span class="absolute top-2 left-2 text-[8px] font-bold bg-[#D4AF37] text-white px-2 py-0.5 rounded-full uppercase tracking-wider font-outfit z-10">
             <i class="fa-solid fa-fire text-[7px]"></i> Top Pick
@@ -152,7 +161,13 @@
             {{ product.description|truncatechars:80 }}
           </p>
           <div class="flex items-center justify-between pt-2 border-t border-[#E5E5E5] mt-auto">
-            <span class="text-base font-mono font-bold text-[#1A5A32]">₹{{ product.price }}</span>
+            <div class="flex items-baseline gap-1.5 flex-wrap">
+              <span class="text-base font-mono font-bold text-[#1A5A32]">₹{{ product.current_price }}</span>
+              {% if product.discount_percentage > 0 %}
+              <span class="text-[10px] text-[#2D2D2D]/40 line-through font-light">₹{{ product.price }}</span>
+              <span class="text-[9px] font-bold bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full font-outfit">{{ product.discount_percentage }}% OFF</span>
+              {% endif %}
+            </div>
             <span class="text-[10px] font-bold text-white bg-[#1A5A32] px-3 py-1.5 rounded-lg font-outfit group-hover:bg-[#D4AF37] transition-colors">
               View
             </span>

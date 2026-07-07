@@ -9,9 +9,7 @@ urlpatterns = [
     path('dashboard/products/add/', views.product_create_view, name='product_create'),
     path('dashboard/products/<int:pk>/edit/', views.product_edit_view, name='product_edit'),
     path('dashboard/products/<int:pk>/delete/', views.product_delete_view, name='product_delete'),
-    path('dashboard/clothing/add/', views.clothing_create_view, name='clothing_create'),
-    path('dashboard/clothing/<int:pk>/edit/', views.clothing_edit_view, name='clothing_edit'),
-    path('dashboard/clothing/<int:pk>/delete/', views.clothing_delete_view, name='clothing_delete'),
+
     path('dashboard/employees/add/', views.employee_create_view, name='employee_create'),
     path('dashboard/employees/<int:pk>/delete/', views.delete_employee, name='employee_delete'),
     path('api/orders/create/', views.checkout_order_create_view, name='checkout_order_create'),
@@ -28,8 +26,8 @@ urlpatterns = [
     path('products/<slug:slug>/', views.product_detail_view, name='product_detail'),
 
     # ── Phase 3: Wishlist ─────────────────────────────────────────────────────
-    path('api/wishlist/toggle/', views.wishlist_toggle_view, name='wishlist_toggle'),
-    path('wishlist/', views.wishlist_view, name='wishlist'),
+    path('api/wishlist/toggle/', views.toggle_wishlist_view, name='wishlist_toggle'),
+    path('wishlist/', views.wishlist_view, name='wishlist_view'),
 
     # ── Phase 3: Address Management ───────────────────────────────────────────
     path('dashboard/addresses/add/', views.address_add_view, name='address_add'),
@@ -49,4 +47,7 @@ urlpatterns = [
     # ── Phase 4: Blog Engine ──────────────────────────────────────────────────
     path('blog/', views.blog_list_view, name='blog_list'),
     path('blog/<slug:slug>/', views.blog_detail_view, name='blog_detail'),
+
+    # ── Legal Documents ───────────────────────────────────────────────────────
+    path('legal/<slug:doc_type>/', views.legal_document_view, name='legal_document'),
 ]
