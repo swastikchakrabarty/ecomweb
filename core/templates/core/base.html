@@ -170,7 +170,7 @@
             <div class="px-4 pt-2 pb-6 space-y-3">
                 <a href="{% if request.resolver_match.url_name == 'home' %}#home{% else %}{% url 'home' %}#home{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Home</a>
                 <a href="{% if request.resolver_match.url_name == 'home' %}#about{% else %}{% url 'home' %}#about{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">About Us</a>
-                <a href="{% if request.resolver_match.url_name == 'home' %}#products-section{% else %}{% url 'home' %}#products-section{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Our Products</a>
+                <a href="{% url 'product_catalog' %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Our Products</a>
                 <a href="{% if request.resolver_match.url_name == 'home' %}#blog{% else %}{% url 'home' %}#blog{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Blogs</a>
                 <a href="{% if request.resolver_match.url_name == 'home' %}#contact{% else %}{% url 'home' %}#contact{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Contact Us</a>
                 <div class="pt-4 border-t border-lightBeige flex flex-col space-y-2">
@@ -251,7 +251,7 @@
                     <ul class="space-y-2 text-sm text-cream/70 font-light">
                         <li><a href="{% if request.resolver_match.url_name == 'home' %}#home{% else %}{% url 'home' %}#home{% endif %}" class="hover:text-softGold transition-colors">Home</a></li>
                         <li><a href="{% if request.resolver_match.url_name == 'home' %}#about{% else %}{% url 'home' %}#about{% endif %}" class="hover:text-softGold transition-colors">About Us</a></li>
-                        <li><a href="{% if request.resolver_match.url_name == 'home' %}#products-section{% else %}{% url 'home' %}#products-section{% endif %}" class="hover:text-softGold transition-colors">Our Products</a></li>
+                        <li><a href="{% url 'product_catalog' %}" class="hover:text-softGold transition-colors">Our Products</a></li>
                         <li><a href="{% if request.resolver_match.url_name == 'home' %}#blog{% else %}{% url 'home' %}#blog{% endif %}" class="hover:text-softGold transition-colors">Blogs</a></li>
                     </ul>
                 </div>
