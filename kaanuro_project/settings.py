@@ -31,8 +31,7 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['kaanurogroup.com', 
-'127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['200.97.162.167', 'kaanurogroup.com', 'www.kaanurogroup.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
