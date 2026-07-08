@@ -1074,6 +1074,15 @@ def product_catalog_view(request):
     import difflib
 
     q = request.GET.get('q', '').strip()
+    category = request.GET.get('category', '').strip()
+    if category and not q:
+        if category == 'hair-growth':
+            q = 'Hair Growth'
+        elif category == 'sleep-optimization':
+            q = 'Sleep'
+        elif category == 'fat-loss':
+            q = 'Fat Loss'
+
     shelf = request.GET.get('shelf', '').strip()
 
     base_qs = Product.objects.filter(is_active=True, stock__gt=0)

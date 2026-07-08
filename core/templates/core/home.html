@@ -116,7 +116,7 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             <!-- Wellness Teas -->
-            <a href="#products" id="cat-wellness-teas"
+            <a href="{% url 'product_catalog' %}?category=hair-growth" id="cat-wellness-teas"
                class="group relative bg-cream border border-softGold/20 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-center hover:border-softGold hover:shadow-lg hover:shadow-softGold/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-br from-softGold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="w-16 h-16 rounded-2xl bg-softGold/10 border border-softGold/20 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">🌱</div>
@@ -127,7 +127,7 @@
                 <span class="text-[9px] font-bold text-softGold uppercase tracking-wider font-outfit flex items-center gap-1">Shop Now <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
             </a>
             <!-- Heart Care -->
-            <a href="#products" id="cat-heart-care"
+            <a href="{% url 'product_catalog' %}?category=sleep-optimization" id="cat-heart-care"
                class="group relative bg-cream border border-herbalGreen/20 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-center hover:border-herbalGreen hover:shadow-lg hover:shadow-herbalGreen/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-br from-herbalGreen/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="w-16 h-16 rounded-2xl bg-herbalGreen/10 border border-herbalGreen/20 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">🌙</div>
@@ -138,7 +138,7 @@
                 <span class="text-[9px] font-bold text-herbalGreen uppercase tracking-wider font-outfit flex items-center gap-1">Shop Now <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
             </a>
             <!-- Skin Beauty -->
-            <a href="#products" id="cat-skin-beauty"
+            <a href="{% url 'product_catalog' %}?category=fat-loss" id="cat-skin-beauty"
                class="group relative bg-cream border border-softGold/20 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-center hover:border-softGold hover:shadow-lg hover:shadow-softGold/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-br from-softGold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="w-16 h-16 rounded-2xl bg-softGold/10 border border-softGold/20 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">🔥</div>
@@ -434,6 +434,7 @@
 </section>
 
 <!-- ══════════════════════════════════════════ PRODUCT SHELVES ══ -->
+<div id="products-section">
 {% with shelf_empty_class="col-span-full text-center py-10 text-organicBrown/40 text-sm font-light italic" %}
 
 <!-- Best Sellers -->
@@ -965,6 +966,7 @@
     </div>
 </section>
 {% endwith %}
+</div>
 <!-- ═══════════════════════ END PRODUCT SHELVES ═══════════════ -->
 
 <!-- Blog Article Modal Overlay -->

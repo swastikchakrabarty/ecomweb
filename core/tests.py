@@ -721,6 +721,57 @@ class NavbarGreetingTestCase(TestCase):
         self.client.logout()
 
 
+class ProductCatalogCategoryTestCase(TestCase):
+    def setUp(self):
+        # Create products matching the expected mapped search queries
+        self.p1 = Product.objects.create(
+            name='KaanuRO Kesh Vitality Formulation',
+            subtitle_tagline='Herbal Hair Growth Elixir',
+            description='A premium Ayurvedic formulation targeting hair follicle density.',
+            price=499.00,
+            is_active=True,
+            stock=10
+        )
+        self.p2 = Product.objects.create(
+            name='Veda Lean Fat Loss Infusion',
+            subtitle_tagline='Metabolic Fire',
+            description='A high-potency organic tea blend that assists fat loss.',
+            price=599.00,
+            is_active=True,
+            stock=10
+        )
+        self.p3 = Product.objects.create(
+            name='Nidra Deep Sleep Blend',
+            subtitle_tagline='Circadian Calm',
+            description='Promotes sleep optimization.',
+            price=699.00,
+            is_active=True,
+            stock=10
+        )
+
+    def test_category_hair_growth_mapping(self):
+        response = self.client.get(reverse('product_catalog'), {'category': 'hair-growth'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Kesh Vitality')
+        self.assertNotContains(response, 'Lean Fat Loss')
+        self.assertNotContains(response, 'Deep Sleep')
+
+    def test_category_sleep_optimization_mapping(self):
+        response = self.client.get(reverse('product_catalog'), {'category': 'sleep-optimization'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Deep Sleep')
+        self.assertNotContains(response, 'Kesh Vitality')
+        self.assertNotContains(response, 'Lean Fat Loss')
+
+    def test_category_fat_loss_mapping(self):
+        response = self.client.get(reverse('product_catalog'), {'category': 'fat-loss'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Lean Fat Loss')
+        self.assertNotContains(response, 'Kesh Vitality')
+        self.assertNotContains(response, 'Deep Sleep')
+
+
+
 
 
 
