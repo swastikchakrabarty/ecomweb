@@ -69,7 +69,7 @@ def home_view(request):
     blogs = Blog.objects.all().order_by('-created_at')
 
     total_products = Product.objects.count()  # Displays dynamically
-    certificates_count = 12  # Metric highlights
+    certificates_count = 3  # Metric highlights
     years_experience = 15    # Metric highlights
 
     if request.method == 'POST':
