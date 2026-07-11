@@ -1,77 +1,65 @@
 import os
 import re
 
-# Verified structure settings
 TEMPLATES_DIR = os.path.join('core', 'templates', 'core')
 HOME_TEMPLATE = os.path.join(TEMPLATES_DIR, 'home.html')
-FOOTER_TEMPLATE = os.path.join(TEMPLATES_DIR, 'base.html') # Check if quicklinks live here or in a separate footer.html
 
-def extract_and_build_page(section_id, filename, title):
-    if not os.path.exists(HOME_TEMPLATE):
-        print(f"❌ Error: {HOME_TEMPLATE} not found.")
-        return
-    
-    with open(HOME_TEMPLATE, 'r', encoding='utf-8') as f:
-        home_content = f.read()
-    
-    # Isolate target section by searching for the opening tag up to its closing tag pair matching the ID
-    # This captures the exact original HTML styling, Tailwind rules, and structural blocks
-    pattern = rf'(<section[^>]*id=["\']{section_id}["\'][^>]*>.*? </section>)'
-    match = re.search(pattern, home_content, re.DOTALL | re.IGNORECASE)
+if not os.path.exists(HOME_TEMPLATE):
+    print(f"❌ Error: {HOME_TEMPLATE} not found. Run from project root.")
+    exit(1)
+
+with open(HOME_TEMPLATE, 'r', encoding='utf-8') as f:
+    home_html = f.read()
+
+def extract_by_id_clean(target_id, filename, title):
+    # Matches any tag string starting with id="target" or id='target' until its closing context block safely
+    pattern = rf'(<(section|div)[^>]*id=["\']{target_id}["\'][^>]*>.*?</\2>)'
+    match = re.search(pattern, home_html, re.DOTALL | re.IGNORECASE)
     
     if match:
-        section_html = match.group(1)
-        print(f"✔ Successfully extracted the original layout data for ID: {section_id}")
+        extracted_content = match.group(1)
+        print(f"✔ Isolated exact inner layouts for: {target_id}")
     else:
-        # Fallback to general container scan if standard <section> wrapper variants are used
-        pattern_fallback = rf'(<div[^>]*id=["\']{section_id}["\'][^>]*>.*?</div>)'
-        match_fallback = re.search(pattern_fallback, home_content, re.DOTALL | re.IGNORECASE)
-        if match_fallback:
-            section_html = match_fallback.group(1)
-            print(f"✔ Successfully extracted layout via fallback for ID: {section_id}")
+        # Fallback raw line splitting if custom attributes wrap the markup block
+        lines = home_html.split('\n')
+        captured = []
+        inside = False
+        tag_type = "div"
+        
+        for line in lines:
+            if f'id="{target_id}"' in line or f"id='{target_id}'" in line:
+                inside = True
+                if '<section' in line: tag_type = "section"
+            if inside:
+                captured.append(line)
+                if f'</{tag_type}>' in line and len(captured) > 1:
+                    inside = False
+                    break
+        
+        if captured:
+            extracted_content = '\n'.join(captured)
+            print(f"✔ Extracted target content via line-scan layer for: {target_id}")
         else:
-            print(f"⚠ Could not isolate content section for ID: {section_id}. Creating default wrapper.")
-            section_html = f'<div class="container mx-auto py-12 text-center"><h1 class="text-3xl font-bold">{title}</h1></div>'
+            print(f"⚠ Could not isolate block for '{target_id}'. Creating empty grid container.")
+            extracted_content = f'<div class="container mx-auto py-24 text-center"><h1 class="text-3xl font-bold">{title}</h1></div>'
 
-    # Package structure matching core/base.html inheritance
-    page_code = f"""{{% extends 'core/base.html' %}}
+    page_markup = f"""{{% extends 'core/base.html' %}}
 {{% load static %}}
 
 {{% block title %}}{title}{{% endblock %}}
 
 {{% block content %}}
-{section_html}
+{extracted_content}
 {{% endblock %}}"""
 
     out_path = os.path.join(TEMPLATES_DIR, filename)
     with open(out_path, 'w', encoding='utf-8') as out_f:
-        out_f.write(page_code)
-    print(f"🎉 Fully built template file written: {out_path}")
+        out_f.write(page_markup)
+    print(f"🎉 File updated: {out_path}\n")
 
-print("--- Starting Full Content Extraction Engine ---")
-extract_and_build_page('about', 'about.html', 'About Us')
-extract_and_build_page('contact', 'contact.html', 'Contact Us')
-extract_and_build_page('blog', 'blogs.html', 'Blogs') # Matches your exact #blog ID observed in screencast
+print("--- Running Native String Parsing Extraction Engine ---")
+extract_by_id_clean('about', 'about.html', 'About Us')
+extract_by_id_clean('blog', 'blogs.html', 'Blogs')
+extract_by_id_clean('contact', 'contact.html', 'Contact Us')
 
-# Update Quick Links inside base / footer templates if present
-for target_file in [FOOTER_TEMPLATE, os.path.join(TEMPLATES_DIR, 'footer.html')]:
-    if os.path.exists(target_file):
-        print(f"\n--- Cleaning Quick Links layout in: {target_file} ---")
-        with open(target_file, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        # Swapping out layout bindings to call active Django paths
-        updated = content.replace('href="#about"', 'href="{% url \'about\' %}"')
-        updated = updated.replace('href="{% url \'home\' %}#about"', 'href="{% url \'about\' %}"')
-        
-        updated = updated.replace('href="#blog"', 'href="{% url \'blogs\' %}"')
-        updated = updated.replace('href="{% url \'home\' %}#blog"', 'href="{% url \'blogs\' %}"')
-        
-        updated = updated.replace('href="#contact"', 'href="{% url \'contact\' %}"')
-        updated = updated.replace('href="{% url \'home\' %}#contact"', 'href="{% url \'contact\' %}"')
-        
-        with open(target_file, 'w', encoding='utf-8') as f:
-            f.write(updated)
-        print("✔ Quick Links paths safely updated to new standalone endpoints.")
-
-print("\n🚀 Layout extraction and link optimization successfully finalized!")
+print("🚀 Complete! No external pip installations needed.")

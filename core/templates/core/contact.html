@@ -4,5 +4,93 @@
 {% block title %}Contact Us{% endblock %}
 
 {% block content %}
-<div class="container mx-auto py-12 text-center"><h1 class="text-3xl font-bold">Contact Us</h1></div>
+<section id="contact" class="py-24 bg-cream">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-16 items-center">
+            <!-- Left Info Panel -->
+            <div class="lg:col-span-5 space-y-8">
+                <div class="space-y-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-herbalGreen font-outfit">Contact Us</span>
+                    <h2 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen">
+                        Connect with Our Wellness Team
+                    </h2>
+                </div>
+                <p class="text-organicBrown/80 text-sm leading-relaxed font-light">
+                    Have questions about dosages, custom tea mixtures, or looking to retail our line in your pharmacy or website? Send us a message, and our wellness associate will contact you.
+                </p>
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Phone Card -->
+                    <div class="bg-cream border border-lightBeige rounded-xl p-5 flex flex-col justify-between aspect-square hover:border-softGold/50 hover:shadow-sm transition-all duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-herbalGreen/10 flex items-center justify-center text-herbalGreen">
+                            <i class="fa-solid fa-phone text-sm"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-[10px] text-organicBrown/65 uppercase tracking-wider font-semibold font-outfit">Direct Phone</p>
+                            <p class="text-xs font-bold text-darkGreen font-mono leading-tight">+91 7727914281</p>
+                        </div>
+                    </div>
+
+                    <!-- Email Card -->
+                    <div class="bg-cream border border-lightBeige rounded-xl p-5 flex flex-col justify-between aspect-square hover:border-softGold/50 hover:shadow-sm transition-all duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-herbalGreen/10 flex items-center justify-center text-herbalGreen">
+                            <i class="fa-solid fa-envelope text-sm"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-[10px] text-organicBrown/65 uppercase tracking-wider font-semibold font-outfit">Email Address</p>
+                            <p class="text-xs font-bold text-darkGreen truncate leading-tight" title="kaanurogroup@gmail.com">kaanurogroup@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="lg:col-span-7">
+                <div class="bg-cream border border-lightBeige rounded-2xl p-8 sm:p-10 shadow-lg">
+                    <form method="POST" id="contact-form" class="space-y-5">
+                        {% csrf_token %}
+                        <div>
+                            <label class="block text-xs font-semibold text-[#5C4033] uppercase tracking-wider font-outfit mb-2">Name</label>
+                            {{ contact_form.name }}
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-semibold text-[#5C4033] uppercase tracking-wider font-outfit mb-2">Email</label>
+                                {{ contact_form.email }}
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-[#5C4033] uppercase tracking-wider font-outfit mb-2">Phone</label>
+                                {{ contact_form.phone }}
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-[#5C4033] uppercase tracking-wider font-outfit mb-2">Message</label>
+                            {{ contact_form.message }}
+                        </div>
+                        <button type="submit" id="submit-btn" class="w-full py-4 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md shadow-herbalGreen/15 flex items-center justify-center space-x-2">
+                            <span>Send Message</span>
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </form>
+                    <div id="form-feedback" class="hidden mt-4 p-4 rounded-lg text-sm text-center"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Udaipurwati Google Map Integration -->
+        <div class="bg-cream border border-lightBeige rounded-2xl p-3 shadow-md">
+            <div class="relative overflow-hidden rounded-xl h-80 w-full">
+                <iframe 
+                    class="absolute inset-0 w-full h-full border-0" 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m3!1m3!1d14138.868779633633!2d75.46271929999999!3d27.633465199999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396ccee2574e89e3%3A0xe5a3c61303de67a0!2sUdaipurwati%2C%20Rajasthan%20333307!5e0!3m2!1sen!2sin!4v1719750000000!5m2!1sen!2sin" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+            <div class="mt-2 text-center text-[10px] text-organicBrown/50 font-light">
+                <i class="fa-solid fa-location-dot text-softGold mr-1"></i> Sourced & Packed at Udaipurwati, Jhunjhunu, Rajasthan 333307
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
