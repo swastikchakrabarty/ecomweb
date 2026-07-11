@@ -1185,3 +1185,19 @@ def legal_document_view(request, doc_type):
     }
     return render(request, 'core/legal_document.html', context)
 
+
+
+def about_view(request):
+    return render(request, 'about.html')
+
+def contact_view(request):
+    return render(request, 'contact.html')
+
+def blogs_view(request):
+    context = {}
+    try:
+        from .models import Blog
+        context['blogs'] = Blog.objects.all()
+    except Exception:
+        pass
+    return render(request, 'blogs.html', context)

@@ -50,4 +50,8 @@ urlpatterns = [
 
     # ── Legal Documents ───────────────────────────────────────────────────────
     path('legal/<slug:doc_type>/', views.legal_document_view, name='legal_document'),
+    path('about/', views.about_view, name='about'),
+    path('contact/', views.contact_view, name='contact'),
+    path('blogs/', views.blogs_view, name='blogs'),
+
 ]
