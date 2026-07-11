@@ -1188,10 +1188,10 @@ def legal_document_view(request, doc_type):
 
 
 def about_view(request):
-    return render(request, 'about.html')
+    return render(request, 'core/about.html')
 
 def contact_view(request):
-    return render(request, 'contact.html')
+    return render(request, 'core/contact.html')
 
 def blogs_view(request):
     context = {}
@@ -1200,4 +1200,4 @@ def blogs_view(request):
         context['blogs'] = Blog.objects.all()
     except Exception:
         pass
-    return render(request, 'blogs.html', context)
+    return render(request, 'core/blogs.html', context)
