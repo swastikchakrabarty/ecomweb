@@ -92,111 +92,111 @@
 
     <!-- Sticky Navigation Bar -->
     <nav class="sticky top-0 z-50 backdrop-blur-md border-b border-lightBeige shadow-sm transition-all duration-300" style="background-color: #F9F9F9;">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center">
-                    <a href="{% url 'home' %}" class="flex items-center bg-[#FBF9F6]/15 backdrop-blur-md px-4 py-2 rounded-xl transition hover:bg-[#FBF9F6]/25 duration-300">
-                        <img src="/static/images/logo.png" alt="KaaNuRO Group Logo" class="h-12 md:h-14 w-auto object-contain select-none">
-                    </a>
-                </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <!-- Logo -->
+            <div class="flex-shrink-0 flex items-center">
+                <a href="{% url 'home' %}" class="flex items-center bg-[#FBF9F6]/15 backdrop-blur-md px-4 py-2 rounded-xl transition hover:bg-[#FBF9F6]/25 duration-300">
+                    <img src="/static/images/logo.png" alt="KaaNuRO Group Logo" class="h-12 md:h-14 w-auto object-contain select-none">
+                </a>
+            </div>
+            
+            <!-- Desktop Navigation Links -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="{% url 'home' %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Home</a>
+                <a href="{% url 'about' %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">About Us</a>
+                <a href="{% url 'product_catalog' %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Products</a>
+                <a href="{% url 'blogs' %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Blogs</a>
+                <a href="{% url 'contact' %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Contact Us</a>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="hidden md:flex items-center space-x-4">
+                <!-- Cart Trigger Desktop -->
+                <button id="cart-toggle" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 focus:outline-none" aria-label="Toggle Cart">
+                    <i class="fa-solid fa-shopping-cart text-lg"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-softGold text-darkGreen text-[9px] font-bold px-1.5 py-0.5 rounded-full scale-0 transition-transform duration-300">0</span>
+                </button>
                 
-                <!-- Desktop Navigation Links -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="{% if request.resolver_match.url_name == 'home' %}#home{% else %}{% url 'home' %}#home{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Home</a>
-                    <a href="{% if request.resolver_match.url_name == 'home' %}#about{% else %}{% url 'home' %}#about{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">About Us</a>
-                    <a href="{% url 'product_catalog' %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Products</a>
-                    <a href="{% if request.resolver_match.url_name == 'home' %}#blog{% else %}{% url 'home' %}#blog{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Blogs</a>
-                    <a href="{% if request.resolver_match.url_name == 'home' %}#contact{% else %}{% url 'home' %}#contact{% endif %}" class="font-outfit font-medium text-darkGreen/80 hover:text-darkGreen transition-colors">Contact Us</a>
-                </div>
+                <!-- Wishlist Trigger Desktop -->
+                <a href="{% url 'wishlist_view' %}" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 flex items-center" aria-label="Wishlist">
+                    <i class="far fa-heart mr-1 text-gray-700"></i>
+                    <span id="wishlist-counter" class="ml-1 bg-gray-200 text-gray-800 text-xs px-2 py-0.5 rounded-full">{{ request.session.wishlist|length }}</span>
+                </a>
                 
-                <!-- Action Buttons -->
-                <div class="hidden md:flex items-center space-x-4">
-                    <!-- Cart Trigger Desktop -->
-                    <button id="cart-toggle" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 focus:outline-none" aria-label="Toggle Cart">
-                        <i class="fa-solid fa-shopping-cart text-lg"></i>
-                        <span id="cart-badge" class="absolute -top-1 -right-1 bg-softGold text-darkGreen text-[9px] font-bold px-1.5 py-0.5 rounded-full scale-0 transition-transform duration-300">0</span>
-                    </button>
-                    
-                    <!-- Wishlist Trigger Desktop -->
-                    <a href="{% url 'wishlist_view' %}" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 flex items-center" aria-label="Wishlist">
-                        <i class="far fa-heart mr-1 text-gray-700"></i>
-                        <span id="wishlist-counter" class="ml-1 bg-gray-200 text-gray-800 text-xs px-2 py-0.5 rounded-full">{{ request.session.wishlist|length }}</span>
-                    </a>
-                    
-                    <span class="text-sm font-outfit font-medium text-darkGreen/80 mr-2">
-                        {% if user.is_authenticated %}
-                            {% if user.is_superuser %}
-                                Hello, Admin
-                            {% elif user.is_staff %}
-                                Hello, {{ user.first_name|default:user.username }}
-                            {% else %}
-                                Hello, {{ user.first_name|default:"Customer" }}
-                            {% endif %}
-                        {% else %}
-                            Hello, Guest
-                        {% endif %}
-                    </span>
-                    
+                <span class="text-sm font-outfit font-medium text-darkGreen/80 mr-2">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'dashboard' %}" class="px-5 py-2.5 bg-herbalGreen text-cream font-outfit font-semibold rounded-lg hover:bg-darkGreen hover:text-cream transition-all text-sm shadow-md shadow-herbalGreen/10">Dashboard</a>
-                        <a href="{% url 'logout' %}" class="px-4 py-2.5 border border-darkGreen/20 text-darkGreen hover:bg-lightBeige font-outfit font-semibold rounded-lg transition-all text-sm">Logout</a>
+                        {% if user.is_superuser %}
+                            Hello, Admin
+                        {% elif user.is_staff %}
+                            Hello, {{ user.first_name|default:user.username }}
+                        {% else %}
+                            Hello, {{ user.first_name|default:"Customer" }}
+                        {% endif %}
                     {% else %}
-                        <button id="desktop-customer-login-btn" class="px-5 py-2.5 text-cream font-outfit font-semibold rounded-lg hover:opacity-90 transition-all text-sm shadow-md border border-transparent" style="background-color: #526E56;">Customer Login / Track Order</button>
+                        Hello, Guest
                     {% endif %}
-                </div>
+                </span>
+                
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="px-5 py-2.5 bg-herbalGreen text-cream font-outfit font-semibold rounded-lg hover:bg-darkGreen hover:text-cream transition-all text-sm shadow-md shadow-herbalGreen/10">Dashboard</a>
+                    <a href="{% url 'logout' %}" class="px-4 py-2.5 border border-darkGreen/20 text-darkGreen hover:bg-lightBeige font-outfit font-semibold rounded-lg transition-all text-sm">Logout</a>
+                {% else %}
+                    <button id="desktop-customer-login-btn" class="px-5 py-2.5 text-cream font-outfit font-semibold rounded-lg hover:opacity-90 transition-all text-sm shadow-md border border-transparent" style="background-color: #526E56;">Customer Login / Track Order</button>
+                {% endif %}
+            </div>
 
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center space-x-2">
-                    <!-- Cart Trigger Mobile -->
-                    <button id="cart-toggle-mobile" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 focus:outline-none" aria-label="Toggle Cart">
-                        <i class="fa-solid fa-shopping-cart text-lg"></i>
-                        <span id="cart-badge-mobile" class="absolute -top-1 -right-1 bg-softGold text-darkGreen text-[9px] font-bold px-1.5 py-0.5 rounded-full scale-0 transition-transform duration-300">0</span>
-                    </button>
-                    <!-- Wishlist Trigger Mobile -->
-                    <a href="{% url 'wishlist_view' %}" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 flex items-center" aria-label="Wishlist">
-                        <i class="far fa-heart text-lg text-gray-700"></i>
-                        <span id="wishlist-counter-mobile" class="absolute -top-1 -right-1 bg-gray-200 text-gray-800 text-[9px] font-bold px-1.5 py-0.5 rounded-full">{{ request.session.wishlist|length }}</span>
-                    </a>
-                    <button id="mobile-menu-button" class="text-darkGreen hover:text-herbalGreen focus:outline-none" aria-label="Toggle menu">
-                        <i class="fa-solid fa-bars text-2xl"></i>
-                    </button>
-                </div>
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden flex items-center space-x-2">
+                <!-- Cart Trigger Mobile -->
+                <button id="cart-toggle-mobile" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 focus:outline-none" aria-label="Toggle Cart">
+                    <i class="fa-solid fa-shopping-cart text-lg"></i>
+                    <span id="cart-badge-mobile" class="absolute -top-1 -right-1 bg-softGold text-darkGreen text-[9px] font-bold px-1.5 py-0.5 rounded-full scale-0 transition-transform duration-300">0</span>
+                </button>
+                <!-- Wishlist Trigger Mobile -->
+                <a href="{% url 'wishlist_view' %}" class="relative p-2.5 rounded-lg text-organicBrown hover:bg-lightBeige transition-all duration-300 flex items-center" aria-label="Wishlist">
+                    <i class="far fa-heart text-lg text-gray-700"></i>
+                    <span id="wishlist-counter-mobile" class="absolute -top-1 -right-1 bg-gray-200 text-gray-800 text-[9px] font-bold px-1.5 py-0.5 rounded-full">{{ request.session.wishlist|length }}</span>
+                </a>
+                <button id="mobile-menu-button" class="text-darkGreen hover:text-herbalGreen focus:outline-none" aria-label="Toggle menu">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
             </div>
         </div>
+    </div>
 
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-lightBeige" style="background-color: #F9F9F9;">
-            <div class="px-4 pt-2 pb-6 space-y-3">
-                <a href="{% if request.resolver_match.url_name == 'home' %}#home{% else %}{% url 'home' %}#home{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Home</a>
-                <a href="{% if request.resolver_match.url_name == 'home' %}#about{% else %}{% url 'home' %}#about{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">About Us</a>
-                <a href="{% url 'product_catalog' %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Our Products</a>
-                <a href="{% if request.resolver_match.url_name == 'home' %}#blog{% else %}{% url 'home' %}#blog{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Blogs</a>
-                <a href="{% if request.resolver_match.url_name == 'home' %}#contact{% else %}{% url 'home' %}#contact{% endif %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Contact Us</a>
-                <div class="pt-4 border-t border-lightBeige flex flex-col space-y-2">
-                    <span class="text-center text-sm font-outfit font-medium text-darkGreen/80 mb-2">
-                        {% if user.is_authenticated %}
-                            {% if user.is_superuser %}
-                                Hello, Admin
-                            {% elif user.is_staff %}
-                                Hello, {{ user.first_name|default:user.username }}
-                            {% else %}
-                                Hello, {{ user.first_name|default:"Customer" }}
-                            {% endif %}
-                        {% else %}
-                            Hello, Guest
-                        {% endif %}
-                    </span>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-lightBeige" style="background-color: #F9F9F9;">
+        <div class="px-4 pt-2 pb-6 space-y-3">
+            <a href="{% url 'home' %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Home</a>
+            <a href="{% url 'about' %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">About Us</a>
+            <a href="{% url 'product_catalog' %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Our Products</a>
+            <a href="{% url 'blogs' %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Blogs</a>
+            <a href="{% url 'contact' %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Contact Us</a>
+            <div class="pt-4 border-t border-lightBeige flex flex-col space-y-2">
+                <span class="text-center text-sm font-outfit font-medium text-darkGreen/80 mb-2">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'dashboard' %}" class="text-center px-4 py-2.5 bg-herbalGreen text-cream font-medium rounded-md shadow-sm">Dashboard</a>
-                        <a href="{% url 'logout' %}" class="text-center px-4 py-2.5 border border-darkGreen/20 text-darkGreen font-medium rounded-md">Logout</a>
+                        {% if user.is_superuser %}
+                            Hello, Admin
+                        {% elif user.is_staff %}
+                            Hello, {{ user.first_name|default:user.username }}
+                        {% else %}
+                            Hello, {{ user.first_name|default:"Customer" }}
+                        {% endif %}
                     {% else %}
-                        <button id="mobile-customer-login-btn" class="text-center px-4 py-2.5 text-cream font-medium rounded-md shadow-sm animate-pulse-subtle" style="background-color: #526E56;">Customer Login / Track Order</button>
+                        Hello, Guest
                     {% endif %}
-                </div>
+                </span>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="text-center px-4 py-2.5 bg-herbalGreen text-cream font-medium rounded-md shadow-sm">Dashboard</a>
+                    <a href="{% url 'logout' %}" class="text-center px-4 py-2.5 border border-darkGreen/20 text-darkGreen font-medium rounded-md">Logout</a>
+                {% else %}
+                    <button id="mobile-customer-login-btn" class="text-center px-4 py-2.5 text-cream font-medium rounded-md shadow-sm animate-pulse-subtle" style="background-color: #526E56;">Customer Login / Track Order</button>
+                {% endif %}
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <!-- Messages Container -->
     {% if messages %}
