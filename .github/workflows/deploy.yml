@@ -21,12 +21,19 @@ jobs:
         command_timeout: 30m
         script: |
           cd /var/www/kaanuro
-          git reset --hard origin/main
+          
+          echo "--- Erasing Local Tracking Cache ---"
+          git checkout -f main || git checkout -f master
+          git fetch --all
+          git reset --hard origin/main || git reset --hard origin/master
+          git clean -fd
+          
+          echo "--- Running Django Asset Compilations ---"
           source venv/bin/activate
+          python3 manage.py collectstatic --noinput
           
           echo "--- Natively Restarting via Supervisor ---"
           supervisorctl restart kaanuro || supervisorctl restart all
           
-          echo "--- Checking Status ---"
-          sleep 2
-          supervisorctl status
+          echo "--- Confirming Fixed Commit Hash ---"
+          git rev-parse --short HEAD
