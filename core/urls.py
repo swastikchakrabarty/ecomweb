@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('run-9am-database-sync/', views.emergency_9am_sync, name='emergency_9am_sync'),
     path('', views.home_view, name='home'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
