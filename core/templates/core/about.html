@@ -86,6 +86,63 @@
                 "True vitality is not superficial; it is cultivated from within by nourishing the hair, restoring the circadian cycle, and accelerating natural metabolism."
             </blockquote>
         </div>
+
+        <!-- Corporate Credentials Verification Section -->
+        <div class="mt-20 pt-16 border-t border-[#5C4033]/15">
+            <div class="text-center max-w-2xl mx-auto mb-10 space-y-3">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-herbalGreen/10 text-herbalGreen text-xs font-semibold font-outfit">
+                    <i class="fa-solid fa-circle-check text-[10px]"></i> Verified Business
+                </span>
+                <h3 class="text-2xl font-outfit font-extrabold text-darkGreen">Official Corporate Credentials</h3>
+                <p class="text-xs text-organicBrown/70 leading-relaxed font-light">
+                    KaaNuRO Group is a fully registered corporate entity complying with all regulatory standards. Download our official credentials below.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <!-- GST Certification -->
+                <a href="{% static 'pdfs/GST Certificate.pdf' %}" download class="flex items-center justify-between p-5 bg-cream border border-softGold/25 rounded-2xl hover:border-herbalGreen/40 hover:-translate-y-1 hover:shadow-lg transition-all duration-350 group">
+                    <div class="flex items-center space-x-3.5">
+                        <span class="w-10 h-10 rounded-xl bg-herbalGreen/5 flex items-center justify-center text-herbalGreen">
+                            <i class="fa-solid fa-file-invoice text-lg"></i>
+                        </span>
+                        <div class="text-left">
+                            <span class="block text-xs font-bold font-outfit text-darkGreen group-hover:text-herbalGreen transition-colors">GST Certification</span>
+                            <span class="block text-[10px] text-organicBrown/60 font-light">Goods & Services Tax Registry</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-download text-xs text-organicBrown/40 group-hover:text-herbalGreen group-hover:translate-y-0.5 transition-all"></i>
+                </a>
+
+                <!-- PAN -->
+                <a href="{% static 'pdfs/PAN.pdf' %}" download class="flex items-center justify-between p-5 bg-cream border border-softGold/25 rounded-2xl hover:border-herbalGreen/40 hover:-translate-y-1 hover:shadow-lg transition-all duration-350 group">
+                    <div class="flex items-center space-x-3.5">
+                        <span class="w-10 h-10 rounded-xl bg-[#D4AF37]/5 flex items-center justify-center text-[#D4AF37]">
+                            <i class="fa-solid fa-address-card text-lg"></i>
+                        </span>
+                        <div class="text-left">
+                            <span class="block text-xs font-bold font-outfit text-darkGreen group-hover:text-herbalGreen transition-colors">PAN Registry</span>
+                            <span class="block text-[10px] text-organicBrown/60 font-light">Permanent Account Number</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-download text-xs text-organicBrown/40 group-hover:text-herbalGreen group-hover:translate-y-0.5 transition-all"></i>
+                </a>
+
+                <!-- TAN Certification -->
+                <a href="{% static 'pdfs/TAN Certificate.pdf' %}" download class="flex items-center justify-between p-5 bg-cream border border-softGold/25 rounded-2xl hover:border-herbalGreen/40 hover:-translate-y-1 hover:shadow-lg transition-all duration-350 group">
+                    <div class="flex items-center space-x-3.5">
+                        <span class="w-10 h-10 rounded-xl bg-darkGreen/5 flex items-center justify-center text-darkGreen">
+                            <i class="fa-solid fa-building text-lg"></i>
+                        </span>
+                        <div class="text-left">
+                            <span class="block text-xs font-bold font-outfit text-darkGreen group-hover:text-herbalGreen transition-colors">TAN Certification</span>
+                            <span class="block text-[10px] text-organicBrown/60 font-light">Tax Deduction Account</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-download text-xs text-organicBrown/40 group-hover:text-herbalGreen group-hover:translate-y-0.5 transition-all"></i>
+                </a>
+            </div>
+        </div>
     </div>
 </section>
 {% endblock %}

@@ -783,6 +783,17 @@
         if (cartClose) cartClose.addEventListener('click', () => toggleCartDrawer(false));
         if (cartOverlay) cartOverlay.addEventListener('click', () => toggleCartDrawer(false));
 
+        // Auto-open checkout if URL has checkout=true and user is authenticated
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('checkout') === 'true' && isAuthenticated) {
+            toggleCartDrawer(true);
+            if (cartMainView) cartMainView.classList.add('hidden');
+            if (cartCheckoutView) cartCheckoutView.classList.remove('hidden');
+            if (cartDrawerTitle) cartDrawerTitle.innerHTML = `<i class="fa-solid fa-shopping-cart mr-2 text-softGold"></i>Checkout`;
+            const cleanUrl = window.location.pathname + window.location.search.replace(/[?&]checkout=true/, '').replace(/^&/, '?');
+            window.history.replaceState({}, document.title, cleanUrl);
+        }
+
         // Save Cart to LocalStorage
         function saveCart() {
             localStorage.setItem('kaanuro_cart', JSON.stringify(cart));
@@ -918,7 +929,7 @@
                 if (!isAuthenticated) {
                     showAuthToast('Please log in to complete your checkout');
                     setTimeout(() => {
-                        window.location.href = "{% url 'login' %}";
+                        window.location.href = "{% url 'login' %}?next=" + encodeURIComponent(window.location.pathname + "?checkout=true");
                     }, 1600);
                     return;
                 }

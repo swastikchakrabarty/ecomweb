@@ -63,8 +63,8 @@
                         <p class="text-[10px] text-organicBrown/60 font-light line-clamp-2">{{ item.product.description }}</p>
                     </div>
 
-                    <div class="flex items-center justify-between pt-2 border-t border-lightBeige">
-                        <span class="text-base font-mono font-bold text-herbalGreen">₹{{ item.product.price }}</span>
+                     <div class="flex items-center justify-between pt-2 border-t border-lightBeige">
+                        <span class="text-base font-mono font-bold text-herbalGreen">₹{{ item.product.current_price }}</span>
                         <span class="text-[9px] text-organicBrown/50 font-outfit uppercase tracking-wider">{{ item.product.total_quantity_info|default:"100g" }}</span>
                     </div>
 
@@ -75,7 +75,7 @@
                             class="product-card-trigger py-2.5 bg-herbalGreen text-cream text-[10px] font-outfit font-bold rounded-lg hover:bg-darkGreen transition-all flex items-center justify-center gap-1.5"
                             data-id="prod_{{ item.product.pk }}"
                             data-name="{{ item.product.name }}"
-                            data-price="{{ item.product.price }}"
+                            data-price="{{ item.product.current_price }}"
                             data-image="{% if item.product.image %}{{ item.product.image.url }}{% endif %}"
                             data-media="{{ item.product.media_list_json }}"
                             data-description="{{ item.product.description|escapejs }}"

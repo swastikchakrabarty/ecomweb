@@ -504,7 +504,7 @@ function addDetailToCart() {
   const item = {
     id: 'prod_{{ product.id }}',
     name: '{{ product.name|escapejs }}',
-    price: {{ product.price }},
+    price: {{ product.current_price }},
     image: '{% if product.image %}{{ product.image.url }}{% endif %}',
     quantity: 1,
     type: 'ayurveda',
