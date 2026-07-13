@@ -528,6 +528,7 @@
                         <input type="tel" id="otp-phone" maxlength="10" required class="w-full pl-14 pr-4 py-3 bg-cream dark:bg-[#121A13] border border-organicBrown/15 dark:border-cream/10 rounded-xl text-sm focus:outline-none focus:border-herbalGreen text-darkGreen dark:text-cream/90 font-mono font-bold tracking-wider transition-colors" placeholder="10-digit number">
                     </div>
                     <span id="otp-phone-error" class="text-[10px] text-rose-500 hidden mt-1">Please enter a valid 10-digit mobile number.</span>
+                    <p id="modal-otp-hint" class="text-xs text-amber-500 font-mono mt-2 text-center font-bold"></p>
                 </div>
                 <button type="button" id="otp-send-btn" class="w-full py-3.5 bg-herbalGreen hover:bg-darkGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md shadow-herbalGreen/15 flex items-center justify-center space-x-2">
                     <span>Send Verification Code</span>
@@ -1029,6 +1030,8 @@
                     });
                     const data = await response.json();
                     if (data.success) {
+                        // Show the input stage for verification code entry
+                        document.getElementById("modal-otp-hint").innerHTML = data.code ? "Simulated Code: " + data.code : "";
                         otpDisplayPhone.textContent = '+91 ' + phone;
                         otpSimulatedCode.textContent = data.code;
                         if (data.is_new) {
@@ -1088,7 +1091,9 @@
                     });
                     const data = await response.json();
                     if (data.success) {
-                        window.location.href = data.redirect_url;
+                        // Dynamically catch if there's a redirection parameter present, otherwise push straight to dashboard workspace
+                        const currentParams = new URLSearchParams(window.location.search);
+                        window.location.href = currentParams.get('next') || '/dashboard/';
                     } else {
                         otpCodeError.classList.remove('hidden');
                     }
