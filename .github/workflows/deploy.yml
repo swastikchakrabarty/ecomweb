@@ -24,24 +24,14 @@ jobs:
           git reset --hard origin/main
           source venv/bin/activate
           
-          echo "--- Checking Supervisor Daemon Status ---"
-          supervisorctl status || true
+          echo "--- Aggressively Clearing Old Zombie Processes ---"
+          pkill -9 -f gunicorn || true
           
-          echo "--- Checking Active Running System Services ---"
-          systemctl list-units --type=service | grep -E "gunicorn|django|kaanuro" || true
-          
-          echo "--- Attempting Supervisor Safe Reload ---"
+          echo "--- Launching via Verified Supervisor Context ---"
           supervisorctl reread || true
           supervisorctl update || true
-          supervisorctl restart all || true
+          supervisorctl restart kaanuro || supervisorctl restart all || true
           
-          echo "--- Fallback Standalone Launch ---"
-          # If no processes are running, force boot a clean socket listener manually
-          if ! pgrep -f gunicorn > /dev/null; then
-             echo "No active process found. Launching clean standalone application daemon..."
-             gunicorn --workers 3 --bind unix:/var/www/kaanuro/gunicorn.sock ecomweb.wsgi:application --detach || true
-          fi
-          
-          echo "--- Verifying Active Listening Ports/Sockets ---"
-          ls -la /var/www/kaanuro/*.sock || true
-          pgrep -a gunicorn || true
+          echo "--- Verifying Active Status ---"
+          sleep 3
+          supervisorctl status
