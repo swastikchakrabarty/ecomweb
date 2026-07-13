@@ -249,10 +249,10 @@
                 <div>
                     <h3 class="font-outfit font-bold text-lg text-softGold mb-4">Quick Links</h3>
                     <ul class="space-y-2 text-sm text-cream/70 font-light">
-                        <li><a href="{% if request.resolver_match.url_name == 'home' %}#home{% else %}{% url 'home' %}#home{% endif %}" class="hover:text-softGold transition-colors">Home</a></li>
-                        <li><a href="{% if request.resolver_match.url_name == 'home' %}#about{% else %}{% url 'home' %}#about{% endif %}" class="hover:text-softGold transition-colors">About Us</a></li>
+                        <li><a href="{% url 'home' %}" class="hover:text-softGold transition-colors">Home</a></li>
+                        <li><a href="{% url 'about' %}" class="hover:text-softGold transition-colors">About Us</a></li>
                         <li><a href="{% url 'product_catalog' %}" class="hover:text-softGold transition-colors">Our Products</a></li>
-                        <li><a href="{% if request.resolver_match.url_name == 'home' %}#blog{% else %}{% url 'home' %}#blog{% endif %}" class="hover:text-softGold transition-colors">Blogs</a></li>
+                        <li><a href="{% url 'blogs' %}" class="hover:text-softGold transition-colors">Blogs</a></li>
                     </ul>
                 </div>
 
