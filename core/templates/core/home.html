@@ -1,986 +1,121 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}KaaNuRO Group - Natural Beauty & Health Optimization{% endblock %}
+{% block title %}Home | KaaNuRO Group{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section id="home" class="relative bg-darkGreen text-cream py-24 md:py-32 overflow-hidden flex items-center">
-    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:16px_16px]"></div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 items-center">
-            <!-- Hero Text -->
-            <div class="lg:col-span-7 space-y-8 text-left">
-                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-herbalGreen/50 text-softGold border border-softGold/30 uppercase tracking-widest font-outfit">
-                    <i class="fa-solid fa-leaf mr-1.5"></i> 100% Organic & Pure
-                </span>
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-outfit font-extrabold text-cream leading-tight">
-                    Empower Your <span class="text-softGold">Routine</span> with Targeted Herbal Remedies for Women Wellness, Sleep, and Fat Loss
-                </h1>
-                <p class="text-cream/80 text-lg sm:text-xl font-light leading-relaxed max-w-2xl">
-                    Discover clean organic ingredients designed to promote women wellness, deeply restore circadian sleep metrics, and support active fat loss naturally. Sourced directly from Udaipurwati, Rajasthan.
-                </p>
-                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="{% url 'product_catalog' %}" class="px-8 py-4 bg-softGold text-darkGreen dark:text-cream font-outfit font-bold rounded-xl hover:bg-cream hover:text-darkGreen transition-all text-center shadow-lg shadow-softGold/20 transform hover:-translate-y-0.5">
-                        Shop Products <i class="fa-solid fa-chevron-right ml-2 text-sm"></i>
-                    </a>
-                    <a href="#about" class="px-8 py-4 border border-cream/35 text-cream font-outfit font-semibold rounded-xl hover:bg-cream/10 transition-all text-center">
-                        Our Philosophy
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Hero Decorative Card -->
-            <div class="lg:col-span-5 relative">
-                <div class="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-softGold to-herbalGreen opacity-30 blur-lg"></div>
-                <div class="relative bg-herbalGreen/20 border border-cream/15 rounded-2xl p-8 backdrop-blur-md space-y-6">
-                    <div class="flex justify-between items-start">
-                        <div class="w-3 h-3 bg-softGold/10 rounded-lg flex items-center justify-center border border-softGold/35">
-                            <i class="fa-solid fa-spa text-softGold text-xl"></i>
-                        </div>
-                        <span class="text-xs text-cream/55 font-light">Trusted Rajasthan Quality</span>
-                    </div>
-                    <div class="space-y-2">
-                        <h3 class="text-xl font-outfit font-bold text-cream">The KaaNuRO Promise</h3>
-                        <p class="text-sm text-cream/75 leading-relaxed font-light">
-                            Traditional Rajasthani herbal remedies backed by modern organic validation. We refine local wellness secrets to promote women wellness, deeply restore circadian sleep metrics, and support active fat loss naturally.
-                        </p>
-                    </div>
-                    <div class="pt-4 border-t border-cream/10 flex items-center justify-between">
-                        <div class="flex -space-x-2">
-                            <div class="w-8 h-8 rounded-full bg-cream/25 border-2 border-darkGreen flex items-center justify-center text-[10px] font-bold">U</div>
-                            <div class="w-8 h-8 rounded-full bg-cream/35 border-2 border-darkGreen flex items-center justify-center text-[10px] font-bold">R</div>
-                            <div class="w-8 h-8 rounded-full bg-cream/45 border-2 border-darkGreen flex items-center justify-center text-[10px] font-bold">J</div>
-                        </div>
-                        <span class="text-xs text-softGold font-medium"><i class="fa-solid fa-users mr-1"></i> 5,000+ Happy Customers</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ═══════════════════════════════════════════ TRUST BADGES ═══ -->
-<section class="bg-darkGreen border-b border-cream/10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-cream/10">
-            <div class="flex items-center justify-center gap-3 py-4 px-4 group">
-                <div class="w-9 h-9 rounded-lg bg-softGold/10 border border-softGold/25 flex items-center justify-center flex-shrink-0 group-hover:bg-softGold/20 transition-colors">
-                    <i class="fa-solid fa-shield-halved text-softGold text-sm"></i>
-                </div>
-                <div>
-                    <p class="text-cream text-[11px] font-outfit font-bold leading-none">Secure Payment</p>
-                    <p class="text-cream/50 text-[9px] font-light mt-0.5">UPI &amp; safe checkout</p>
-                </div>
-            </div>
-            <div class="flex items-center justify-center gap-3 py-4 px-4 group">
-                <div class="w-9 h-9 rounded-lg bg-softGold/10 border border-softGold/25 flex items-center justify-center flex-shrink-0 group-hover:bg-softGold/20 transition-colors">
-                    <i class="fa-solid fa-truck-fast text-softGold text-sm"></i>
-                </div>
-                <div>
-                    <p class="text-cream text-[11px] font-outfit font-bold leading-none">Fast Delivery</p>
-                    <p class="text-cream/50 text-[9px] font-light mt-0.5">2–6 days pan-India</p>
-                </div>
-            </div>
-            <div class="flex items-center justify-center gap-3 py-4 px-4 group">
-                <div class="w-9 h-9 rounded-lg bg-softGold/10 border border-softGold/25 flex items-center justify-center flex-shrink-0 group-hover:bg-softGold/20 transition-colors">
-                    <i class="fa-solid fa-rotate-left text-softGold text-sm"></i>
-                </div>
-                <div>
-                    <p class="text-cream text-[11px] font-outfit font-bold leading-none">Easy Returns</p>
-                    <p class="text-cream/50 text-[9px] font-light mt-0.5">Hassle-free policy</p>
-                </div>
-            </div>
-            <div class="flex items-center justify-center gap-3 py-4 px-4 group">
-                <div class="w-9 h-9 rounded-lg bg-softGold/10 border border-softGold/25 flex items-center justify-center flex-shrink-0 group-hover:bg-softGold/20 transition-colors">
-                    <i class="fa-solid fa-leaf text-softGold text-sm"></i>
-                </div>
-                <div>
-                    <p class="text-cream text-[11px] font-outfit font-bold leading-none">100% Natural</p>
-                    <p class="text-cream/50 text-[9px] font-light mt-0.5">Zero synthetic fillers</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- ═══════════════════════ END TRUST BADGES ═══════════════════ -->
-
-<!-- ═══════════════════════════════════════ FEATURED CATEGORIES ═ -->
-<section id="categories" class="py-16 bg-lightBeige">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10 space-y-2">
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold bg-herbalGreen/10 text-herbalGreen border border-herbalGreen/20 uppercase tracking-widest font-outfit">
-                <i class="fa-solid fa-grip mr-1.5"></i> Shop by Category
+<!-- Main Hero Section -->
+<div class="relative min-h-[85vh] flex items-center bg-gradient-to-r from-[#1E3F20] to-[#2E5A31] text-white overflow-hidden">
+    <div class="absolute inset-0 opacity-10 bg-cover bg-center" style="background-image: url('{% static 'images/hero-pattern.png' %}');"></div>
+    <div class="container mx-auto px-6 py-20 relative z-10 grid md:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-emerald-300 text-sm font-medium">
+                <i class="fas fa-leaf"></i> 100% Organic & Pure
             </span>
-            <h2 class="text-2xl sm:text-3xl font-outfit font-extrabold text-darkGreen">Explore Our Collections</h2>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <!-- Wellness Teas -->
-            <a href="{% url 'product_catalog' %}?category=wellness-for-women" id="cat-wellness-teas"
-               class="group relative bg-cream border border-softGold/20 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-center hover:border-softGold hover:shadow-lg hover:shadow-softGold/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-softGold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="w-16 h-16 rounded-2xl bg-softGold/10 border border-softGold/20 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">🌱</div>
-                <div>
-                    <p class="font-outfit font-bold text-darkGreen text-sm">Wellness for Women</p>
-                    <p class="text-[10px] text-organicBrown/60 font-light mt-0.5">Helps maintain hormonal balance, supports reproductive health and promotes daily wellness for women of all ages.</p>
-                </div>
-                <span class="text-[9px] font-bold text-softGold uppercase tracking-wider font-outfit flex items-center gap-1">Shop Now <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
-            </a>
-            <!-- Heart Care -->
-            <a href="{% url 'product_catalog' %}?category=sleep-optimization" id="cat-heart-care"
-               class="group relative bg-cream border border-herbalGreen/20 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-center hover:border-herbalGreen hover:shadow-lg hover:shadow-herbalGreen/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-herbalGreen/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="w-16 h-16 rounded-2xl bg-herbalGreen/10 border border-herbalGreen/20 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">🌙</div>
-                <div>
-                    <p class="font-outfit font-bold text-darkGreen text-sm">Sleep Optimization</p>
-                    <p class="text-[10px] text-organicBrown/60 font-light mt-0.5">REM &amp; circadian rest</p>
-                </div>
-                <span class="text-[9px] font-bold text-herbalGreen uppercase tracking-wider font-outfit flex items-center gap-1">Shop Now <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
-            </a>
-            <!-- Skin Beauty -->
-            <a href="{% url 'product_catalog' %}?category=fat-loss" id="cat-skin-beauty"
-               class="group relative bg-cream border border-softGold/20 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-center hover:border-softGold hover:shadow-lg hover:shadow-softGold/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-softGold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="w-16 h-16 rounded-2xl bg-softGold/10 border border-softGold/20 flex items-center justify-center text-3xl shadow-sm group-hover:scale-110 transition-transform">🔥</div>
-                <div>
-                    <p class="font-outfit font-bold text-darkGreen text-sm">Fat Loss Support</p>
-                    <p class="text-[10px] text-organicBrown/60 font-light mt-0.5">Active metabolic accelerators</p>
-                </div>
-                <span class="text-[9px] font-bold text-softGold uppercase tracking-wider font-outfit flex items-center gap-1">Shop Now <i class="fa-solid fa-arrow-right text-[8px]"></i></span>
-            </a>
-        </div>
-    </div>
-</section>
-<!-- ════════════════════════ END FEATURED CATEGORIES ════════════ -->
-
-<!-- ═══════════════════════════════════════════════════════════
-     ANIMATED STATISTICS MATRIX — Scroll-Triggered Counter Grid
-     ═══════════════════════════════════════════════════════════ -->
-<section id="stats-matrix" class="py-20 relative overflow-hidden" style="background: linear-gradient(135deg, #FBF9F6 0%, #F2EBE5 60%, #EDE4DC 100%);">
-    <!-- Subtle botanical pattern overlay -->
-    <div class="absolute inset-0 opacity-[0.035] pointer-events-none" style="background-image: radial-gradient(circle at 1px 1px, #526E56 1px, transparent 0); background-size: 28px 28px;"></div>
-    
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <!-- Section Header -->
-        <div class="text-center mb-14 space-y-3">
-            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-[10px] font-bold bg-[#526E56]/10 text-[#526E56] border border-[#526E56]/20 uppercase tracking-widest font-outfit">
-                <span class="mr-1.5">🌿</span> Our Impact in Numbers
-            </span>
-            <h2 class="text-3xl sm:text-4xl font-outfit font-extrabold" style="color: #2A442E;">
-                Trusted by Thousands, <span style="color: #2A442E;">Proven by Nature</span>
-            </h2>
-            <p class="text-sm font-light max-w-xl mx-auto" style="color: #111111;">
-                Over a decade of dedication to purity, wellness, and Ayurvedic excellence — measured in the milestones that matter.
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">
+                Empower Your <span class="text-amber-400">Routine</span> with Targeted Herbal Remedies
+            </h1>
+            <p class="text-lg text-emerald-100/90 max-w-xl">
+                Experience premium wellness crafted at the intersection of traditional Ayurveda and modern health solutions.
             </p>
-        </div>
-
-        <!-- 4-Column Stats Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-            <!-- Card 1: Happy Customers -->
-            <div class="animate-stat-card group relative bg-white/60 backdrop-blur-md border rounded-2xl p-8 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#526E56]/10 cursor-default"
-                 style="border-color: #526E56; border-width: 1px;"
-                 data-target="5000"
-                 data-suffix="+">
-                <!-- Glow ring on hover -->
-                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style="background: radial-gradient(ellipse at 50% 0%, rgba(82,110,86,0.08) 0%, transparent 70%);"></div>
-                
-                <div class="relative z-10 space-y-4">
-                    <!-- Icon Badge -->
-                    <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-sm" style="background: linear-gradient(135deg, rgba(82,110,86,0.3) 0%, rgba(82,110,86,0.06) 100%); border: 1px solid rgba(82,110,86,0.2);">
-                        👥
-                    </div>
-                    <!-- Animated Counter Value -->
-                    <div class="space-y-1">
-                        <div class="text-4xl sm:text-5xl font-outfit font-extrabold" style="color: #2A442E;">
-                            <span class="counter-value">0+</span>
-                        </div>
-                        <p class="text-sm font-outfit font-semibold leading-snug" style="color: #111111;">Happy Customers</p>
-                        <p class="text-[10px] font-light" style="color: #111111;">Across India & growing</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2: Product Range -->
-            <div class="animate-stat-card group relative bg-white/60 backdrop-blur-md border rounded-2xl p-8 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#526E56]/10 cursor-default"
-                 style="border-color: #526E56; border-width: 1px;"
-                 data-target="15"
-                 data-suffix="+">
-                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style="background: radial-gradient(ellipse at 50% 0%, rgba(82,110,86,0.08) 0%, transparent 70%);"></div>
-                
-                <div class="relative z-10 space-y-4">
-                    <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-sm" style="background: linear-gradient(135deg, rgba(23,175,55,0.3) 0%, rgba(23,175,55,0.06) 100%); border: 1px solid rgba(23,175,55,0.25);">
-                        🍃
-                    </div>
-                    <div class="space-y-1">
-                        <div class="text-4xl sm:text-5xl font-outfit font-extrabold" style="color: #2A442E;">
-                            <span class="counter-value">0+</span>
-                        </div>
-                        <p class="text-sm font-outfit font-semibold leading-snug" style="color: #111111;">Product Range</p>
-                        <p class="text-[10px] font-light" style="color: #111111;">Herbal blends & wellness</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3: Certifications -->
-            <div class="animate-stat-card group relative bg-white/60 backdrop-blur-md border rounded-2xl p-8 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#526E56]/10 cursor-default"
-                 style="border-color: #526E56; border-width: 1px;"
-                 data-target="3"
-                 data-suffix="">
-                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style="background: radial-gradient(ellipse at 50% 0%, rgba(82,110,86,0.08) 0%, transparent 70%);"></div>
-                
-                <div class="relative z-10 space-y-4">
-                    <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-sm" style="background: linear-gradient(135deg, rgba(82,110,86,0.3) 0%, rgba(82,110,86,0.06) 100%); border: 1px solid rgba(82,110,86,0.2);">
-                        🏅
-                    </div>
-                    <div class="space-y-1">
-                        <div class="text-4xl sm:text-5xl font-outfit font-extrabold" style="color: #2A442E;">
-                            <span class="counter-value">0</span>
-                        </div>
-                        <p class="text-sm font-outfit font-semibold leading-snug" style="color: #111111;">Certifications</p>
-                        <p class="text-[10px] font-light" style="color: #111111;">ISO, AYUSH & more</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 4: Natural Ingredients -->
-            <div class="animate-stat-card group relative bg-white/60 backdrop-blur-md border rounded-2xl p-8 text-center transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#526E56]/10 cursor-default"
-                 style="border-color: #526E56; border-width: 1px;"
-                 data-target="100"
-                 data-suffix="%">
-                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style="background: radial-gradient(ellipse at 50% 0%, rgba(82,110,86,0.08) 0%, transparent 70%);"></div>
-                
-                <div class="relative z-10 space-y-4">
-                    <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-sm" style="background: linear-gradient(135deg, rgba(23,175,55,0.3) 0%, rgba(23,175,55,0.06) 100%); border: 1px solid rgba(23,175,55,0.25);">
-                        🌱
-                    </div>
-                    <div class="space-y-1">
-                        <div class="text-4xl sm:text-5xl font-outfit font-extrabold" style="color: #2A442E;">
-                            <span class="counter-value">0%</span>
-                        </div>
-                        <p class="text-sm font-outfit font-semibold leading-snug" style="color: #111111;">Natural Ingredients</p>
-                        <p class="text-[10px] font-light" style="color: #111111;">Zero synthetics, ever</p>
-                    </div>
-                </div>
-            </div>
-
-        </div><!-- end grid -->
-    </div><!-- end container -->
-
-    <!-- ── Intersection Observer Counter Engine ───────────────────────── -->
-    <script>
-    (function() {
-        const animOptions = { threshold: 0.25 };
-        const triggered = new WeakSet();
-
-        const counterRunner = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !triggered.has(entry.target)) {
-                    triggered.add(entry.target);
-                    const card        = entry.target;
-                    const targetVal   = parseInt(card.getAttribute('data-target'));
-                    const suffixStr   = card.getAttribute('data-suffix') || '';
-                    const counterText = card.querySelector('.counter-value');
-
-                    let currentVal       = 0;
-                    const animationMs    = 1500;
-                    const refreshInterval = 1000 / 60;
-                    const frameSteps     = Math.round(animationMs / refreshInterval);
-                    const incrementalStep = targetVal / frameSteps;
-                    let elapsedFrames    = 0;
-
-                    const updateTick = () => {
-                        elapsedFrames++;
-                        currentVal += incrementalStep;
-                        if (elapsedFrames >= frameSteps) {
-                            counterText.textContent = targetVal.toLocaleString() + suffixStr;
-                        } else {
-                            counterText.textContent = Math.floor(currentVal).toLocaleString() + suffixStr;
-                            requestAnimationFrame(updateTick);
-                        }
-                    };
-                    requestAnimationFrame(updateTick);
-                    observer.unobserve(card);
-                }
-            });
-        }, animOptions);
-
-        document.querySelectorAll('.animate-stat-card').forEach(c => counterRunner.observe(c));
-    })();
-    </script>
-</section>
-<!-- ═══════════════════════════════════════════════════════════
-     END ANIMATED STATISTICS MATRIX
-     ═══════════════════════════════════════════════════════════ -->
-
-<!-- Metric Highlights Section -->
-<section class="bg-lightBeige py-3 border-y border-[#5C4033]/10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <!-- Metric 1 -->
-            <div class="p-6 space-y-2">
-                <div class="text-4xl md:text-5xl font-outfit font-extrabold text-darkGreen">
-                    <span id="metric-products">{{ total_products }}</span>
-                </div>
-                <div class="text-sm font-semibold text-herbalGreen uppercase tracking-wider font-outfit">Active Herbal Products</div>
-                <p class="text-xs text-organicBrown/60 font-light">100% natural, freshly packed</p>
-            </div>
-            
-            <!-- Metric 2 -->
-            <div class="p-6 space-y-2 border-y md:border-y-0 md:border-x border-[#5C4033]/10">
-                <div class="text-4xl md:text-5xl font-outfit font-extrabold text-darkGreen">
-                    <span>{{ certificates_count }}+</span>
-                </div>
-                <div class="text-sm font-semibold text-herbalGreen uppercase tracking-wider font-outfit">Quality Certifications</div>
-                <p class="text-xs text-organicBrown/60 font-light">ISO, AYUSH compliant guidelines</p>
-            </div>
-            
-            <!-- Metric 3 -->
-            <div class="p-6 space-y-2">
-                <div class="text-4xl md:text-5xl font-outfit font-extrabold text-darkGreen">
-                    <span>{{ years_experience }}+</span>
-                </div>
-                <div class="text-sm font-semibold text-herbalGreen uppercase tracking-wider font-outfit">Years of Practice</div>
-                <p class="text-xs text-organicBrown/60 font-light">Guiding wellness from Udaipurwati</p>
+            <div class="flex flex-wrap gap-4 pt-2">
+                <a href="{% url 'products' %}" class="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-[#1E3F20] font-bold rounded-xl transition shadow-lg shadow-amber-500/20 text-center">
+                    Explore Products
+                </a>
+                <a href="{% url 'about' %}" class="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium rounded-xl transition text-center">
+                    Our Story
+                </a>
             </div>
         </div>
-    </div>
-</section>
-
-<!-- About / Philosophy Section -->
-
-
-<!-- ══════════════════════════════════════════ PRODUCT SHELVES ══ -->
-<div id="products-section">
-{% with shelf_empty_class="col-span-full text-center py-10 text-organicBrown/40 text-sm font-light italic" %}
-
-<!-- Best Sellers -->
-<section id="best-sellers" class="py-16 bg-cream border-t border-[#5C4033]/5">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-end justify-between mb-10">
-            <div class="space-y-1">
-                <span class="text-[10px] font-bold uppercase tracking-widest text-softGold font-outfit flex items-center gap-1.5"><i class="fa-solid fa-fire"></i> Most Popular</span>
-                <h2 class="text-2xl sm:text-3xl font-outfit font-extrabold text-darkGreen">Best Sellers</h2>
-            </div>
-            <a href="{% url 'product_catalog' %}?shelf=best_sellers" class="flex items-center gap-1.5 text-xs font-bold text-herbalGreen font-outfit hover:text-darkGreen transition-colors">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for product in best_sellers|slice:':2' %}
-            <div class="bg-lightBeige border border-lightBeige rounded-2xl overflow-hidden flex flex-col p-5 hover:shadow-lg hover:border-softGold/40 transition-all duration-300 cursor-pointer product-card-trigger"
-                 data-id="prod_{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.price }}"
-                 data-image="{% if product.image %}{{ product.image.url }}{% endif %}"
-                 data-media="{{ product.media_list_json }}" data-description="{{ product.description|escapejs }}"
-                 data-stock="In Stock" data-type="ayurveda"
-                 data-subtitle="{{ product.subtitle_tagline|escapejs }}" data-quantity="{{ product.total_quantity_info|default:'100g'|escapejs }}">
-                <div class="flex justify-between items-start mb-3">
-                    <span class="text-[9px] font-bold bg-softGold/10 text-softGold border border-softGold/20 px-2 py-0.5 rounded-md uppercase tracking-wider font-outfit">{{ product.subtitle_tagline|default:"Best Seller" }}</span>
-                    <span class="text-[9px] font-bold text-softGold font-outfit flex items-center gap-1"><i class="fa-solid fa-fire text-[8px]"></i> Top Pick</span>
-                </div>
-                <div class="w-full h-28 flex items-center justify-center overflow-hidden bg-cream rounded-xl border border-lightBeige mb-3 relative">
-                    <!-- Heart Button Overlay -->
-                    <button type="button" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 shadow flex items-center justify-center text-gray-700 hover:text-red-500 transition-colors z-20 toggle-wishlist" data-product-id="{{ product.id }}">
-                        {% if product.id|stringformat:"s" in request.session.wishlist %}
-                            <i class="fa-solid fa-heart text-red-500"></i>
-                        {% else %}
-                            <i class="fa-regular fa-heart text-gray-700"></i>
-                        {% endif %}
-                    </button>
-                    {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-cover h-full w-full rounded-lg">
-                    {% else %}<i class="fa-solid fa-leaf text-4xl text-herbalGreen/25"></i>{% endif %}
-                </div>
-                <h3 class="text-sm font-outfit font-bold text-darkGreen truncate mb-1">{{ product.name }}</h3>
-                <p class="text-[10px] text-organicBrown/60 font-light line-clamp-2 flex-grow">{{ product.description }}</p>
-                <div class="pt-3 mt-3 border-t border-lightBeige flex justify-between items-center">
-                    <span class="text-sm font-mono font-bold text-herbalGreen">₹{{ product.price }}</span>
-                    <span class="px-3 py-1.5 bg-darkGreen text-cream text-[10px] font-outfit font-bold rounded-lg hover:bg-herbalGreen transition-all uppercase tracking-wider select-none">Add to Cart</span>
-                </div>
-            </div>
-            {% empty %}
-            <p class="{{ shelf_empty_class }}">No best sellers tagged yet. Mark products as Best Seller in the admin panel.</p>
-            {% endfor %}
-            <!-- View All Best Sellers — 3rd Dynamic Slot -->
-            {% if best_sellers %}
-            <a href="{% url 'product_catalog' %}?shelf=best_sellers"
-               class="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-softGold/30 p-5 hover:border-softGold/70 hover:shadow-md transition-all duration-300 group"
-               style="background-color: #F3F4F6;">
-                <div class="w-14 h-14 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
-                    <i class="fa-solid fa-arrow-right text-[#1A5A32] text-lg"></i>
-                </div>
-                <div class="text-center space-y-1">
-                    <p class="text-sm font-outfit font-bold text-[#1A5A32]">View All Best Sellers</p>
-                    <p class="text-[10px] text-[#2D2D2D]/50 font-light">Explore the full collection</p>
-                </div>
-            </a>
-            {% endif %}
-        </div>
-        <div class="mt-8 text-right">
-            <a href="{% url 'product_catalog' %}?shelf=best_sellers" class="inline-flex items-center gap-2 px-6 py-2.5 border border-herbalGreen/30 text-herbalGreen font-outfit font-bold text-xs rounded-xl hover:bg-herbalGreen hover:text-cream transition-all">
-                View More Best Sellers <i class="fa-solid fa-arrow-right text-[10px]"></i>
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- New Arrivals -->
-<section id="new-arrivals" class="py-16 bg-lightBeige border-t border-[#5C4033]/5">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-end justify-between mb-10">
-            <div class="space-y-1">
-                <span class="text-[10px] font-bold uppercase tracking-widest text-herbalGreen font-outfit flex items-center gap-1.5"><i class="fa-solid fa-sparkles"></i> Just Launched</span>
-                <h2 class="text-2xl sm:text-3xl font-outfit font-extrabold text-darkGreen">New Arrivals</h2>
-            </div>
-            <a href="{% url 'product_catalog' %}?shelf=new_arrivals" class="flex items-center gap-1.5 text-xs font-bold text-herbalGreen font-outfit hover:text-darkGreen transition-colors">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for product in new_arrivals|slice:':2' %}
-            <div class="bg-cream border border-lightBeige rounded-2xl overflow-hidden flex flex-col p-5 hover:shadow-lg hover:border-herbalGreen/40 transition-all duration-300 cursor-pointer product-card-trigger"
-                 data-id="prod_{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.price }}"
-                 data-image="{% if product.image %}{{ product.image.url }}{% endif %}"
-                 data-media="{{ product.media_list_json }}" data-description="{{ product.description|escapejs }}"
-                 data-stock="In Stock" data-type="ayurveda"
-                 data-subtitle="{{ product.subtitle_tagline|escapejs }}" data-quantity="{{ product.total_quantity_info|default:'100g'|escapejs }}">
-                <div class="flex justify-between items-start mb-3">
-                    <span class="text-[9px] font-bold bg-herbalGreen/10 text-herbalGreen border border-herbalGreen/20 px-2 py-0.5 rounded-md uppercase tracking-wider font-outfit">{{ product.subtitle_tagline|default:"New" }}</span>
-                    <span class="text-[9px] font-bold text-herbalGreen font-outfit flex items-center gap-1"><i class="fa-solid fa-star text-[8px]"></i> New</span>
-                </div>
-                <div class="w-full h-28 flex items-center justify-center overflow-hidden bg-lightBeige/30 rounded-xl border border-lightBeige mb-3 relative">
-                    <!-- Heart Button Overlay -->
-                    <button type="button" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 shadow flex items-center justify-center text-gray-700 hover:text-red-500 transition-colors z-20 toggle-wishlist" data-product-id="{{ product.id }}">
-                        {% if product.id|stringformat:"s" in request.session.wishlist %}
-                            <i class="fa-solid fa-heart text-red-500"></i>
-                        {% else %}
-                            <i class="fa-regular fa-heart text-gray-700"></i>
-                        {% endif %}
-                    </button>
-                    {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-cover h-full w-full rounded-lg">
-                    {% else %}<i class="fa-solid fa-leaf text-4xl text-herbalGreen/25"></i>{% endif %}
-                </div>
-                <h3 class="text-sm font-outfit font-bold text-darkGreen truncate mb-1">{{ product.name }}</h3>
-                <p class="text-[10px] text-organicBrown/60 font-light line-clamp-2 flex-grow">{{ product.description }}</p>
-                <div class="pt-3 mt-3 border-t border-lightBeige flex justify-between items-center">
-                    <span class="text-sm font-mono font-bold text-herbalGreen">₹{{ product.price }}</span>
-                    <span class="px-3 py-1.5 bg-darkGreen text-cream text-[10px] font-outfit font-bold rounded-lg hover:bg-herbalGreen transition-all uppercase tracking-wider select-none">Add to Cart</span>
-                </div>
-            </div>
-            {% empty %}
-            <p class="{{ shelf_empty_class }}">No new arrivals tagged yet. Mark products as New Arrival in the admin panel.</p>
-            {% endfor %}
-            <!-- View All New Arrivals — 3rd Dynamic Slot -->
-            {% if new_arrivals %}
-            <a href="{% url 'product_catalog' %}?shelf=new_arrivals"
-               class="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-herbalGreen/30 p-5 hover:border-herbalGreen/70 hover:shadow-md transition-all duration-300 group"
-               style="background-color: #F3F4F6;">
-                <div class="w-14 h-14 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
-                    <i class="fa-solid fa-arrow-right text-[#1A5A32] text-lg"></i>
-                </div>
-                <div class="text-center space-y-1">
-                    <p class="text-sm font-outfit font-bold text-[#1A5A32]">View All New Arrivals</p>
-                    <p class="text-[10px] text-[#2D2D2D]/50 font-light">Explore the full collection</p>
-                </div>
-            </a>
-            {% endif %}
-        </div>
-        <div class="mt-8 text-right">
-            <a href="{% url 'product_catalog' %}?shelf=new_arrivals" class="inline-flex items-center gap-2 px-6 py-2.5 border border-herbalGreen/30 text-herbalGreen font-outfit font-bold text-xs rounded-xl hover:bg-herbalGreen hover:text-cream transition-all">
-                View More New Arrivals <i class="fa-solid fa-arrow-right text-[10px]"></i>
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- Trending -->
-<section id="trending" class="py-16 bg-cream border-t border-[#5C4033]/5">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-end justify-between mb-10">
-            <div class="space-y-1">
-                <span class="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37] font-outfit flex items-center gap-1.5"><i class="fa-solid fa-chart-line"></i> Trending Now</span>
-                <h2 class="text-2xl sm:text-3xl font-outfit font-extrabold text-darkGreen">Trending</h2>
-            </div>
-            <a href="{% url 'product_catalog' %}?shelf=trending" class="flex items-center gap-1.5 text-xs font-bold text-herbalGreen font-outfit hover:text-darkGreen transition-colors">View All <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for product in trending|slice:':2' %}
-            <div class="bg-lightBeige border border-lightBeige rounded-2xl overflow-hidden flex flex-col p-5 hover:shadow-lg hover:border-[#D4AF37]/40 transition-all duration-300 cursor-pointer product-card-trigger"
-                 data-id="prod_{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.price }}"
-                 data-image="{% if product.image %}{{ product.image.url }}{% endif %}"
-                 data-media="{{ product.media_list_json }}" data-description="{{ product.description|escapejs }}"
-                 data-stock="In Stock" data-type="ayurveda"
-                 data-subtitle="{{ product.subtitle_tagline|escapejs }}" data-quantity="{{ product.total_quantity_info|default:'100g'|escapejs }}">
-                <div class="flex justify-between items-start mb-3">
-                    <span class="text-[9px] font-bold bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 px-2 py-0.5 rounded-md uppercase tracking-wider font-outfit">{{ product.subtitle_tagline|default:"Trending" }}</span>
-                    <span class="text-[9px] font-bold text-[#D4AF37] font-outfit flex items-center gap-1"><i class="fa-solid fa-chart-line text-[8px]"></i> Hot</span>
-                </div>
-                <div class="w-full h-28 flex items-center justify-center overflow-hidden bg-cream rounded-xl border border-lightBeige mb-3 relative">
-                    <!-- Heart Button Overlay -->
-                    <button type="button" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 shadow flex items-center justify-center text-gray-700 hover:text-red-500 transition-colors z-20 toggle-wishlist" data-product-id="{{ product.id }}">
-                        {% if product.id|stringformat:"s" in request.session.wishlist %}
-                            <i class="fa-solid fa-heart text-red-500"></i>
-                        {% else %}
-                            <i class="fa-regular fa-heart text-gray-700"></i>
-                        {% endif %}
-                    </button>
-                    {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-cover h-full w-full rounded-lg">
-                    {% else %}<i class="fa-solid fa-leaf text-4xl text-herbalGreen/25"></i>{% endif %}
-                </div>
-                <h3 class="text-sm font-outfit font-bold text-darkGreen truncate mb-1">{{ product.name }}</h3>
-                <p class="text-[10px] text-organicBrown/60 font-light line-clamp-2 flex-grow">{{ product.description }}</p>
-                <div class="pt-3 mt-3 border-t border-lightBeige flex justify-between items-center">
-                    <span class="text-sm font-mono font-bold text-herbalGreen">₹{{ product.price }}</span>
-                    <span class="px-3 py-1.5 bg-darkGreen text-cream text-[10px] font-outfit font-bold rounded-lg hover:bg-herbalGreen transition-all uppercase tracking-wider select-none">Add to Cart</span>
-                </div>
-            </div>
-            {% empty %}
-            <p class="{{ shelf_empty_class }}">No trending products tagged yet. Mark products as Trending in the admin panel.</p>
-            {% endfor %}
-            <!-- View All Trending — 3rd Dynamic Slot -->
-            {% if trending %}
-            <a href="{% url 'product_catalog' %}?shelf=trending"
-               class="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-[#D4AF37]/30 p-5 hover:border-[#D4AF37]/70 hover:shadow-md transition-all duration-300 group"
-               style="background-color: #F3F4F6;">
-                <div class="w-14 h-14 rounded-full bg-white border border-[#E5E5E5] flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
-                    <i class="fa-solid fa-arrow-right text-[#1A5A32] text-lg"></i>
-                </div>
-                <div class="text-center space-y-1">
-                    <p class="text-sm font-outfit font-bold text-[#1A5A32]">View All Trending</p>
-                    <p class="text-[10px] text-[#2D2D2D]/50 font-light">Explore the full collection</p>
-                </div>
-            </a>
-            {% endif %}
-        </div>
-        <div class="mt-8 text-right">
-            <a href="{% url 'product_catalog' %}?shelf=trending" class="inline-flex items-center gap-2 px-6 py-2.5 border border-[#D4AF37]/30 text-[#D4AF37] font-outfit font-bold text-xs rounded-xl hover:bg-[#D4AF37] hover:text-cream transition-all">
-                View More Trending <i class="fa-solid fa-arrow-right text-[10px]"></i>
-            </a>
-        </div>
-    </div>
-</section>
-<!-- ═══════════════════════ END PRODUCT SHELVES ═══════════════ -->
-
-
-<!-- Features Breakdown Grid (Value Props) -->
-<section class="py-24 bg-cream border-t border-[#5C4033]/5">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <!-- Feature 1 -->
-            <div class="bg-lightBeige border border-organicBrown/5 p-8 rounded-2xl space-y-4 transition-transform hover:-translate-y-1">
-                <div class="w-3 h-3 bg-softGold/10 rounded-xl flex items-center justify-center border border-softGold/25">
-                    <i class="fa-solid fa-crown text-softGold text-xl"></i>
-                </div>
-                <h3 class="text-xl font-outfit font-bold text-darkGreen">Wellness for Women</h3>
-                <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
-                    Helps maintain hormonal balance, supports reproductive health and promotes daily wellness for women of all ages.
-                </p>
-            </div>
-            
-            <!-- Feature 2 -->
-            <div class="bg-lightBeige border border-organicBrown/5 p-8 rounded-2xl space-y-4 transition-transform hover:-translate-y-1">
-                <div class="w-3 h-3 bg-softGold/10 rounded-xl flex items-center justify-center border border-softGold/25">
-                    <i class="fa-solid fa-moon text-softGold text-xl"></i>
-                </div>
-                <h3 class="text-xl font-outfit font-bold text-darkGreen">Sleep Optimization</h3>
-                <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
-                    Promote deep REM sleep extension, morning clarity, and stress reduction using non-habit-forming calming Ayurvedic roots.
-                </p>
-            </div>
-            
-            <!-- Feature 3 -->
-            <div class="bg-lightBeige border border-organicBrown/5 p-8 rounded-2xl space-y-4 transition-transform hover:-translate-y-1">
-                <div class="w-3 h-3 bg-softGold/10 rounded-xl flex items-center justify-center border border-softGold/25">
-                    <i class="fa-solid fa-fire text-softGold text-xl"></i>
-                </div>
-                <h3 class="text-xl font-outfit font-bold text-darkGreen">Fat Loss Support</h3>
-                <p class="text-xs text-organicBrown/80 leading-relaxed font-light">
-                    Accelerate natural thermogenesis, regulate appetite, and support a cellular cleanse with antioxidant-rich metabolic catalysts.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Blogs / Resources Section -->
-
-
-<!-- ════════════════════════════════════ CUSTOMER TESTIMONIALS ═ -->
-<section id="testimonials" class="py-20 bg-cream border-t border-[#5C4033]/5">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-3 space-y-2">
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold bg-softGold/10 text-softGold border border-softGold/20 uppercase tracking-widest font-outfit">
-                <i class="fa-solid fa-star mr-1.5"></i> Customer Reviews
-            </span>
-            <h2 class="text-2xl sm:text-3xl font-outfit font-extrabold text-darkGreen">What Our Customers Say</h2>
-            <p class="text-organicBrown/60 text-sm font-light max-w-xl mx-auto">Real results from real people across India who made the switch to natural wellness.</p>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Review 1 -->
-            <div id="testimonial-1" class="bg-lightBeige border border-[#5C4033]/8 rounded-2xl p-6 flex flex-col gap-4 hover:shadow-md hover:border-softGold/30 transition-all duration-300">
-                <div class="flex items-center gap-1 text-softGold text-xs">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                </div>
-                <p class="text-xs text-organicBrown/80 font-light leading-relaxed flex-grow">"The Kesh Vitality Formulation has genuinely changed my morning routine. My hair fall stopped and follicle density improved in just 2 months. Absolutely pure taste."</p>
-                <div class="flex items-center gap-3 pt-3 border-t border-[#5C4033]/8">
-                    <div class="w-9 h-9 rounded-full bg-herbalGreen/15 border border-herbalGreen/20 flex items-center justify-center text-sm font-bold text-herbalGreen flex-shrink-0">R</div>
-                    <div>
-                        <p class="text-xs font-outfit font-bold text-darkGreen leading-none">Rajesh Sharma</p>
-                        <p class="text-[10px] text-organicBrown/50 font-light mt-0.5">Jaipur, Rajasthan</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Review 2 -->
-            <div id="testimonial-2" class="bg-lightBeige border border-[#5C4033]/8 rounded-2xl p-6 flex flex-col gap-4 hover:shadow-md hover:border-softGold/30 transition-all duration-300">
-                <div class="flex items-center gap-1 text-softGold text-xs">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                </div>
-                <p class="text-xs text-organicBrown/80 font-light leading-relaxed flex-grow">"Ordered the Veda Lean fat loss blend and the Nidra Deep Sleep blend — both exceeded expectations. I sleep soundly and wake up with elevated metabolic energy!"</p>
-                <div class="flex items-center gap-3 pt-3 border-t border-[#5C4033]/8">
-                    <div class="w-9 h-9 rounded-full bg-softGold/15 border border-softGold/20 flex items-center justify-center text-sm font-bold text-[#9a7b24] flex-shrink-0">P</div>
-                    <div>
-                        <p class="text-xs font-outfit font-bold text-darkGreen leading-none">Priya Agarwal</p>
-                        <p class="text-[10px] text-organicBrown/50 font-light mt-0.5">Delhi NCR</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Review 3 -->
-            <div id="testimonial-3" class="bg-lightBeige border border-[#5C4033]/8 rounded-2xl p-6 flex flex-col gap-4 hover:shadow-md hover:border-softGold/30 transition-all duration-300">
-                <div class="flex items-center gap-1 text-softGold text-xs">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                </div>
-                <p class="text-xs text-organicBrown/80 font-light leading-relaxed flex-grow">"Fast delivery to Mumbai — received in 4 days. The Kesh Vitality Formulation is exactly what my hair stylist recommended. Reordering again soon."</p>
-                <div class="flex items-center gap-3 pt-3 border-t border-[#5C4033]/8">
-                    <div class="w-9 h-9 rounded-full bg-darkGreen/10 border border-darkGreen/15 flex items-center justify-center text-sm font-bold text-darkGreen flex-shrink-0">M</div>
-                    <div>
-                        <p class="text-xs font-outfit font-bold text-darkGreen leading-none">Manish Kapoor</p>
-                        <p class="text-[10px] text-organicBrown/50 font-light mt-0.5">Mumbai, Maharashtra</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Review 4 -->
-            <div id="testimonial-4" class="bg-lightBeige border border-[#5C4033]/8 rounded-2xl p-6 flex flex-col gap-4 hover:shadow-md hover:border-softGold/30 transition-all duration-300">
-                <div class="flex items-center gap-1 text-softGold text-xs">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                </div>
-                <p class="text-xs text-organicBrown/80 font-light leading-relaxed flex-grow">"Completely organic and honest products. I verified the ingredients myself. KaaNuRO is the only herbal brand I trust for my family's daily wellness routine."</p>
-                <div class="flex items-center gap-3 pt-3 border-t border-[#5C4033]/8">
-                    <div class="w-9 h-9 rounded-full bg-herbalGreen/15 border border-herbalGreen/20 flex items-center justify-center text-sm font-bold text-herbalGreen flex-shrink-0">S</div>
-                    <div>
-                        <p class="text-xs font-outfit font-bold text-darkGreen leading-none">Sunita Verma</p>
-                        <p class="text-[10px] text-organicBrown/50 font-light mt-0.5">Bengaluru, Karnataka</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- ═══════════════════ END CUSTOMER TESTIMONIALS ═════════════ -->
-
-<!-- FAQ Accordion Section -->
-<section id="faq" class="py-24 bg-lightBeige border-y border-[#5C4033]/10">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center space-y-4 mb-16">
-            <span class="text-xs font-bold uppercase tracking-wider text-herbalGreen font-outfit">Common Questions</span>
-            <h2 class="text-3xl sm:text-4xl font-outfit font-extrabold text-darkGreen">
-                Frequently Asked Questions
-            </h2>
-        </div>
-        
-        <div class="space-y-4">
-            <!-- FAQ Item 1 -->
-            <div class="faq-accordion-item bg-cream border border-[#5C4033]/15 rounded-xl p-5 cursor-pointer transition-all duration-300">
-                <div class="flex justify-between items-center text-darkGreen">
-                    <h3 class="font-outfit font-bold text-base sm:text-lg">What makes KaaNuRO Group products unique?</h3>
-                    <i class="fa-solid fa-plus text-xs text-softGold transition-transform duration-300"></i>
-                </div>
-                <div class="faq-answer max-h-0 overflow-hidden text-xs sm:text-sm text-organicBrown/85 leading-relaxed font-light transition-all duration-300">
-                    Our formulations are designed by certified wellness associates and sourced directly from agricultural communities in Rajasthan. We combine verified scientific research with deep herbal insights, ensuring every leaf and root is selected at the peak of its biological value.
-                </div>
-            </div>
-
-            <!-- FAQ Item 2 -->
-            <div class="faq-accordion-item bg-cream border border-[#5C4033]/15 rounded-xl p-5 cursor-pointer transition-all duration-300">
-                <div class="flex justify-between items-center text-darkGreen">
-                    <h3 class="font-outfit font-bold text-base sm:text-lg">Are there any artificial preservatives in your teas or blends?</h3>
-                    <i class="fa-solid fa-plus text-xs text-softGold transition-transform duration-300"></i>
-                </div>
-                <div class="faq-answer max-h-0 overflow-hidden text-xs sm:text-sm text-organicBrown/85 leading-relaxed font-light transition-all duration-300">
-                    No, absolutely not. All KaaNuRO products are 100% natural, vegetarian, and free from chemical fillers, heavy metal impurities, and artificial colorants. We preserve our products naturally using vacuum-sealing protocols.
-                </div>
-            </div>
-
-            <!-- FAQ Item 3 -->
-            <div class="faq-accordion-item bg-cream border border-[#5C4033]/15 rounded-xl p-5 cursor-pointer transition-all duration-300">
-                <div class="flex justify-between items-center text-darkGreen">
-                    <h3 class="font-outfit font-bold text-base sm:text-lg">How quickly do you ship products to locations outside Rajasthan?</h3>
-                    <i class="fa-solid fa-plus text-xs text-softGold transition-transform duration-300"></i>
-                </div>
-                <div class="faq-answer max-h-0 overflow-hidden text-xs sm:text-sm text-organicBrown/85 leading-relaxed font-light transition-all duration-300">
-                    We deliver across India. Shipments inside Rajasthan are typically delivered in 2-3 business days. Deliveries to Delhi-NCR, Mumbai, Bengaluru, and other metropolitan centers take 4-6 business days depending on carrier services.
-                </div>
-            </div>
-
-            <!-- FAQ Item 4 -->
-            <div class="faq-accordion-item bg-cream border border-[#5C4033]/15 rounded-xl p-5 cursor-pointer transition-all duration-300">
-                <div class="flex justify-between items-center text-darkGreen">
-                    <h3 class="font-outfit font-bold text-base sm:text-lg">Where is KaaNuRO Group located?</h3>
-                    <i class="fa-solid fa-plus text-xs text-softGold transition-transform duration-300"></i>
-                </div>
-                <div class="faq-answer max-h-0 overflow-hidden text-xs sm:text-sm text-organicBrown/85 leading-relaxed font-light transition-all duration-300">
-                    Our administrative headquarters and core packing units are located in Udaipurwati, Jhunjhunu district, Rajasthan, India (Pin Code: 333307). You are welcome to visit our local farms.
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Lead Capture / Contact Form Section -->
-
-{% endwith %}
-</div>
-<!-- ═══════════════════════ END PRODUCT SHELVES ═══════════════ -->
-
-<!-- Blog Article Modal Overlay -->
-<div id="blog-modal-overlay" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
-    <!-- Content Card -->
-    <div id="blog-modal-card" class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col relative transform scale-95 opacity-0 transition-all duration-300 ease-out border border-[#E5E5E5] shadow-2xl">
-        <!-- Close Button -->
-        <button id="blog-modal-close" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md text-[#2D2D2D] hover:bg-[#F9F9F9] transition-colors shadow-sm flex items-center justify-center text-xl font-bold font-sans" aria-label="Close article">
-            &times;
-        </button>
-        
-        <!-- Scrollable content area -->
-        <div class="overflow-y-auto flex-grow p-6 md:p-8 space-y-6">
-            <!-- Image Header -->
-            <div id="blog-modal-image-wrapper" class="w-full h-64 md:h-80 rounded-xl overflow-hidden bg-[#F9F9F9] border border-[#E5E5E5] flex items-center justify-center hidden mb-4">
-                <img id="blog-modal-image" src="" alt="" class="w-full h-full object-cover">
-            </div>
-            
-            <!-- Headers -->
-            <div class="space-y-2">
-                <div class="flex items-center space-x-3 text-xs text-[#2D2D2D]/60 font-semibold font-outfit uppercase">
-                    <span id="blog-modal-date">Date</span>
-                    <span>&bull;</span>
-                    <span id="blog-modal-author">Author</span>
-                </div>
-                <h2 id="blog-modal-title" class="text-2xl md:text-3xl font-outfit font-extrabold text-[#1A1A1A] leading-tight">
-                    Article Title
-                </h2>
-            </div>
-            
-            <!-- Divider -->
-            <hr class="border-[#E5E5E5]">
-            
-            <!-- Body paragraph content -->
-            <div id="blog-modal-content" class="text-sm md:text-base text-[#2D2D2D] leading-relaxed font-sans space-y-4">
-                <!-- Dynamic paragraphs populated here -->
-            </div>
+        <div class="relative flex justify-center">
+            <div class="w-72 h-72 md:w-96 md:h-96 rounded-full bg-amber-400/10 absolute blur-3xl"></div>
+            <img src="{% static 'images/hero-tea.png' %}" alt="KaaNuRO Herbal Genix" class="w-full max-w-md object-contain drop-shadow-2xl floating-animation">
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
-<!-- QRCode.js Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-    // UPI configurations bound from views.py settings context
-    const upiId = "{{ upi_id }}";
-    const merchantName = "{{ merchant_name }}";
+<!-- Category Grid Section -->
+<section class="py-20 bg-cream">
+    <div class="container mx-auto px-6">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <h2 class="text-3xl font-bold text-[#1E3F20]">Shop by Category</h2>
+            <div class="w-16 h-1 bg-amber-500 mx-auto mt-4 rounded-full"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Herbal Teas -->
+            <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-[#5C4033]/5 text-center p-8">
+                <div class="w-16 h-16 bg-emerald-50 rounded-xl flex items-center justify-center mx-auto text-emerald-600 text-2xl mb-6 group-hover:scale-110 transition">
+                    <i class="fas fa-mug-hot"></i>
+                </div>
+                <h3 class="text-xl font-bold text-[#1E3F20] mb-3">Premium Herbal Teas</h3>
+                <p class="text-gray-600 text-sm mb-6">Heart health, natural glow, and daily vitality in every single cup.</p>
+                <a href="{% url 'products' %}?category=tea" class="text-emerald-600 font-semibold inline-flex items-center gap-2 hover:gap-3 transition">
+                    Shop Teas <i class="fas fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+            <!-- Health Juices -->
+            <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-[#5C4033]/5 text-center p-8">
+                <div class="w-16 h-16 bg-amber-50 rounded-xl flex items-center justify-center mx-auto text-amber-600 text-2xl mb-6 group-hover:scale-110 transition">
+                    <i class="fas fa-wine-bottle"></i>
+                </div>
+                <h3 class="text-xl font-bold text-[#1E3F20] mb-3">Nutritional Juices</h3>
+                <p class="text-gray-600 text-sm mb-6">Superfood extracts straight from the Himalayas for deep holistic cleansing.</p>
+                <a href="{% url 'products' %}?category=juice" class="text-amber-600 font-semibold inline-flex items-center gap-2 hover:gap-3 transition">
+                    Shop Juices <i class="fas fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+            <!-- Wellness Wellness Tonics -->
+            <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-[#5C4033]/5 text-center p-8">
+                <div class="w-16 h-16 bg-purple-50 rounded-xl flex items-center justify-center mx-auto text-purple-600 text-2xl mb-6 group-hover:scale-110 transition">
+                    <i class="fas fa-mortar-pestle"></i>
+                </div>
+                <h3 class="text-xl font-bold text-[#1E3F20] mb-3">Daily Wellness Supports</h3>
+                <p class="text-gray-600 text-sm mb-6">Targeted Ayurvedic formulas built for immunity, sleep, and natural strength.</p>
+                <a href="{% url 'products' %}?category=wellness" class="text-purple-600 font-semibold inline-flex items-center gap-2 hover:gap-3 transition">
+                    Shop Wellness <i class="fas fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 
-    // Dynamic UPI URI string builder function
-    window.generateUpiString = function(totalAmount, orderId) {
-        const upiString = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${totalAmount}&cu=INR&tn=Order_${orderId}`;
-        return upiString;
-    };
-
-    // Targets the empty placeholder div container with id "payment-qr-container" to instantiate QR code
-    window.renderPaymentQR = function(upiString) {
-        const container = document.getElementById("payment-qr-container");
-        if (container) {
-            container.innerHTML = '';
-            new QRCode(container, {
-                text: upiString,
-                width: 256,
-                height: 256,
-                colorDark: "#19261C",
-                colorLight: "#FBF9F6",
-                correctLevel: QRCode.CorrectLevel.M
-            });
-        }
-    };
-</script>
-<script>
-    // FAQ Accordion Interactivity
-    const accordionItems = document.querySelectorAll('.faq-accordion-item');
-    accordionItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const isActive = item.classList.contains('active');
-            
-            // Close all
-            accordionItems.forEach(otherItem => {
-                otherItem.classList.remove('active');
-                const otherAnswer = otherItem.querySelector('.faq-answer');
-                otherAnswer.style.maxHeight = null;
-                otherAnswer.style.marginTop = '0';
-                otherItem.querySelector('i').classList.replace('fa-minus', 'fa-plus');
-                otherItem.querySelector('i').classList.remove('text-softGold');
-            });
-            
-            if (!isActive) {
-                item.classList.add('active');
-                const answer = item.querySelector('.faq-answer');
-                answer.style.maxHeight = answer.scrollHeight + 'px';
-                answer.style.marginTop = '1rem';
-                item.querySelector('i').classList.replace('fa-plus', 'fa-minus');
-                item.querySelector('i').classList.add('text-softGold');
-            }
-        });
-    });
-
-    // AJAX Form Submission
-    const contactForm = document.getElementById('contact-form');
-    const feedback = document.getElementById('form-feedback');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submit-btn');
-            const originalBtnHtml = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span>Sending...</span><i class="fa-solid fa-spinner animate-spin text-xs"></i>';
-            
-            const formData = new FormData(this);
-            
-            fetch("{% url 'home' %}", {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnHtml;
-                
-                feedback.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
-                
-                if (data.success) {
-                    feedback.classList.add('bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-200');
-                    feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5"></i> ${data.message}`;
-                    contactForm.reset();
-                } else {
-                    feedback.classList.add('bg-rose-50', 'text-rose-800', 'border', 'border-rose-200');
-                    // Format errors
-                    let errorMsg = 'Error: ';
-                    for (const field in data.errors) {
-                        errorMsg += `${field}: ${data.errors[field].join(', ')} `;
-                    }
-                    feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1.5"></i> ${errorMsg}`;
-                }
-            })
-            .catch(error => {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnHtml;
-                feedback.classList.remove('hidden');
-                feedback.classList.add('bg-rose-50', 'text-rose-800', 'border', 'border-rose-200');
-                feedback.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1.5"></i> Something went wrong. Please try again later.';
-                console.error("AJAX error: ", error);
-            });
-        });
-    }
-</script>
-
-<script>
-    // Blog Modal Interactivity
-    function openBlogModal(title, date, author, imageUrl, content) {
-        const overlay = document.getElementById('blog-modal-overlay');
-        const card = document.getElementById('blog-modal-card');
-        
-        // Set content
-        document.getElementById('blog-modal-title').textContent = title;
-        document.getElementById('blog-modal-date').textContent = date;
-        document.getElementById('blog-modal-author').textContent = author;
-        
-        // Set image
-        const imgWrapper = document.getElementById('blog-modal-image-wrapper');
-        const img = document.getElementById('blog-modal-image');
-        if (imageUrl) {
-            img.src = imageUrl;
-            img.alt = title;
-            imgWrapper.classList.remove('hidden');
-        } else {
-            imgWrapper.classList.add('hidden');
-            img.src = '';
-        }
-        
-        // Set body content (split by newlines to form paragraphs)
-        const contentContainer = document.getElementById('blog-modal-content');
-        contentContainer.innerHTML = '';
-        const paragraphs = content.split('\n').filter(p => p.trim() !== '');
-        paragraphs.forEach(p => {
-            const pElem = document.createElement('p');
-            pElem.className = 'text-[#2D2D2D] mb-4';
-            pElem.textContent = p;
-            contentContainer.appendChild(pElem);
-        });
-        
-        // Show modal container
-        overlay.classList.remove('hidden');
-        
-        // Force browser reflow to trigger CSS animations
-        void overlay.offsetWidth;
-        
-        // Add active classes
-        overlay.classList.remove('opacity-0');
-        overlay.classList.add('opacity-100');
-        card.classList.remove('scale-95', 'opacity-0');
-        card.classList.add('scale-100', 'opacity-100');
-        
-        document.body.classList.add('overflow-hidden');
-    }
-
-    function closeBlogModal() {
-        const overlay = document.getElementById('blog-modal-overlay');
-        const card = document.getElementById('blog-modal-card');
-        
-        overlay.classList.remove('opacity-100');
-        overlay.classList.add('opacity-0');
-        card.classList.remove('scale-100', 'opacity-100');
-        card.classList.add('scale-95', 'opacity-0');
-        
-        document.body.classList.remove('overflow-hidden');
-        
-        setTimeout(() => {
-            overlay.classList.add('hidden');
-        }, 300); // Match transition-opacity duration-300
-    }
-
-    // Bind triggers to blog grid cards
-    document.querySelectorAll('.blog-card-trigger').forEach(card => {
-        card.addEventListener('click', () => {
-            const title = card.getAttribute('data-title');
-            const date = card.getAttribute('data-date');
-            const author = card.getAttribute('data-author');
-            const imageUrl = card.getAttribute('data-image');
-            const content = card.getAttribute('data-content');
-            
-            openBlogModal(title, date, author, imageUrl, content);
-        });
-    });
-
-    // Close button event
-    const blogCloseBtn = document.getElementById('blog-modal-close');
-    if (blogCloseBtn) {
-        blogCloseBtn.addEventListener('click', closeBlogModal);
-    }
-
-    // Overlay click event (outside the modal card)
-    const blogOverlay = document.getElementById('blog-modal-overlay');
-    if (blogOverlay) {
-        blogOverlay.addEventListener('click', (e) => {
-            if (e.target === blogOverlay) {
-                closeBlogModal();
-            }
-        });
-    }
-</script>
+<!-- Featured Best Sellers Grid -->
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+            <div>
+                <h2 class="text-3xl font-bold text-[#1E3F20]">Our Best Sellers</h2>
+                <p class="text-gray-600 mt-2">Customer favorites backed by nature and pure metrics.</p>
+            </div>
+            <a href="{% url 'products' %}" class="mt-4 md:mt-0 text-emerald-600 font-semibold inline-flex items-center gap-2 group">
+                View All Products <i class="fas fa-arrow-right text-sm group-hover:translate-x-1 transition"></i>
+            </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {% for product in featured_products|slice:":4" %}
+            <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition flex flex-col h-full">
+                <div class="bg-gray-50 p-6 relative aspect-square flex items-center justify-center">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="max-h-full object-contain mix-blend-multiply">
+                    {% else %}
+                        <i class="fas fa-box text-4xl text-gray-300"></i>
+                    {% endif %}
+                </div>
+                <div class="p-6 flex flex-col flex-grow justify-between">
+                    <div>
+                        <h3 class="font-bold text-[#1E3F20] text-lg line-clamp-1">{{ product.name }}</h3>
+                        <p class="text-gray-500 text-sm mt-1 line-clamp-2">{{ product.description }}</p>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between">
+                        <span class="text-xl font-extrabold text-[#1E3F20]">₹{{ product.price }}</span>
+                        <a href="{% url 'product_detail' product.id %}" class="p-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition">
+                            <i class="fas fa-shopping-bag"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 {% endblock %}
