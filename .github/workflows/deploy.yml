@@ -21,22 +21,9 @@ jobs:
         command_timeout: 30m
         script: |
           cd /var/www/kaanuro
-          git reset --hard origin/main
-          source venv/bin/activate
           
-          # Clean socket paths cleanly without killing the parent shell process
-          rm -f gunicorn.sock gunicorn.pid || true
+          echo "--- Tail of Gunicorn Logs ---"
+          journalctl -u gunicorn -n 50 --no-pager || tail -n 50 /var/log/syslog || true
           
-          echo "--- Gracefully Cycling Services ---"
-          # Try resetting via standard init wrappers first
-          systemctl daemon-reload || true
-          systemctl restart gunicorn || service gunicorn restart || supervisorctl restart all || true
-          
-          # Final safety check: if it didn't start, boot a detached background worker explicitly
-          sleep 2
-          if ! pgrep -f gunicorn > /dev/null; then
-             echo "Launching detached standalone daemon..."
-             gunicorn --workers 3 --bind unix:/var/www/kaanuro/gunicorn.sock ecomweb.wsgi:application --detach || true
-          fi
-          
-          echo "🚀 Web layout routing successfully booted."
+          echo "--- Tail of Nginx Error Logs ---"
+          tail -n 50 /var/log/nginx/error.log || true
