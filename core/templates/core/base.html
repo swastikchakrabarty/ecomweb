@@ -166,7 +166,7 @@
     </div>
 
     <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden border-t border-lightBeige" style="background-color: #F9F9F9;">
+    <div id="mobile-menu" class="hidden md:hidden border-t border-lightBeige z-50 pointer-events-auto select-none" style="background-color: #F9F9F9;">
         <div class="px-4 pt-2 pb-6 space-y-3">
             <a href="{% url 'home' %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">Home</a>
             <a href="{% url 'about' %}" class="block px-3 py-2 rounded-md text-base font-medium text-darkGreen hover:bg-lightBeige transition-colors">About Us</a>
@@ -191,7 +191,7 @@
                     <a href="{% url 'dashboard' %}" class="text-center px-4 py-2.5 bg-herbalGreen text-cream font-medium rounded-md shadow-sm">Dashboard</a>
                     <a href="{% url 'logout' %}" class="text-center px-4 py-2.5 border border-darkGreen/20 text-darkGreen font-medium rounded-md">Logout</a>
                 {% else %}
-                    <button id="mobile-customer-login-btn" class="text-center px-4 py-2.5 text-cream font-medium rounded-md shadow-sm animate-pulse-subtle" style="background-color: #526E56;">Customer Login / Track Order</button>
+                    <a id="mobile-customer-login-btn" href="{% url 'login' %}" class="relative z-50 pointer-events-auto inline-block w-full text-center px-4 py-2.5 text-cream font-medium rounded-md shadow-sm animate-pulse-subtle" style="background-color: #526E56;">Customer Login / Track Order</a>
                 {% endif %}
             </div>
         </div>
