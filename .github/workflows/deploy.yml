@@ -24,14 +24,9 @@ jobs:
           git reset --hard origin/main
           source venv/bin/activate
           
-          echo "--- Aggressively Clearing Old Zombie Processes ---"
-          pkill -9 -f gunicorn || true
+          echo "--- Natively Restarting via Supervisor ---"
+          supervisorctl restart kaanuro || supervisorctl restart all
           
-          echo "--- Launching via Verified Supervisor Context ---"
-          supervisorctl reread || true
-          supervisorctl update || true
-          supervisorctl restart kaanuro || supervisorctl restart all || true
-          
-          echo "--- Verifying Active Status ---"
-          sleep 3
+          echo "--- Checking Status ---"
+          sleep 2
           supervisorctl status
