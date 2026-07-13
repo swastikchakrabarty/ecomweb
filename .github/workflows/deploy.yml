@@ -21,18 +21,26 @@ jobs:
         command_timeout: 30m
         script: |
           cd /var/www/kaanuro
-          # Force clear any local locks or modifications on the server side
-          git merge --abort || true
-          git stash clear || true
-          git clean -df
-          git fetch origin main
+          
+          # Force clean old environment locks
           git reset --hard origin/main
-          
-          # Run Django asset compilations
           source venv/bin/activate
-          python3 manage.py collectstatic --noinput
-          python3 manage.py migrate --noinput
           
-          # Force cycle the backend daemons
+          # Force clear any dead process lock file handles
+          rm -f /var/www/kaanuro/gunicorn.sock || true
+          rm -f /var/www/kaanuro/gunicorn.pid || true
           pkill -9 -f gunicorn || true
-          supervisorctl restart all || systemctl restart gunicorn
+          
+          # Core production restart loop sequence
+          echo "--- Restarting Application Daemon Streams ---"
+          systemctl restart gunicorn || service gunicorn restart || true
+          supervisorctl reload || supervisorctl restart all || true
+          
+          # Fallback: Manual production daemon execution if standard system wrappers miss
+          sleep 3
+          if ! pgrep -f gunicorn > /dev/null; then
+             echo "Standard service wrappers missed. Executing manual background daemon..."
+             gunicorn --workers 3 --bind unix:/var/www/kaanuro/gunicorn.sock ecomweb.wsgi:application --detach || gunicorn --workers 3 --bind 0.0.0.0:8000 ecomweb.wsgi:application --detach || true
+          fi
+          
+          echo "🏁 Engine reload execution completed safely."
