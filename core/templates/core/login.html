@@ -1,6 +1,6 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Dashboard Login - KaaNuRO Group{% endblock %}
+{% block title %}Account Access Login - KaaNuRO Group{% endblock %}
 
 {% block content %}
 <section class="min-h-[80vh] flex items-center justify-center bg-lightBeige/50 py-16 px-4">
@@ -14,12 +14,24 @@
                 <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-herbalGreen/10 text-herbalGreen border border-herbalGreen/20">
                     <i class="fa-solid fa-lock text-lg"></i>
                 </span>
-                <h2 class="text-3xl font-outfit font-extrabold text-darkGreen">Staff Portal</h2>
-                <p class="text-xs text-organicBrown/70 font-light">Enter your credentials to access the KaaNuRO dashboard</p>
+                
+                <!-- DYNAMIC PORTAL IDENTIFIER CHECK -->
+                {% if next and 'cart' in next or 'checkout' in next %}
+                    <h2 class="text-3xl font-outfit font-extrabold text-darkGreen">Secure Checkout Login</h2>
+                    <p class="text-xs text-organicBrown/70 font-light">Please sign in to your customer profile to complete your purchase</p>
+                {% else %}
+                    <h2 class="text-3xl font-outfit font-extrabold text-darkGreen">Account Dashboard Portal</h2>
+                    <p class="text-xs text-organicBrown/70 font-light">Enter your credentials to access your user account workspace</p>
+                {% endif %}
             </div>
 
             <form method="POST" action="{% url 'login' %}" class="space-y-6">
                 {% csrf_token %}
+                
+                <!-- CRITICAL SECURITY ROUTING: Forwards next target parameters cleanly into post requests -->
+                {% if next %}
+                    <input type="hidden" name="next" value="{{ next }}" />
+                {% endif %}
                 
                 {% if form.non_field_errors %}
                 <div class="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-lg text-xs font-medium space-y-1">
@@ -76,14 +88,14 @@
 
                 <!-- Submit Button -->
                 <button type="submit" class="w-full py-3.5 bg-darkGreen hover:bg-herbalGreen text-cream font-outfit font-bold rounded-xl transition-all shadow-md shadow-darkGreen/15 flex items-center justify-center space-x-2">
-                    <span>Access Dashboard</span>
+                    <span>Sign In & Continue</span>
                     <i class="fa-solid fa-right-to-bracket text-xs"></i>
                 </button>
             </form>
 
             <div class="pt-6 border-t border-[#5C4033]/10 text-center">
                 <p class="text-xs text-organicBrown/65 font-light">
-                    Not a team associate? <a href="{% url 'home' %}#contact" class="text-herbalGreen font-bold hover:underline">Get in touch</a> to request access.
+                    Need assistance or new registration? <a href="{% url 'home' %}#contact" class="text-herbalGreen font-bold hover:underline">Get in touch</a> with our team support link.
                 </p>
             </div>
         </div>
