@@ -21,9 +21,27 @@ jobs:
         command_timeout: 30m
         script: |
           cd /var/www/kaanuro
+          git reset --hard origin/main
+          source venv/bin/activate
           
-          echo "--- Tail of Gunicorn Logs ---"
-          journalctl -u gunicorn -n 50 --no-pager || tail -n 50 /var/log/syslog || true
+          echo "--- Checking Supervisor Daemon Status ---"
+          supervisorctl status || true
           
-          echo "--- Tail of Nginx Error Logs ---"
-          tail -n 50 /var/log/nginx/error.log || true
+          echo "--- Checking Active Running System Services ---"
+          systemctl list-units --type=service | grep -E "gunicorn|django|kaanuro" || true
+          
+          echo "--- Attempting Supervisor Safe Reload ---"
+          supervisorctl reread || true
+          supervisorctl update || true
+          supervisorctl restart all || true
+          
+          echo "--- Fallback Standalone Launch ---"
+          # If no processes are running, force boot a clean socket listener manually
+          if ! pgrep -f gunicorn > /dev/null; then
+             echo "No active process found. Launching clean standalone application daemon..."
+             gunicorn --workers 3 --bind unix:/var/www/kaanuro/gunicorn.sock ecomweb.wsgi:application --detach || true
+          fi
+          
+          echo "--- Verifying Active Listening Ports/Sockets ---"
+          ls -la /var/www/kaanuro/*.sock || true
+          pgrep -a gunicorn || true
