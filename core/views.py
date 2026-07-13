@@ -1201,3 +1201,47 @@ def blogs_view(request):
     except Exception:
         pass
     return render(request, 'core/blogs.html', context)
+
+from django.http import HttpResponse
+from .models import Product
+
+def emergency_9am_sync(request):
+    product_updates = {
+        "KaaNuRO Leaf - Herbal Heart Tea": {
+            "ingredients": """• Arjan Chal (Terminalia arjuna) - 200 mg\n• Dashmool - 250 mg\n• Tulsi (Ocimum tenuiflorum) - 50 mg\n• Ginger (Zingiber officinale) - 50 mg\n• Mulethi (Glycyrrhiza glabra) – 50 mg\n• Dalchini (Cinnamomum verum) - 50 mg\n• Green Tea Leaf (Camellia sinensis) - 50 mg\n• Ashwagandha (Withania somnifera) - 50 mg\n• Beetroot (Beta vulgaris) - 50 mg\n• Citric Acid - 50 mg\n• Pipli (Piper longum) - 200 mg\n• Haldi (Curcuma longa) - 20 mg\n• Rock Salt - 20 mg\n• Krishna Marich (Piper nigrum) - 10 mg\n• Chhoti Elachi (Elettaria cardamomum) - 5 mg\n• Lavng (Syzygium aromaticum) - 5 mg\n• Lemon Extract (Citrus limon) - 5 mg\n• Preservative - 100 mg""",
+            "benefits": """1. Heart Health: Strengthens the heart and maintains balanced blood flow.\n2. Blood Pressure Control: Helps keep blood pressure stable and balanced.\n3. Cholesterol Balance: Reduces bad cholesterol (LDL) and increases good cholesterol (HDL).\n4. Anti-inflammatory Properties: Naturally reduces inflammation, pain, and fatigue.\n5. Relief from Stress and Anxiety: Captivating aroma promotes mental peace and improves sleep.\n6. Boosts Digestive Health: Improves digestion and alleviates heaviness.\n7. Natural Detox and Antioxidant: Flushes out toxins, filling each day with energy and freshness.\n8. Citric Acid Beauty Benefits: Imparts glowing skin, clear/smooth texture, and shiny hair."""
+        },
+        "KaaNuRO Leaf - Natural Herbal Tea": {
+            "ingredients": """• Arjun Chaal - Supports heart health.\n• Tulsi - Helps boost immunity.\n• Sonth (Dry Ginger) - Supports healthy digestion.\n• Mulethi - Soothes throat and respiratory health.\n• Dalchini - Supports metabolism.\n• Chhoti Elaichi - Aids digestion and adds freshness.\n• Kali Mirch - Improves nutrient absorption.\n• Green Tea - Rich in natural antioxidants.\n• Laung - Supports immunity and oral health.\n• Pippali - Helps support digestion and respiratory wellness.\n• Dashmool - Promotes overall wellness.\n• Beetroot - Supports healthy blood circulation.\n• Ashwagandha - Helps manage stress and boosts stamina.\n• Safed Musli - Supports strength and vitality.\n• Garcinia - Supports healthy weight management.""",
+            "benefits": """• Heart Health Support\n• Immunity Boost\n• Better Digestion\n• Natural Energy\n• Stress Management\n• Weight Management Support\n• Rich in Antioxidants\n• Daily Wellness Support"""
+        },
+        "KaaNuRO VynorA": {
+            "ingredients": """Contains Powerful Herbs: Ashoka, Arjuna, Shatavari, Shankhpushpi, Musali, Mulethi, Ashwagandha, Daru Haldi, Dashmool Kwath, Aamla, Vidanga, Devdaru, Citric Acid & more...""",
+            "benefits": """• Revitalizes women's overall health: Helps address weakness, fatigue, and hormonal imbalances.\n• Naturally balances hormones: Helps restore natural balance in PCOD/PCOS, irregular menstruation, and mood swings.\n• Strengthens the reproductive system: Supports uterine strength and proper functioning.\n• Boosts immunity: Strengthens the body's immune system.\n• Increases energy and stamina: Provides nourishment by alleviating stress and weakness.\n• Supports healthy skin and a natural glow: Promotes facial glow through internal hormonal balance."""
+        },
+        "KaaNuRO Herbal SeaBerry Juice": {
+            "ingredients": """Premium Himalayan Seabuckthorn Extract | Superfood Nutrition (Contains Vitamin C, Vitamin E, Omega 3-6-7-9, Amino Acids, Minerals, and Powerful Antioxidants)""",
+            "benefits": """• Skin Glow & Anti-Aging: Natural facial glow, reduces wrinkles, dark spots, and repairs dry skin.\n• Digestion & Gastric Relief: Relief from acidity, gas, bloating, and strengthens digestion.\n• Blood Circulation Boost: Improves oxygen supply, reduces fatigue and muscle stiffness.\n• Liver Detox & Body Cleansing: Flushes out body toxins and strengthens liver function.\n• Hair Health Benefits: Promotes strong, shiny hair and controls hair fall.\n• Eye Health Support: Vitamin A and antioxidants support vision and reduce eye fatigue.\n• Women's Health Support: Promotes hormonal balance and overall wellness.\n• High Vitamin C: Strong protection against viral and bacterial infections.\n• Heart Health Support: Lowers bad cholesterol and maintains balanced blood pressure.\n• Diabetes Management Support: Helps control blood sugar levels and reduces insulin resistance."""
+        },
+        "APTOFIT SYRUP": {
+            "ingredients": """• Pineapple Extract\n• Mango Extract\n• Watermelon Extract\n• Pomegranate Extract\n• Pear Extract\n• Apple Extract\n• Propanediol\n• Glycerin\n• Xanthan Gum\n• Preservatives\n• Citric Acid\n• Natural Flavour\n• Purified Water""",
+            "benefits": """✓ Stimulates Natural Appetite & Daily Food Intake\n✓ Supports Healthy Weight Gain\n✓ Enhances Nutrient Absorption\n✓ Improves Natural Energy Levels\n✓ Supports Healthy Digestion\n✓ Rich in Fruit-Based Nutrients\n✓ Helps Reduce Weakness & Fatigue\n✓ Promotes Overall Growth & Wellness"""
+        },
+        "Melatonin Drops": {
+            "ingredients": """• Melatonin\n• Purified Water\n• Natural Banana Flavour\n• Glycerin\n• Preservatives\n• Food Grade Stabilizers""",
+            "benefits": """✓ Supports Natural Sleep Cycle\n✓ Helps You Fall Asleep Faster\n✓ Promotes Deep & Restful Sleep\n✓ Helps Reduce Night-Time Restlessness\n✓ Supports Relaxation Before Bedtime\n✓ Helps Improve Sleep Quality\n✓ May Help Reduce Stress & Anxiety\n✓ Supports Healthy Sleep-Wake Rhythm"""
+        }
+    }
+
+    log = []
+    for name_query, data in product_updates.items():
+        p = Product.objects.filter(name__icontains=name_query).first()
+        if p:
+            p.ingredients = data['ingredients']
+            p.benefits = data['benefits']
+            p.save()
+            log.append(f"Successfully Sync'd: {p.name}")
+        else:
+            log.append(f"Skipped (Not Found): {name_query}")
+            
+    return HttpResponse("<h1>🚀 Database Updated Successfully!</h1><pre>" + "\n".join(log) + "</pre>")
