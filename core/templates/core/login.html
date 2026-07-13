@@ -8,7 +8,8 @@
     <div class="max-w-6xl w-full relative">
         <div class="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-softGold to-herbalGreen opacity-10 blur-xl"></div>
         
-        <div class="relative grid md:grid-cols-2 gap-8">
+        <div class="max-w-md w-full relative mx-auto">
+            {% if request.GET.type != 'staff' %}
             <!-- Left Card: Customer OTP Access -->
             <div class="bg-cream border border-organicBrown/15 rounded-2xl shadow-xl p-8 sm:p-10 flex flex-col justify-between space-y-8">
                 <div class="space-y-6">
@@ -75,7 +76,9 @@
                     </p>
                 </div>
             </div>
+            {% endif %}
 
+            {% if request.GET.type == 'staff' %}
             <!-- Right Card: Staff Portal Access -->
             <div class="bg-cream border border-organicBrown/15 rounded-2xl shadow-xl p-8 sm:p-10 flex flex-col justify-between space-y-8">
                 <div class="space-y-6">
@@ -152,6 +155,7 @@
                     </p>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </section>
