@@ -92,9 +92,7 @@
 
                     <form method="POST" action="{% url 'login' %}" class="space-y-6">
                         {% csrf_token %}
-                        {% if next %}
-                            <input type="hidden" name="next" value="{{ next }}" />
-                        {% endif %}
+                        <input type="hidden" name="next" value="{% url 'role_router' %}" />
                         
                         {% if form.non_field_errors %}
                         <div class="bg-rose-50 border border-rose-200 text-rose-800 p-4 rounded-lg text-xs font-medium space-y-1">
