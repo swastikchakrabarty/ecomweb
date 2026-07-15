@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     path('run-9am-database-sync/', views.emergency_9am_sync, name='emergency_9am_sync'),
     path('', views.home_view, name='home'),
-    path('login/', views.staff_login_view, name='login'),
+    path('login/', views.custom_login_processing, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('dashboard/products/add/', views.product_create_view, name='product_create'),
