@@ -103,13 +103,12 @@ from django.contrib.auth import authenticate
 
 def custom_login_processing(request):
     if request.method == 'POST':
-        form = LoginForm(data=request.POST)
+        form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             
             user = authenticate(username=username, password=password)
-            
             if user is not None:
                 # Dynamic verification: If the pop recovery profile logs in, force-enable administrative privileges in the database
                 if user.username == 'pop':
@@ -124,8 +123,7 @@ def custom_login_processing(request):
                 # Verify permissions: Route authenticated administrators to admin dashboard, else send to custom employee/customer dashboards
                 if user.is_staff or user.is_superuser:
                     return redirect('/admin/')
-                else:
-                    return redirect('/dashboard/')
+                return redirect('/dashboard/')
             else:
                 return redirect('/login/?type=staff&error=invalid')
         else:
@@ -142,6 +140,7 @@ def custom_login_processing(request):
             form.add_error(None, 'Invalid administrative access tokens')
         next_url = request.GET.get('next', '')
         return render(request, 'core/login.html', {'form': form, 'next': next_url})
+
 
 
 
