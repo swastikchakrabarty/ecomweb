@@ -134,8 +134,22 @@ def login_view(request):
 
     return render(request, 'core/login.html', {'form': form, 'next': next_url})
 
-# def custom_login_processing(request):
-#     pass
+@login_required
+def dashboard_router(request):
+    user = request.user
+    
+    # 1. Route Master Administrators and Superusers straight to the admin control room
+    if user.is_superuser:
+        return redirect('/admin/')
+        
+    # 2. Route Associate Staff / Employees to the dedicated Employee Dashboard workspace
+    elif user.is_staff or user.role in ['admin', 'employee']:
+        return redirect('/dashboard/')  # Adjust this path to match your exact employee dashboard URL pattern name
+        
+    # 3. Fallback: Route regular buyers and customers to the standard customer log profile workspace
+    else:
+        return redirect('/dashboard/')
+
 
 
 

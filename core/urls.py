@@ -5,6 +5,7 @@ urlpatterns = [
     path('run-9am-database-sync/', views.emergency_9am_sync, name='emergency_9am_sync'),
     path('', views.home_view, name='home'),
     path('login/', views.login_view, name='login'),
+    path('role-router/', views.dashboard_router, name='role_router'),
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('dashboard/products/add/', views.product_create_view, name='product_create'),

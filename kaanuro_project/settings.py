@@ -137,7 +137,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'core.User'
 
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = 'role_router'
 LOGOUT_REDIRECT_URL = 'home'
 # kaanuro_project/settings.py
 
