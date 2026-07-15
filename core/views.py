@@ -101,7 +101,8 @@ def home_view(request):
 
 def login_view(request):
     if request.user.is_authenticated:
-        # Check next parameter even if already authenticated to ensure no trap
+        if request.user.is_staff or request.user.is_superuser or request.user.role in ['admin', 'employee']:
+            return redirect('/admin/')
         next_url = request.GET.get('next') or request.POST.get('next')
         if next_url:
             return redirect(next_url)
@@ -118,19 +119,15 @@ def login_view(request):
             auth_login(request, user)
             messages.success(request, f'Welcome back, {user.username}!')
             
-            # ────────────────────────────────────────────────────────────
-            # FIX 1 (Continued): Dynamic redirection to bypass staff portal for buyers
-            # ────────────────────────────────────────────────────────────
-            if next_url:
-                return redirect(next_url)
+            if user.is_staff or user.is_superuser or user.role in ['admin', 'employee']:
+                return redirect('/admin/')
             
-            if user.role in ['admin', 'employee'] or user.is_superuser:
-                return redirect('dashboard')
-            return redirect('dashboard')
+            return redirect(request.GET.get('next') or request.POST.get('next') or '/dashboard/')
     else:
         form = LoginForm()
 
     return render(request, 'core/login.html', {'form': form, 'next': next_url})
+
 
 
 def logout_view(request):
