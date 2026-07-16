@@ -138,12 +138,12 @@ def login_view(request):
 def dashboard_router(request):
     user = request.user
     
-    # Send both system administrators (superusers) and staff to the main workspace dashboard
+    # Send both system administrators (superusers) and staff to the main workspace dashboard pattern
     if user.is_superuser or user.is_staff:
-        return redirect('/dashboard/')
+        return redirect('/dashboard/') 
     else:
-        # Regular customers go to their tracking page
-        return redirect('/customer-dashboard/')
+        # Fallback: Regular customers also route through the main '/dashboard/' controller where the template logic differentiates them
+        return redirect('/dashboard/')
 
 
 
