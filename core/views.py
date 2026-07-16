@@ -138,17 +138,12 @@ def login_view(request):
 def dashboard_router(request):
     user = request.user
     
-    # 1. Route Master Administrators and Superusers straight to the admin control room
-    if user.is_superuser:
-        return redirect('/admin/')
-        
-    # 2. Route Associate Staff / Employees to the dedicated Employee Dashboard workspace
-    elif user.is_staff or user.role in ['admin', 'employee']:
-        return redirect('/dashboard/')  # Adjust this path to match your exact employee dashboard URL pattern name
-        
-    # 3. Fallback: Route regular buyers and customers to the standard customer log profile workspace
-    else:
+    # Send both system administrators (superusers) and staff to the main workspace dashboard
+    if user.is_superuser or user.is_staff:
         return redirect('/dashboard/')
+    else:
+        # Regular customers go to their tracking page
+        return redirect('/customer-dashboard/')
 
 
 
